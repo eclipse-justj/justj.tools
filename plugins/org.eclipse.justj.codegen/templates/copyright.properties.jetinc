@@ -1,0 +1,2 @@
+<%=org.eclipse.justj.codegen.model.util.Generator.getCopyright(argument, "# ", NL)%>
+#

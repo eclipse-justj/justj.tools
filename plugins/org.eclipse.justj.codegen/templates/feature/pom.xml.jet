@@ -1,0 +1,37 @@
+<%--
+Copyright (c) 2020 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet package="org.eclipse.justj.codegen.templates.feature" class="POMXML" imports="org.eclipse.justj.codegen.model.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%JVM jvm = (JVM)argument;
+  String jvmName = jvm.getName();
+  Model model = jvm.getModel();
+  String modelName = model.getName();
+  String fullName = modelName + '.' + jvmName;
+  String version = jvm.getVersion();%>
+<?xml version="1.0" encoding="UTF-8"?>
+<%@include file="../copyright.xml.jetinc"%>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId><%=modelName%></groupId>
+    <artifactId><%=modelName%>.features</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../releng/<%=modelName%>.parent/features</relativePath>
+  </parent>
+
+  <groupId><%=modelName%>.features</groupId>
+  <artifactId><%=fullName%></artifactId>
+  <version><%=version%>-SNAPSHOT</version>
+  <packaging>eclipse-feature</packaging>
+</project>

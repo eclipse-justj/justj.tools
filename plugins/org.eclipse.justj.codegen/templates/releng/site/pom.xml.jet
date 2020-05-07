@@ -1,0 +1,47 @@
+<%--
+Copyright (c) 2020 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet package="org.eclipse.justj.codegen.templates.releng.site" class="POMXML" imports="org.eclipse.justj.codegen.model.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%Model model = (Model)argument;
+  String name = model.getName();
+  String label = model.getLabel();%>
+<?xml version="1.0" encoding="UTF-8"?>
+<%@include file="../../copyright.xml.jetinc"%>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId><%=name%></groupId>
+    <artifactId><%=name%>.parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../<%=name%>.parent</relativePath>
+  </parent>
+
+  <groupId><%=name%></groupId>
+  <artifactId><%=name%>.site</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>eclipse-repository</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+         <groupId>org.eclipse.tycho</groupId>
+         <artifactId>tycho-p2-repository-plugin</artifactId>
+         <version>${tycho-version}</version>
+         <configuration>
+            <repositoryName><%=label%> Build ${build.id}</repositoryName>
+         </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

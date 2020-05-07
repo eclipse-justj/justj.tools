@@ -1,0 +1,60 @@
+<%--
+Copyright (c) 2020 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet package="org.eclipse.justj.codegen.templates.feature" class="FeatureXML" imports="org.eclipse.justj.codegen.model.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%JVM jvm = (JVM)argument;
+  String jvmName = jvm.getName();
+  Model model = jvm.getModel();
+  String modelName = model.getName();
+  String fullName = modelName + '.' + jvmName;
+  String version = jvm.getVersion();%>
+<?xml version="1.0" encoding="UTF-8"?>
+<%@include file="../copyright.xml.jetinc"%>
+<feature
+      id="<%=fullName%>"
+      label="%featureName"
+      version="<%=version%>.qualifier"
+      provider-name="%providerName"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="<%=fullName%>"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<%for (Variant variant : jvm.getVariants()) {
+    String os = variant.getOs();
+    String arch = variant.getArch();%>
+   <plugin
+         id="<%=fullName%>.<%=os%>.<%=arch%>"
+         os="<%=os%>"
+         arch="<%=arch%>"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+<%}%>
+</feature>

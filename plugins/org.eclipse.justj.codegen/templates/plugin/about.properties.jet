@@ -1,0 +1,31 @@
+<%--
+Copyright (c) 2020 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet package="org.eclipse.justj.codegen.templates.plugin" class="AboutProperties" imports="org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%JVM jvm = (JVM)argument;
+  String jvmLabel = jvm.getLabel();
+  String aboutTextExtra = jvm.getAboutTextExtra();
+  Model model = jvm.getModel();
+  String modelLabel = model.getLabel();%>
+<%@include file="../copyright.properties.jetinc"%>
+
+providerName = Eclipse <%=modelLabel%>
+featureName = <%=modelLabel%> <%=jvmLabel%>
+description = Contains the plug-ins and fragments for the <%=jvmLabel%>
+copyright = <%=Generator.getCopyright(argument, "", "\\n\\" + NL)%>\n
+featureName = <%=modelLabel%> <%=jvmLabel%>
+featureText = <%=modelLabel%> <%=jvmLabel%>\n\
+\n\
+Version: {featureVersion}\n\
+Commit: {1}\n\
+Build: {0}\n\
+\n\
+<%=Generator.getCopyright(argument, "", "\\n\\" + NL)%>\n\
+<%=Generator.composeLines(aboutTextExtra, "", "\\n\\" + NL)%>

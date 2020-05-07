@@ -1,0 +1,30 @@
+<%@jet package="org.eclipse.justj.codegen.templates.fragment" class="Manifest" imports="java.util.Iterator java.util.Map.Entry java.util.Set org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%Variant variant = (Variant)argument;
+  String os = variant.getOs();
+  String arch = variant.getArch();
+  JVM jvm = variant.getJVM();
+  String jvmName = jvm.getName();
+  Model model = jvm.getModel();
+  String modelName = model.getName();
+  String hostName = modelName + '.' + jvmName;
+  String fullName = hostName + '.' + os + '.' + arch;
+  String version = jvm.getVersion();%>
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: <%=fullName%>;singleton:=true
+Bundle-Version: <%=version%>.qualifier
+Bundle-Localization: fragment
+Bundle-Name: %pluginName
+Bundle-Vendor: %providerName
+Fragment-Host: <%=hostName%>;bundle-version="<%=Generator.getVersionRange(version)%>"
+Eclipse-BundleShape: dir
+Eclipse-PlatformFilter: (& (osgi.os=<%=os%>) (osgi.arch=<%=arch%>))
+Automatic-Module-Name: <%=fullName%>
+Provide-Capability: <%%>
+<%for (Iterator<Entry<String, Set<String>>> it = Generator.getEECapabilities(version).entrySet().iterator(); it.hasNext();) {
+    Entry<String, Set<String>> entry = it.next();%>
+  <%for (Iterator<String> it2 = entry.getValue().iterator(); it2.hasNext();) {
+      String eeVersion = it2.next();%>
+ osgi.ee;osgi.ee="<%=entry.getKey()%>";version:Version="<%=eeVersion%>"<%if (it.hasNext() || it2.hasNext()) {%>,<%}%>
+  <%}%>
+<%}%>

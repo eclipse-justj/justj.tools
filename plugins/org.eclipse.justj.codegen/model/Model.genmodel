@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2020 Eclipse contributors and others.&#xA;&#xA;This program and the accompanying materials&#xA;are made available under the terms of the Eclipse Public License 2.0&#xA;which accompanies this distribution, and is available at&#xA;https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"
+    modelDirectory="/org.eclipse.justj.codegen/src" creationIcons="false" modelPluginID="org.eclipse.justj.codegen"
+    modelName="Model" modelPluginClass="org.eclipse.justj.codegen.model.ModelPlugin"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
+    testsDirectory="" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    suppressGenModelAnnotations="false" copyrightFields="false" operationReflection="true"
+    decoration="Live" cleanup="true" autoResizeProperties="true" findAction="true"
+    expandAllAction="true" collapseAllAction="true" revertAction="true">
+  <foreignModel>Model.ecore</foreignModel>
+  <genPackages prefix="Model" basePackage="org.eclipse.justj.codegen" resource="XML"
+      disposableProviderFactory="true" multipleEditorPages="false" contentTypeIdentifier="org.eclipse.justj.codegen"
+      fileExtensions="jregen" ecorePackage="Model.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Model.ecore#//Phase">
+      <genEnumLiterals ecoreEnumLiteral="Model.ecore#//Phase/Install"/>
+      <genEnumLiterals ecoreEnumLiteral="Model.ecore#//Phase/Uninstall"/>
+    </genEnums>
+    <genClasses ecoreClass="Model.ecore#//Model">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/provider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/providerImageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/providerImageData"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/aboutURL"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/localCache"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Model/jVMs"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//JVM">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/label"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Model.ecore#//JVM/model"/>
+      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/aboutTextExtra"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//JVM/variants"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//Variant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/os"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/arch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/source"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Model.ecore#//Variant/jVM"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Model.ecore#//Copyrightable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightHolder"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightYear"/>
+      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightText"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//Touchpoint">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Touchpoint/phase"/>
+      <genFeatures children="true" createChild="true" ecoreFeature="ecore:EAttribute Model.ecore#//Touchpoint/instructions"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Model.ecore#//Touchable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Touchable/touchpoints"/>
+    </genClasses>
+  </genPackages>
+  <codeStyle>UnnecessaryDeprecatedMethod</codeStyle>
+</genmodel:GenModel>

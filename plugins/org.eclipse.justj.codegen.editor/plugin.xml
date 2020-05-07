@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ Copyright (c) 2020 Eclipse contributors and others.
+ 
+ This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License 2.0
+ which accompanies this distribution, and is available at
+ https://www.eclipse.org/legal/epl-2.0/
+ 
+ SPDX-License-Identifier: EPL-2.0
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated Model NOT -->
+      <category
+            id="org.eclipse.justj.codegen.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.eclipse.justj.codegen.model.presentation.ModelModelWizardID"
+            name="%_UI_ModelModelWizard_label"
+            class="org.eclipse.justj.codegen.model.presentation.ModelModelWizard"
+            category="org.eclipse.justj.codegen.Wizard.category.ID"
+            icon="icons/full/obj16/ModelModelFile.gif">
+         <description>%_UI_ModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated Model -->
+      <editor
+            id="org.eclipse.justj.codegen.model.presentation.ModelEditorID"
+            name="%_UI_ModelEditor_label"
+            icon="icons/full/obj16/ModelModelFile.gif"
+            class="org.eclipse.justj.codegen.model.presentation.ModelEditor"
+            contributorClass="org.eclipse.justj.codegen.model.presentation.ModelActionBarContributor">
+         <contentTypeBinding contentTypeId="org.eclipse.justj.codegen"/>
+      </editor>
+   </extension>
+
+</plugin>

@@ -1,0 +1,29 @@
+<%--
+Copyright (c) 2020 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet
+  package="org.eclipse.justj.codegen.templates.fragment"
+  class="P2Inf"
+  imports="java.util.* java.util.Iterator org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator"
+  builder="StringBuilder builder = new StringBuilder()"
+  minimize="true"%>
+<%Variant variant = (Variant)argument;%>
+<%@include file="../copyright.properties.jetinc"%>
+
+<%Map<String, Set<String>> touchpoints = Generator.getTouchpoints(variant);
+  for (Map.Entry<String, Set<String>> entry : touchpoints.entrySet()) {
+    String phase = entry.getKey();%>
+instructions.<%=phase%> = \
+  <%for (Iterator<String> it = entry.getValue().iterator(); it.hasNext();) {
+      String instruction = it.next();%>
+  <%=instruction%>;<%if (it.hasNext()) {%>\<%}%>
+  <%}%>
+
+<%}%>
