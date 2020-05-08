@@ -349,14 +349,14 @@ public class Reconciler
           for (Path executableFolder : executableFolders)
           {
             String chmodTouchpointInstruction = "org.eclipse.equinox.p2.touchpoint.eclipse.chmod(targetDir:${artifact.location},targetFile:"
-              + executableFolder.normalize().toString().replace('\\', '/') + ",permissions:+x,options:-R";
+              + executableFolder.normalize().toString().replace('\\', '/') + ",permissions:+x,options:-R)";
             instructions.add(chmodTouchpointInstruction);
           }
 
           for (Path executableFile : executableFiles)
           {
             String chmodTouchpointInstruction = "org.eclipse.equinox.p2.touchpoint.eclipse.chmod(targetDir:${artifact.location},targetFile:"
-              + executableFile.normalize().toString().replace('\\', '/') + ",permissions:+x";
+              + executableFile.normalize().toString().replace('\\', '/') + ",permissions:+x)";
             instructions.add(chmodTouchpointInstruction);
           }
         }

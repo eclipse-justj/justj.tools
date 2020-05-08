@@ -184,6 +184,7 @@ public class Generator
 
       URI pluginMetaInfTarget = pluginTarget.appendSegment("META-INF");
       save(org.eclipse.justj.codegen.templates.plugin.Manifest.create(null).generate(jvm), pluginMetaInfTarget.appendSegment("MANIFEST.MF"), jvmMonitor.split(1));
+      save(org.eclipse.justj.codegen.templates.plugin.EclipseInf.create(null).generate(jvm), pluginMetaInfTarget.appendSegment("eclipse.inf"), jvmMonitor.split(1));
       save(org.eclipse.justj.codegen.templates.plugin.P2Inf.create(null).generate(jvm), pluginMetaInfTarget.appendSegment("p2.inf"), jvmMonitor.split(1));
 
       save(aboutHTML, pluginTarget.appendSegment("about.html"), jvmMonitor.split(1));
