@@ -328,11 +328,16 @@
     <setupTask
         xsi:type="setup.p2:P2Task"
         label="EMF Tools">
+      <requirement
+          name="org.eclipse.emf.sdk.feature.group"/>
+      <repository
+          url="http://download.eclipse.org/modeling/emf/emf/builds/milestone/latest"/>
       <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>
     </setupTask>
     <setupTask
         xsi:type="setup:VariableTask"
         name="org.eclipse.justj.tools.p2"
+        storageURI="scope://Installation"
         label="JustJ Tools Repository">
       <choice
           value="http://download.eclipse.org/modeling/emf/emf/builds/milestone/latest"
