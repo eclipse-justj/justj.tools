@@ -108,6 +108,18 @@
             locateNestedProjects="true"/>
       </targlet>
     </setupTask>
+    <setupTask
+        xsi:type="setup.workingsets:WorkingSetTask">
+      <workingSet
+          name="JustJ JREs">
+        <predicate
+            xsi:type="predicates:AndPredicate">
+          <operand
+              xsi:type="predicates:RepositoryPredicate"
+              project="org.eclipse.justj.model"/>
+        </predicate>
+      </workingSet>
+    </setupTask>
     <stream
         name="master"
         label="Master"/>

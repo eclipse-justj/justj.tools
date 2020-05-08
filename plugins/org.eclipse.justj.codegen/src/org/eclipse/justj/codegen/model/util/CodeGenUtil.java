@@ -70,7 +70,7 @@ public class CodeGenUtil
     }
 
     String uriString = uri.toString();
-    String fileName = uriString.substring(uriString.lastIndexOf('/') + 1);
+    String fileName = uriString.replace(':', '_').replace('/', '_').replace('?', '_').replace('#', '_').replace(';', '_').replace('&', '_');
     Path result = cacheFolder.resolve(fileName);
     if (!Files.isRegularFile(result))
     {
