@@ -13,6 +13,17 @@
     xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/targlets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupTarglets.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
     name="justj"
     label="JustJ">
+  <annotation
+      source="http://www.eclipse.org/oomph/setup/BrandingInfo">
+    <detail
+        key="imageURI">
+      <value>https://git.eclipse.org/c/justj/justj.tools.git/plain/plugins/org.eclipse.justj.tools/justj32.png</value>
+    </detail>
+    <detail
+        key="siteURI">
+      <value>https://www.eclipse.org/justj</value>
+    </detail>
+  </annotation>
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Xmx"
@@ -32,7 +43,6 @@
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
       value="${eclipse.target.platform.latest}"
-      defaultValue="2020-06"
       storageURI="scope://Workspace"/>
   <setupTask
       xsi:type="setup:StringSubstitutionTask"
@@ -101,6 +111,7 @@
     <stream
         name="master"
         label="Master"/>
+    <description>Java Runtime Enviroment support</description>
   </project>
   <project name="tools"
       label="Tools">
@@ -317,10 +328,6 @@
     <setupTask
         xsi:type="setup.p2:P2Task"
         label="EMF Tools">
-      <requirement
-          name="org.eclipse.emf.sdk.feature.group"/>
-      <repository
-          url="http://download.eclipse.org/modeling/emf/emf/builds/milestone/latest"/>
       <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>
     </setupTask>
     <setupTask
@@ -408,6 +415,7 @@
         <description>Set an Oomph redirection system property to redirect the logical location of this setup to its physical location in the Git clone.</description>
       </setupTask>
     </stream>
+    <description>Tools support</description>
   </project>
   <project name="website"
       label="Website">
@@ -461,9 +469,10 @@
     <stream
         name="master"
         label="Master"/>
+    <description>Website support</description>
   </project>
   <logicalProjectContainer
       xsi:type="setup:ProjectCatalog"
       href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']"/>
-  <description>JustJ provides tools and infrastructure for building JREs.</description>
+  <description>JustJ provides tools and infrastructure for building JREs and for managing the website content</description>
 </setup:Project>
