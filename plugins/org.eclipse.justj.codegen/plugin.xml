@@ -56,4 +56,17 @@
       </application>
    </extension>
 
+   <extension
+         id="reconciler"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.justj.codegen.model.util.Reconciler$Application">
+         </run>
+      </application>
+   </extension>
+
 </plugin>

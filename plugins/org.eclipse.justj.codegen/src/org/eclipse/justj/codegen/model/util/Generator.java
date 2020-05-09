@@ -25,8 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.EList;
@@ -61,16 +59,9 @@ public class Generator
   {
     Path path = Paths.get(args[0]);
     Path realPath = path.toRealPath();
+    System.out.println("Generating: " + realPath);
     Generator generator = new Generator(URI.createFileURI(realPath.toString()));
-    generator.generate(new ProgressMonitorWrapper(new NullProgressMonitor())
-      {
-        @Override
-        public void subTask(String name)
-        {
-          super.subTask(name);
-          System.out.println(name);
-        }
-      });
+    generator.generate(new Reconciler.PrintingProgressMonitor());
   }
 
   public Generator(URI source) throws IOException
@@ -442,9 +433,8 @@ public class Generator
     @Override
     public Object start(IApplicationContext context) throws Exception
     {
-      System.out.println("start");
       main((String[])context.getArguments().get("application.args"));
-      return null;
+      return 0;
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -40,6 +41,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.ECollections;
@@ -50,6 +52,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.justj.codegen.model.Copyrightable;
 import org.eclipse.justj.codegen.model.JVM;
 import org.eclipse.justj.codegen.model.Model;
@@ -77,8 +81,13 @@ public class Reconciler
     ModelPackage.eINSTANCE.eClass();
     Path path = Paths.get(args[0]);
     Path realPath = path.toRealPath();
+    System.out.println("Reconciling: " + realPath);
     Reconciler reconciler = new Reconciler(URI.createFileURI(realPath.toString()));
-    reconciler.reconcile(null);
+    Model reconciledModel = reconciler.reconcile(new PrintingProgressMonitor());
+
+    Model model = reconciler.getModel();
+    EcoreUtil.replace(model, reconciledModel);
+    reconciledModel.eResource().save(Collections.singletonMap(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER));
   }
 
   public Reconciler(URI modelURI) throws IOException
@@ -348,14 +357,14 @@ public class Reconciler
         {
           for (Path executableFolder : executableFolders)
           {
-            String chmodTouchpointInstruction = "org.eclipse.equinox.p2.touchpoint.eclipse.chmod(targetDir:${artifact.location},targetFile:"
+            String chmodTouchpointInstruction = "org.eclipse.equinox.p2.touchpoint.eclipse.chmod(targetDir:${artifact.location},targetFile:jre/"
               + executableFolder.normalize().toString().replace('\\', '/') + ",permissions:+x,options:-R)";
             instructions.add(chmodTouchpointInstruction);
           }
 
           for (Path executableFile : executableFiles)
           {
-            String chmodTouchpointInstruction = "org.eclipse.equinox.p2.touchpoint.eclipse.chmod(targetDir:${artifact.location},targetFile:"
+            String chmodTouchpointInstruction = "org.eclipse.equinox.p2.touchpoint.eclipse.chmod(targetDir:${artifact.location},targetFile:jre/"
               + executableFile.normalize().toString().replace('\\', '/') + ",permissions:+x)";
             instructions.add(chmodTouchpointInstruction);
           }
@@ -704,5 +713,41 @@ public class Reconciler
     }
 
     return new int []{ Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)) };
+  }
+
+  public static class Application implements IApplication
+  {
+    @Override
+    public Object start(IApplicationContext context) throws Exception
+    {
+      main((String[])context.getArguments().get("application.args"));
+      return 0;
+    }
+
+    @Override
+    public void stop()
+    {
+    }
+  }
+
+  static class PrintingProgressMonitor extends NullProgressMonitor
+  {
+    @Override
+    public void beginTask(String name, int totalWork)
+    {
+      System.out.println("beginTask: " + name);
+    }
+
+    @Override
+    public void setTaskName(String name)
+    {
+      System.out.println("setTaskName: " + name);
+    }
+
+    @Override
+    public void subTask(String name)
+    {
+      System.out.println("subTask: " + name);
+    }
   }
 }
