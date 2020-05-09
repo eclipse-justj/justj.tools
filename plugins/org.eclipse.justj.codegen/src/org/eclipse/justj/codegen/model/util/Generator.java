@@ -228,8 +228,10 @@ public class Generator
         if (source != null)
         {
           SubMonitor untarMonitor = variantMonitor.split(1);
+          URI fetchURI = fragmentJRETarget.deresolve(target);
+          untarMonitor.subTask("Fetching " + fetchURI);
           Path sourceTarGZ = CodeGenUtil.getCache(localCache, uriConverter, URI.createURI(source));
-          untarMonitor.subTask("Untarring " + fragmentJRETarget.deresolve(target));
+          untarMonitor.subTask("Untarring " + fetchURI);
           URI jreFolder = CommonPlugin.resolve(fragmentJRETarget);
           if (jreFolder.isFile() && jreFolder.scheme() != null)
           {

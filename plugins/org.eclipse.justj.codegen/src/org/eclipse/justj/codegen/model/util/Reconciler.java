@@ -475,13 +475,14 @@ public class Reconciler
           {
             try
             {
+              monitor.subTask("Fetching " + originalSize + " JREs; starting " + jreURI);
               return CodeGenUtil.getCache(localCache, uriConverter, jreURI);
             }
             finally
             {
               synchronized (monitor)
               {
-                monitor.subTask("Fetcthing " + originalSize + " JREs; " + size.decrementAndGet() + " remaining");
+                monitor.subTask("Fetcthing " + originalSize + " JREs; " + size.decrementAndGet() + " remaining; finished " + jreURI);
                 monitor.worked(1);
               }
             }

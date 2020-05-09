@@ -76,9 +76,7 @@ public class CodeGenUtil
     {
       try (InputStream inputStream = uriConverter.createInputStream(uri))
       {
-        System.err.println("Start download: " + uri);
         Files.copy(inputStream, result);
-        System.err.println("Finish download: " + uri);
       }
     }
     return result;
