@@ -84,7 +84,7 @@ public class JREIndex
   protected static final String _57 = "<li><a href=\"https://www.eclipse.org/justj\">JustJ</a></li>";
   protected static final String _58 = "<li><a href=\"https://www.eclipse.org/projects/\">Projects</a></li>";
   protected static final String _59 = "<link href=\"//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100\" rel=\"stylesheet\" type=\"text/css\"/>";
-  protected static final String _60 = "<link rel=\"icon\" type=\"image/ico\" href=\"https://www.eclipse.org/justj/favicon.ico\"/>";
+  protected static final String _60 = "<link rel=\"icon\" type=\"image/ico\" href=\"https://www.eclipse.org/justj/justj_favicon.ico\"/>";
   protected static final String _61 = "<link rel=\"stylesheet\" href=\"https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css\"/>";
   protected static final String _62 = "<main class=\"no-promo\">";
   protected static final String _63 = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>";

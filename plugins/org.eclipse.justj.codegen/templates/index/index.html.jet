@@ -26,7 +26,7 @@ SPDX-License-Identifier: EPL-2.0
   <meta name="description" content="EMF's p2 Update Sites"/>
   <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" href="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css"/>
-  <link rel="icon" type="image/ico" href="https://www.eclipse.org/justj/favicon.ico"/>
+  <link rel="icon" type="image/ico" href="https://www.eclipse.org/justj/justj_favicon.ico"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
