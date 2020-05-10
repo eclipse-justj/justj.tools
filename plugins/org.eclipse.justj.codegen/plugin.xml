@@ -69,4 +69,17 @@
       </application>
    </extension>
 
+   <extension
+         id="jre.indexer"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.justj.codegen.model.util.Indexer$Application">
+         </run>
+      </application>
+   </extension>
+
 </plugin>

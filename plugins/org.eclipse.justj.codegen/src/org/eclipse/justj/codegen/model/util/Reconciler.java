@@ -238,7 +238,7 @@ public class Reconciler
 
     private final Set<Path> regularFiles = new TreeSet<>();
 
-    private final Map<Path, Path> symblicLinks = new TreeMap<>();
+    private final Map<Path, Path> symbolicLinks = new TreeMap<>();
 
     private final Properties properties;
 
@@ -268,7 +268,7 @@ public class Reconciler
     @Override
     public void handleSymbolicLink(Path path, Path linkPath)
     {
-      symblicLinks.put(path, linkPath);
+      symbolicLinks.put(path, linkPath);
     }
 
     public Variant reconcile(Model model)
@@ -330,7 +330,7 @@ public class Reconciler
                     {
                       allDescendants.add(otherPath);
                     }
-                    else if (!symblicLinks.containsKey(otherPath))
+                    else if (!symbolicLinks.containsKey(otherPath))
                     {
                       allDescendantsOfParentExecutable = false;
                       break;
@@ -432,7 +432,7 @@ public class Reconciler
           label = os;
           break;
         }
-      };
+      }
 
       switch (arch)
       {
@@ -506,17 +506,28 @@ public class Reconciler
       }
     }
 
+    Set<Path> cachePaths = new TreeSet<>();
     Map<URI, Path> result = jres.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry ->
       {
         try
         {
-          return entry.getValue().get();
+          Path cache = entry.getValue().get();
+          cachePaths.add(cache);
+          return cache;
         }
         catch (InterruptedException | ExecutionException e)
         {
           throw new RuntimeException(e);
         }
       }));
+
+    StringBuilder manifestContent = new StringBuilder();
+    cachePaths.stream().forEach(cachePath ->
+      {
+        manifestContent.append(cachePath.getFileName()).append('\n');
+      });
+
+    save(manifestContent.toString(), URI.createFileURI(this.localCache.toString()).appendSegment("justj.manifest"));
 
     return result;
   }

@@ -58,6 +58,13 @@ public class CodeGenUtil
     throw new RuntimeException("Not instantiable");
   }
 
+  public static String encodeFileName(URI uri)
+  {
+    String uriString = uri.toString();
+    String fileName = uriString.replace(':', '_').replace('/', '_').replace('?', '_').replace('#', '_').replace(';', '_').replace('&', '_');
+    return fileName;
+  }
+
   public static Path getCache(Path cacheFolder, URIConverter uriConverter, URI uri) throws IOException
   {
     if (cacheFolder == null)
@@ -69,8 +76,7 @@ public class CodeGenUtil
       Files.createDirectories(cacheFolder);
     }
 
-    String uriString = uri.toString();
-    String fileName = uriString.replace(':', '_').replace('/', '_').replace('?', '_').replace('#', '_').replace(';', '_').replace('&', '_');
+    String fileName = encodeFileName(uri);
     Path result = cacheFolder.resolve(fileName);
     if (!Files.isRegularFile(result))
     {
