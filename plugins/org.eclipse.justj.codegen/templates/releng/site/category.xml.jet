@@ -10,8 +10,7 @@ SPDX-License-Identifier: EPL-2.0
 --%>
 <%@jet package="org.eclipse.justj.codegen.templates.releng.site" class="CategoryXML" imports="org.eclipse.justj.codegen.model.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
 <%Model model = (Model)argument;
-  String name = model.getName();
-  String label = model.getLabel();%>
+  String name = model.getName();%>
 <?xml version="1.0" encoding="UTF-8"?>
 <%@include file="../../copyright.xml.jetinc"%>
 <site>
@@ -20,5 +19,7 @@ SPDX-License-Identifier: EPL-2.0
       <category name="<%=name%>.category"/>
    </feature>
 <%}%>
-   <category-def name="<%=name%>.category" label="<%=label%>"/>
+   <category-def name="<%=name%>.category" label="%categoryLabel">
+     <description>%categoryDescription</description>
+   </category-def>
 </site>

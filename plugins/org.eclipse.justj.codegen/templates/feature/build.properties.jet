@@ -12,4 +12,5 @@ SPDX-License-Identifier: EPL-2.0
 <%@include file="../copyright.properties.jetinc"%>
 
 bin.includes = feature.xml,\
-               feature.properties
+               feature.properties,\
+               p2.inf

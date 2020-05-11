@@ -11,6 +11,7 @@
 package org.eclipse.justj.codegen.templates.plugin;
 
 import org.eclipse.justj.codegen.model.*;
+import org.eclipse.justj.codegen.model.util.Generator;
 
 public class P2Inf
 {
@@ -34,13 +35,16 @@ public class P2Inf
   protected static final String _8 = ".name = ";
   protected static final String _9 = ".namespace = org.eclipse.equinox.p2.iu";
   protected static final String _10 = ".range = [$version$,$version$]";
-  protected static final String _11 = "requires.";
-  protected final String _12 = "";
-  protected final String _13 = NL + _1 + NL + _2 + NL;
-  protected final String _14 = NL + NL + _11;
-  protected final String _15 = _9 + NL + _11;
-  protected final String _16 = NL + _11;
-  protected final String _17 = _10 + NL + _11;
+  protected static final String _11 = "properties.0.name = org.eclipse.justj.model";
+  protected static final String _12 = "properties.0.value = ";
+  protected static final String _13 = "requires.";
+  protected final String _14 = "";
+  protected final String _15 = NL + _1 + NL + _2 + NL;
+  protected final String _16 = NL + NL + _13;
+  protected final String _17 = _9 + NL + _13;
+  protected final String _18 = NL + _13;
+  protected final String _19 = _10 + NL + _13;
+  protected final String _20 = NL + NL + _11 + NL + _12;
 
   public String generate(Object argument)
   {
@@ -50,17 +54,17 @@ public class P2Inf
   Model model = jvm.getModel();
   String modelName = model.getName();
   String fullName = modelName + '.' + jvmName;
-    builder.append(_12);
+    builder.append(_14);
     builder.append(org.eclipse.justj.codegen.model.util.Generator.getCopyright(argument, "# ", NL));
-    builder.append(_13);
+    builder.append(_15);
     int count = 0;
   for (Variant variant : jvm.getVariants()) {
     ++count;
     String os = variant.getOs();
     String arch = variant.getArch();
-    builder.append(_14);
+    builder.append(_16);
     builder.append(count);
-    builder.append(_15);
+    builder.append(_17);
     builder.append(count);
     builder.append(_8);
     builder.append(fullName);
@@ -68,9 +72,9 @@ public class P2Inf
     builder.append(os);
     builder.append(_5);
     builder.append(arch);
-    builder.append(_16);
+    builder.append(_18);
     builder.append(count);
-    builder.append(_17);
+    builder.append(_19);
     builder.append(count);
     builder.append(_7);
     builder.append(os);
@@ -80,6 +84,8 @@ public class P2Inf
     builder.append(modelName);
     builder.append(_6);
     }
+    builder.append(_20);
+    builder.append(Generator.getModelXMLAsPropertyValue(jvm, NL));
     builder.append(NL);
     return builder.toString();
   }

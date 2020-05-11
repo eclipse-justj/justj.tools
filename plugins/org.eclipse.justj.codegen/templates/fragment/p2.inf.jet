@@ -27,3 +27,5 @@ instructions.<%=phase%> = \
   <%}%>
 
 <%}%>
+properties.0.name = org.eclipse.justj.model
+properties.0.value = <%=Generator.getModelXMLAsPropertyValue(variant, NL)%>

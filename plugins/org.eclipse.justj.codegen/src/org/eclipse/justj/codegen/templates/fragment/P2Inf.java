@@ -32,22 +32,25 @@ public class P2Inf
   protected static final String _3 = ";";
   protected static final String _4 = "\\";
   protected static final String _5 = "instructions.";
+  protected static final String _6 = "properties.0.name = org.eclipse.justj.model";
+  protected static final String _7 = "properties.0.value = ";
   protected final String NL_1 = NL + "  ";
-  protected final String _6 = "";
-  protected final String _7 = NL + _2 + NL;
-  protected final String _8 = NL + _5;
+  protected final String _8 = "";
+  protected final String _9 = NL + _2 + NL;
+  protected final String _10 = NL + _5;
+  protected final String _11 = NL + _6 + NL + _7;
 
   public String generate(Object argument)
   {
     final StringBuilder builder = new StringBuilder();
     Variant variant = (Variant)argument;
-    builder.append(_6);
+    builder.append(_8);
     builder.append(org.eclipse.justj.codegen.model.util.Generator.getCopyright(argument, "# ", NL));
-    builder.append(_7);
+    builder.append(_9);
     Map<String, Set<String>> touchpoints = Generator.getTouchpoints(variant);
   for (Map.Entry<String, Set<String>> entry : touchpoints.entrySet()) {
     String phase = entry.getKey();
-    builder.append(_8);
+    builder.append(_10);
     builder.append(phase);
     builder.append(_1);
     for (Iterator<String> it = entry.getValue().iterator(); it.hasNext();) {
@@ -61,6 +64,8 @@ public class P2Inf
     }
     builder.append(NL);
     }
+    builder.append(_11);
+    builder.append(Generator.getModelXMLAsPropertyValue(variant, NL));
     return builder.toString();
   }
 }

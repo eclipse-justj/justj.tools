@@ -15,11 +15,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,10 +34,13 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.resource.URIConverter.WriteableOutputStream;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.justj.codegen.model.Copyrightable;
@@ -125,7 +133,7 @@ public class Generator
     SubMonitor modelMonitor = overallMonitor.split(1);
     modelMonitor.setWorkRemaining(9);
 
-    modelMonitor.beginTask("Generate Model Resources " + target, 5);
+    modelMonitor.beginTask("Generate Model Resources " + target, 6);
 
     String name = model.getName();
     modelMonitor.subTask("Generating .gitignore");
@@ -136,6 +144,7 @@ public class Generator
     save(org.eclipse.justj.codegen.templates.releng.site.ProjectXML.create(null).generate(model), siteTarget.appendSegment(".project"), modelMonitor.split(1));
     save(org.eclipse.justj.codegen.templates.releng.site.CategoryXML.create(null).generate(model), siteTarget.appendSegment("category.xml"), modelMonitor.split(1));
     save(org.eclipse.justj.codegen.templates.releng.site.POMXML.create(null).generate(model), siteTarget.appendSegment("pom.xml"), modelMonitor.split(1));
+    save(org.eclipse.justj.codegen.templates.releng.site.SiteProperties.create(null).generate(model), siteTarget.appendSegment("site.properties"), modelMonitor.split(1));
 
     URI parentTarget = target.appendSegment("releng").appendSegment(name + ".parent");
     save(org.eclipse.justj.codegen.templates.releng.parent.ProjectXML.create(null).generate(model), parentTarget.appendSegment(".project"), modelMonitor.split(1));
@@ -159,7 +168,7 @@ public class Generator
       SubMonitor jvmMonitor = overallMonitor.split(1);
 
       EList<Variant> variants = jvm.getVariants();
-      jvmMonitor.setWorkRemaining(variants.size() + 17);
+      jvmMonitor.setWorkRemaining(variants.size() + 18);
 
       String jvmName = jvm.getName();
       URI featureTarget = target.appendSegment("features").appendSegment(name + "." + jvmName + "-feature");
@@ -167,6 +176,7 @@ public class Generator
       save(org.eclipse.justj.codegen.templates.feature.BuildProperties.create(null).generate(jvm), featureTarget.appendSegment("build.properties"), jvmMonitor.split(1));
       save(org.eclipse.justj.codegen.templates.feature.FeatureProperties.create(null).generate(jvm), featureTarget.appendSegment("feature.properties"), jvmMonitor.split(1));
       save(org.eclipse.justj.codegen.templates.feature.FeatureXML.create(null).generate(jvm), featureTarget.appendSegment("feature.xml"), jvmMonitor.split(1));
+      save(org.eclipse.justj.codegen.templates.feature.P2Inf.create(null).generate(jvm), featureTarget.appendSegment("p2.inf"), jvmMonitor.split(1));
       save(org.eclipse.justj.codegen.templates.feature.POMXML.create(null).generate(jvm), featureTarget.appendSegment("pom.xml"), jvmMonitor.split(1));
 
       URI pluginTarget = target.appendSegment("plugins").appendSegment(name + "." + jvmName);
@@ -428,6 +438,71 @@ public class Generator
     }
 
     return result;
+  }
+
+  public static String getModelXMLAsPropertyValue(EObject eObject, String nl)
+  {
+    try (StringWriter stringWriter = new StringWriter(); WriteableOutputStream writeableOutputStream = new URIConverter.WriteableOutputStream(stringWriter, "UTF-8"))
+    {
+      Resource resource = new ModelResourceFactoryImpl().createResource(URI.createURI("dummy.jregen"));
+      EObject copy = EcoreUtil.copy(eObject);
+      List<EObject> childrenToDelete = new ArrayList<>();
+      for (EObject child : copy.eContents())
+      {
+        if (child instanceof Copyrightable)
+        {
+          childrenToDelete.add(child);
+        }
+      }
+
+      EcoreUtil.deleteAll(childrenToDelete, false);
+
+      resource.getContents().add(copy);
+
+      resource.save(writeableOutputStream, null);
+      String modelXML = stringWriter.toString();
+      String normalizedXML = modelXML.replaceAll("\r?\n", "\n");
+
+      Properties properties = new Properties();
+      properties.put("value", normalizedXML);
+
+      StringWriter propertiesValue = new StringWriter();
+      properties.store(propertiesValue, null);
+      String value = propertiesValue.toString();
+      value = value.substring(value.indexOf('=') + 1);
+
+      String transformedValue = value.replace("\\=", "=").replace("\\:", ":");
+
+      Matcher matcher = Pattern.compile("\\\\n(.)").matcher(transformedValue);
+      StringBuffer result = new StringBuffer();
+      while (matcher.find())
+      {
+        String trailingCharacter = matcher.group(1);
+        if (" ".equals(trailingCharacter))
+        {
+          matcher.appendReplacement(result, Matcher.quoteReplacement("\\n\\" + nl + "\\" + trailingCharacter));
+        }
+        else if (!"\\".equals(trailingCharacter))
+        {
+          matcher.appendReplacement(result, Matcher.quoteReplacement("\\n\\" + nl + " " + trailingCharacter));
+        }
+      }
+      matcher.appendTail(result);
+
+      Properties properties2 = new Properties();
+      properties2.load(new StringReader("value=" + result));
+      String foo = properties2.getProperty("value");
+      if (!foo.equals(normalizedXML))
+      {
+        System.err.println("####!!!!");
+      }
+
+      return result.toString();
+    }
+    catch (IOException exception)
+    {
+      throw new RuntimeException(exception);
+    }
   }
 
   public static class Application implements IApplication

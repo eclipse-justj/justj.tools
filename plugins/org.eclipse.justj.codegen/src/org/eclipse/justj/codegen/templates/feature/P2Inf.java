@@ -10,32 +10,35 @@
  */
 package org.eclipse.justj.codegen.templates.feature;
 
-public class BuildProperties
+import org.eclipse.justj.codegen.model.*;
+import org.eclipse.justj.codegen.model.util.Generator;
+
+public class P2Inf
 {
   protected static String nl;
-  public static synchronized BuildProperties create(String lineSeparator)
+  public static synchronized P2Inf create(String lineSeparator)
   {
     nl = lineSeparator;
-    BuildProperties result = new BuildProperties();
+    P2Inf result = new P2Inf();
     nl = null;
     return result;
   }
 
   public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected static final String _1 = "#";
-  protected static final String _2 = "bin.includes = feature.xml,\\";
-  protected static final String _3 = "feature.properties,\\";
-  protected static final String _4 = "p2.inf";
-  protected final String NL_1 = NL + "               ";
-  protected final String _5 = "";
-  protected final String _6 = NL + _1 + NL + NL + _2 + NL_1 + _3 + NL_1 + _4;
+  protected static final String _2 = "properties.0.name = org.eclipse.justj.model";
+  protected static final String _3 = "properties.0.value = ";
+  protected final String _4 = "";
+  protected final String _5 = NL + _1 + NL + NL + _2 + NL + _3;
 
   public String generate(Object argument)
   {
     final StringBuilder builder = new StringBuilder();
-    builder.append(_5);
+    JVM jvm = (JVM)argument;
+    builder.append(_4);
     builder.append(org.eclipse.justj.codegen.model.util.Generator.getCopyright(argument, "# ", NL));
-    builder.append(_6);
+    builder.append(_5);
+    builder.append(Generator.getModelXMLAsPropertyValue(jvm, NL));
     builder.append(NL);
     return builder.toString();
   }

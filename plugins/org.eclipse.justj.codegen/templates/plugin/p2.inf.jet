@@ -8,7 +8,7 @@ https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
 --%>
-<%@jet package="org.eclipse.justj.codegen.templates.plugin" class="P2Inf" imports="org.eclipse.justj.codegen.model.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%@jet package="org.eclipse.justj.codegen.templates.plugin" class="P2Inf" imports="org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
 <%JVM jvm = (JVM)argument;
   String jvmName = jvm.getName();
   Model model = jvm.getModel();
@@ -28,3 +28,6 @@ requires.<%=count%>.name = <%=fullName%>.<%=os%>.<%=arch%>
 requires.<%=count%>.range = [$version$,$version$]
 requires.<%=count%>.filter = (&(osgi.os=<%=os%>)(osgi.arch=<%=arch%>)(!(<%=modelName%>.buildtime=true)))
 <%}%>
+
+properties.0.name = org.eclipse.justj.model
+properties.0.value = <%=Generator.getModelXMLAsPropertyValue(jvm, NL)%>

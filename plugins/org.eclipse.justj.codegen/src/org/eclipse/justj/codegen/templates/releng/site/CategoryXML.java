@@ -26,53 +26,52 @@ public class CategoryXML
   public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected static final String _1 = "-->";
   protected static final String _2 = ".";
-  protected static final String _3 = ".category\" label=\"";
+  protected static final String _3 = ".category\" label=\"%categoryLabel\">";
   protected static final String _4 = ".category\"/>";
   protected static final String _5 = "<!--";
-  protected static final String _6 = "</feature>";
-  protected static final String _7 = "</site>";
-  protected static final String _8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-  protected static final String _9 = "<category name=\"";
-  protected static final String _10 = "<category-def name=\"";
-  protected static final String _11 = "<feature id=\"";
-  protected static final String _12 = "<site>";
-  protected static final String _13 = "\"/>";
-  protected static final String _14 = "\">";
+  protected static final String _6 = "</category-def>";
+  protected static final String _7 = "</feature>";
+  protected static final String _8 = "</site>";
+  protected static final String _9 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+  protected static final String _10 = "<category name=\"";
+  protected static final String _11 = "<category-def name=\"";
+  protected static final String _12 = "<description>%categoryDescription</description>";
+  protected static final String _13 = "<feature id=\"";
+  protected static final String _14 = "<site>";
+  protected static final String _15 = "\">";
   protected final String NL_1 = NL + "   ";
-  protected final String NL_2 = NL + "      ";
-  protected final String _15 = NL + _1 + NL + _12;
-  protected final String _16 = NL_1 + _11;
-  protected final String _17 = _14 + NL_2 + _9;
-  protected final String _18 = _4 + NL_1 + _6;
-  protected final String _19 = NL_1 + _10;
-  protected final String _20 = _13 + NL + _7;
+  protected final String NL_2 = NL + "     ";
+  protected final String NL_3 = NL + "      ";
+  protected final String _16 = NL + _1 + NL + _14;
+  protected final String _17 = NL_1 + _13;
+  protected final String _18 = _15 + NL_3 + _10;
+  protected final String _19 = _4 + NL_1 + _7;
+  protected final String _20 = NL_1 + _11;
+  protected final String _21 = _3 + NL_2 + _12 + NL_1 + _6 + NL + _8;
 
   public String generate(Object argument)
   {
     final StringBuilder builder = new StringBuilder();
     Model model = (Model)argument;
   String name = model.getName();
-  String label = model.getLabel();
-    builder.append(_8);
+    builder.append(_9);
     builder.append(NL);
     builder.append(_5);
     builder.append(NL);
     builder.append(org.eclipse.justj.codegen.model.util.Generator.getCopyright(argument, "", NL));
-    builder.append(_15);
-    for (JVM jvm : model.getJVMs()) {
     builder.append(_16);
+    for (JVM jvm : model.getJVMs()) {
+    builder.append(_17);
     builder.append(name);
     builder.append(_2);
     builder.append(jvm.getName());
-    builder.append(_17);
-    builder.append(name);
     builder.append(_18);
-    }
-    builder.append(_19);
     builder.append(name);
-    builder.append(_3);
-    builder.append(label);
+    builder.append(_19);
+    }
     builder.append(_20);
+    builder.append(name);
+    builder.append(_21);
     builder.append(NL);
     return builder.toString();
   }
