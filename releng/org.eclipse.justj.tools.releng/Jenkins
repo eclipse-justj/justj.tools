@@ -1,0 +1,31 @@
+pipeline {
+  agent { label 'migration' }
+  
+   options {
+    buildDiscarder(logRotator(numToKeepStr: '10'))
+    disableConcurrentBuilds()
+  }
+
+  environment {
+    BUILD_TIMESTAMP = sh(returnStdout: true, script: 'date +%Y%m%d%H%M%S').trim()
+  }
+  
+  parameters {
+    choice(
+      name: 'BUILD_TYPE',
+      choices: ['nightly', 'milestone', 'release'],
+      description: '''
+        This is the description.
+        ''')
+  }
+
+  stages {
+    stage('Test') {
+      steps {
+        echo "BUILD_TYPE=${params.BUILD_TYPE}"
+        echo "BUILD_TYPE2=${BUILD_TYPE}"
+        echo "BUILD_TIME_STAMP=${BUILD_TIMESTAMP}"
+      }
+    }
+  }
+}
