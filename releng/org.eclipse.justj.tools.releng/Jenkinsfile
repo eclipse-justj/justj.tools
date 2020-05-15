@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PUBLISH_LOCATION = 'sandbox-test2/tools/updates'
+    PUBLISH_LOCATION = 'sandbox/tools/updates'
   }
 
   parameters {
