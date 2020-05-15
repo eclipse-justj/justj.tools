@@ -31,6 +31,7 @@ SPDX-License-Identifier: EPL-2.0
     <module>../../../plugins/org.eclipse.justj.codegen</module>
     <module>../../../plugins/org.eclipse.justj.codegen.edit</module>
     <module>../../../plugins/org.eclipse.justj.codegen.editor</module>
+    <module>../../../plugins/org.eclipse.justj.p2</module>
     <module>../../../plugins/org.eclipse.justj.tools</module>
   </modules>
 
