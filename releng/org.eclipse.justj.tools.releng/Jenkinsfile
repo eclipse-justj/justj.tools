@@ -23,7 +23,6 @@ pipeline {
     stage('Test') {
       steps {
         echo "BUILD_TYPE=${params.BUILD_TYPE}"
-        echo "BUILD_TYPE2=${BUILD_TYPE}"
         echo "BUILD_TIME_STAMP=${BUILD_TIMESTAMP}"
       }
     }
