@@ -12,6 +12,10 @@ pipeline {
     jdk 'oracle-jdk8-latest'
   }
 
+  environment {
+    PUBLISH_LOCATION = 'sandbox-test2/tools/updates'
+  }
+
   parameters {
     choice(
       name: 'BUILD_TYPE',
@@ -43,6 +47,7 @@ pipeline {
         echo "REFRESH_PARAMETERS=${params.REFRESH_PARAMETERS}"
         script {
           env.PROMOTE = params.PROMOTE
+          env.BUILD_TYPE = params.BUILD_TYPE
         }
       }
     }
@@ -81,15 +86,10 @@ pipeline {
         sshagent(['projects-storage.eclipse.org-bot-ssh']) {
           dir('justj.tools') {
             sh '''
-              ssh genie.justj@projects-storage.eclipse.org "
-              mkdir -p /home/data/httpd/download.eclipse.org/justj/sandbox-test
-              ls -al /home/data/httpd/download.eclipse.org/justj/sandbox-test
-              "
-              ls
               if [[ $PROMOTE == false ]]; then
                 promotion_argument='-Dorg.eclipse.justj.p2.manager.args='
               fi
-              mvn $promotion_argument -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
+              mvn $promotion_argument -Dorg.eclipse.justj.p2.manager.relative=$PUBLISH_LOCATION -Dbuild.type=$BUILD_TYPE -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
               '''
           }
         }
