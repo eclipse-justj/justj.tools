@@ -80,12 +80,11 @@ pipeline {
       steps {
         sshagent(['projects-storage.eclipse.org-bot-ssh']) {
           dir('justj.tools') {
-            ssh genie.justj@projects-storage.eclipse.org "
-            mkdir -p /home/data/httpd/download.eclipse.org/justj/sandbox-test
-            ls -al /home/data/httpd/download.eclipse.org/justj/sandbox-test
-            "
             sh '''
-              ssh mkdir -p /home/data/httpd/download.eclipse.org/justj/sandbox/jres/$JUSTJ_BUILD_TIME_STAMP
+              ssh genie.justj@projects-storage.eclipse.org "
+              mkdir -p /home/data/httpd/download.eclipse.org/justj/sandbox-test
+              ls -al /home/data/httpd/download.eclipse.org/justj/sandbox-test
+              "
               ls
               if [[ $PROMOTE == false ]]; then
                 promotion_argument='-Dorg.eclipse.justj.p2.manager.args='
