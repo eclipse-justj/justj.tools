@@ -1,29 +1,105 @@
 pipeline {
   agent { label 'migration' }
-  
+
    options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
     disableConcurrentBuilds()
+    skipDefaultCheckout true
   }
 
-  environment {
-    BUILD_TIMESTAMP = sh(returnStdout: true, script: 'date +%Y%m%d%H%M%S').trim()
+  tools {
+    maven 'apache-maven-latest'
+    jdk 'oracle-jdk8-latest'
   }
-  
+
   parameters {
     choice(
       name: 'BUILD_TYPE',
       choices: ['nightly', 'milestone', 'release'],
       description: '''
-        This is the description.
-        ''')
+        Choose the type of build.
+        Note that a release build will not promote the build, but rather will promote the most recent milestone build.
+        '''
+    )
+
+    booleanParam(
+      name: 'PROMOTE',
+      defaultValue: false,
+      description: 'Whether to promote the build to the download server.'
+    )
+
+    booleanParam(
+      name: 'REFRESH_PARAMETERS',
+      defaultValue: false,
+      description: 'Do nothing other than reload the pipeline script in order to update the parameters.'
+    )
   }
 
   stages {
-    stage('Test') {
+    stage('Display Parameters') {
       steps {
         echo "BUILD_TYPE=${params.BUILD_TYPE}"
-        echo "BUILD_TIME_STAMP=${BUILD_TIMESTAMP}"
+        echo "PROMOTE=${params.PROMOTE}"
+        echo "REFRESH_PARAMETERS=${params.REFRESH_PARAMETERS}"
+        script {
+          env.PROMOTE = params.PROMOTE
+        }
+      }
+    }
+
+    stage('Git Checkout') {
+      when {
+        not { expression { return params.REFRESH_PARAMETERS } }
+      }
+
+      steps {
+        script {
+          def gitVariables = checkout(
+            poll: false,
+            scm: [
+              $class: 'GitSCM',
+              branches: [[name: '*/master']],
+              doGenerateSubmoduleConfigurations: false,
+              extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'justj.tools']],
+              submoduleCfg: [],
+              userRemoteConfigs: [[url: 'git://git.eclipse.org/gitroot/justj/justj.tools.git']]
+            ]
+          )
+
+          echo "$gitVariables"
+          env.GIT_COMMIT = gitVariables.GIT_COMMIT
+        }
+      }
+    }
+
+    stage('Build Tools') {
+      when {
+        not { expression { return params.REFRESH_PARAMETERS } }
+      }
+
+      steps {
+        sshagent(['projects-storage.eclipse.org-bot-ssh']) {
+          dir('justj.tools') {
+            ssh genie.justj@projects-storage.eclipse.org "
+            mkdir -p /home/data/httpd/download.eclipse.org/justj/sandbox-test
+            ls -al /home/data/httpd/download.eclipse.org/justj/sandbox-test
+            "
+            sh '''
+              ssh mkdir -p /home/data/httpd/download.eclipse.org/justj/sandbox/jres/$JUSTJ_BUILD_TIME_STAMP
+              ls
+              if [[ $PROMOTE == false ]]; then
+                promotion_argument='-Dorg.eclipse.justj.p2.manager.args='
+              fi
+              mvn $promotion_argument -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
+              '''
+          }
+        }
+      }
+    }
+
+    stage('Archive Results') {
+      steps {
+        archiveArtifacts 'justj.tools/**'
       }
     }
   }

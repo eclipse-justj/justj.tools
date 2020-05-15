@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.Assert;
@@ -909,10 +910,12 @@ public class P2Manager
 
       try
       {
-        process.waitFor();
+        process.waitFor(2, TimeUnit.MINUTES);
       }
       catch (InterruptedException exception)
       {
+        System.err.println("Interrupted");
+        fullDump();
         Thread.currentThread().interrupt();
       }
     }

@@ -16,7 +16,7 @@ SPDX-License-Identifier: EPL-2.0
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <title><%=title%>%></title>
+  <title><%=title%></title>
   <meta name="keywords" content="eclipse,<%=title.toLowerCase()%>"/>
   <meta name="description" content="<%=title%> p2 Update Sites"/>
   <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100" rel="stylesheet" type="text/css"/>
