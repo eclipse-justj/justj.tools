@@ -116,7 +116,7 @@ SPDX-License-Identifier: EPL-2.0
       <div id="maincontent">
         <h2 style=""><%=title%> - <%=folderName%></h2>
       These JREs were created using jlink:
-      <pre style="margin-top: 5px;">jlink --add-modules=$org.eclipse.justj.modules $org.eclipse.justj.args</pre>
+      <pre style="margin-top: 5px;">jlink --add-modules=$org.eclipse.justj.modules $org.eclipse.justj.jlink.args</pre>
       Each JRE below has been tested by using it to launch Eclipse and recording the key system properties.
       The recorded properties are displayed in the details for each JRE below,
       including the properties used to invoke jlink.

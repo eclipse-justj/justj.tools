@@ -175,7 +175,7 @@ public class ModelModelWizard extends Wizard implements INewWizard
     if (initialObjectNames == null)
     {
       initialObjectNames = new ArrayList<String>();
-      initialObjectNames.add("JRE Generator Model");
+      initialObjectNames.add(ModelPackage.Literals.MODEL.getName());
       Collections.sort(initialObjectNames, CommonPlugin.INSTANCE.getComparator());
     }
     return initialObjectNames;

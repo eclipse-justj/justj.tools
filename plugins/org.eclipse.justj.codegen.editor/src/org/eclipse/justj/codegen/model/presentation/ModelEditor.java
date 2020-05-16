@@ -102,6 +102,8 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -956,7 +958,7 @@ public class ModelEditor extends MultiPageEditorPart implements IEditingDomainPr
    * <!-- end-user-doc -->
    * @generated
    */
-  protected void createContextMenuFor(StructuredViewer viewer)
+  private void createContextMenuForGen(StructuredViewer viewer)
   {
     MenuManager contextMenu = new MenuManager("#PopUp");
     contextMenu.add(new Separator("additions"));
@@ -970,6 +972,29 @@ public class ModelEditor extends MultiPageEditorPart implements IEditingDomainPr
     Transfer[] transfers = new Transfer []{ LocalTransfer.getInstance(), LocalSelectionTransfer.getTransfer(), FileTransfer.getInstance() };
     viewer.addDragSupport(dndOperations, transfers, new ViewerDragAdapter(viewer));
     viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
+  }
+
+  protected void createContextMenuFor(StructuredViewer viewer)
+  {
+    createContextMenuForGen(viewer);
+    viewer.getControl().addMouseListener(new MouseAdapter()
+      {
+        @Override
+        public void mouseDoubleClick(MouseEvent event)
+        {
+          if (event.button == 1)
+          {
+            try
+            {
+              getEditorSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+            }
+            catch (PartInitException exception)
+            {
+              ModelEditorPlugin.INSTANCE.log(exception);
+            }
+          }
+        }
+      });
   }
 
   /**

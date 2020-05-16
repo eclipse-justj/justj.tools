@@ -276,7 +276,7 @@ public class Reconciler
       String jreName = properties.getProperty("org.eclipse.justj.name");
       String label = properties.getProperty("org.eclipse.justj.label");
 
-      String javaVersion = properties.getProperty("java.version");
+      String javaVersion = getCleanVersion(properties.getProperty("java.version"));
 
       JVM jvm = getJVM(model, jreName, javaVersion);
       jvm.setLabel(label);
@@ -712,6 +712,26 @@ public class Reconciler
     }
 
     return result;
+  }
+
+  private static Pattern CLEAN_VERSION_PATTERN = Pattern.compile("([0-9]+)(?:\\.([0-9]+)(?:\\.([0-9]+))?)?(.*)");
+
+  private static String getCleanVersion(String version)
+  {
+    Matcher matcher = CLEAN_VERSION_PATTERN.matcher(version);
+    if (!matcher.matches())
+    {
+      throw new IllegalArgumentException("Invalid version " + version);
+    }
+
+    String major = matcher.group(1);
+    String minor = matcher.group(2);
+    String micro = matcher.group(3);
+
+    int majorValue = Integer.parseInt(major);
+    int minorValue = minor == null ? 0 : Integer.parseInt(minor);
+    int microValue = micro == null ? 0 : Integer.parseInt(micro);
+    return majorValue + "." + minorValue + "." + microValue;
   }
 
   private static Pattern VERSION_PATTERN = Pattern.compile("([0-9]+)\\.([0-9]+)\\.([0-9]+)");

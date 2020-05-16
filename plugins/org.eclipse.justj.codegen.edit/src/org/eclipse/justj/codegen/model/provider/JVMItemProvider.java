@@ -251,7 +251,8 @@ public class JVMItemProvider extends CopyrightableItemProvider
     JVM jvm = (JVM)object;
     String name = jvm.getName();
     String label = jvm.getLabel();
-    return "" + name + " - " + label;
+    String version = jvm.getVersion();
+    return "" + name + " - " + version + " - " + label;
   }
 
   /**

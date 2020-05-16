@@ -90,7 +90,7 @@ public class JREIndex
   protected static final String _63 = "<meta name=\"description\" content=\"JustJ's Java Runtime Environment downloads\"/>";
   protected static final String _64 = "<meta name=\"keywords\" content=\"eclipse,justj\"/>";
   protected static final String _65 = "<ol class=\"breadcrumb\">";
-  protected static final String _66 = "<pre style=\"margin-top: 5px;\">jlink --add-modules=$org.eclipse.justj.modules $org.eclipse.justj.args</pre>";
+  protected static final String _66 = "<pre style=\"margin-top: 5px;\">jlink --add-modules=$org.eclipse.justj.modules $org.eclipse.justj.jlink.args</pre>";
   protected static final String _67 = "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>";
   protected static final String _68 = "<section class=\"hidden-print default-breadcrumbs\" id=\"breadcrumb\">";
   protected static final String _69 = "<span style=\"text-align: right;\">";
