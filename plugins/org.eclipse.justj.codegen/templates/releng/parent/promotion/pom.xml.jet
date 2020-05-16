@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<%--
 Copyright (c) 2020 Eclipse contributors and others.
 
 This program and the accompanying materials
@@ -8,7 +7,12 @@ which accompanies this distribution, and is available at
 https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
--->
+--%>
+<%@jet package="org.eclipse.justj.codegen.templates.releng.parent.promotion" class="POMXML" imports="org.eclipse.justj.codegen.model.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%Model model = (Model)argument;
+  String name = model.getName();%>
+<?xml version="1.0" encoding="UTF-8"?>
+<%@include file="../../../copyright.xml.jetinc"%>
 <project
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -16,23 +20,23 @@ SPDX-License-Identifier: EPL-2.0
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.eclipse.justj</groupId>
-    <artifactId>org.eclipse.justj.tools.parent</artifactId>
+    <groupId><%=name%></groupId>
+    <artifactId><%=name%>.parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
-  <groupId>org.eclipse.justj</groupId>
-  <artifactId>org.eclipse.justj.promote</artifactId>
+  <groupId><%=name%></groupId>
+  <artifactId><%=name%>.promote</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
     <eclipse.repo>https://download.eclipse.org/releases/2020-06</eclipse.repo>
-    <justj.tools.repo>${project.baseUri}../../org.eclipse.justj.tools.site/target/repository</justj.tools.repo>
+    <justj.tools.repo>https://download.eclipse.org/justj/sandbox/tools/updates/nightly/latest</justj.tools.repo>
     <org.eclipse.storage.user>genie.justj</org.eclipse.storage.user>
     <org.eclipse.justj.p2.manager.args>-remote ${org.eclipse.storage.user}@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/justj</org.eclipse.justj.p2.manager.args>
-    <org.eclipse.justj.p2.manager.relative>sandbox-test/tools/updates</org.eclipse.justj.p2.manager.relative>
+    <org.eclipse.justj.p2.manager.relative>sandbox-test/jres/updates</org.eclipse.justj.p2.manager.relative>
     <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
     <org.eclipse.justj.p2.manager.build.url>http://www.example.com/</org.eclipse.justj.p2.manager.build.url>
     <build.type>nightly</build.type>
@@ -85,16 +89,16 @@ SPDX-License-Identifier: EPL-2.0
                 -nosplash
                 ${org.eclipse.justj.p2.manager.args}
                 -retain 5
-                -label "JustJ Tools"
+                -label "JustJ JREs"
                 -build-url ${org.eclipse.justj.p2.manager.build.url}
                 -root ${project.build.directory}/justj-sync
                 -relative ${org.eclipse.justj.p2.manager.relative}
                 -target-url https://download.eclipse.org/justj
-                -promote ${project.basedir}/../../org.eclipse.justj.tools.site/target/repository
+                -promote ${project.basedir}/../../org.eclipse.justj.site/target/repository
                 -timestamp ${build.timestamp}
                 -type ${build.type}
                 -breadcrumb "JustJ https://www.eclipse.org/justj/?page=download"
-                -breadcrumb "Tools"
+                -breadcrumb "JREs"
                 -favicon https://www.eclipse.org/justj/justj_favicon.ico
                 -title-image https://www.eclipse.org/justj/justj_title.svg
                 -body-image https://www.eclipse.org/justj/justj_incubation.svg
@@ -103,7 +107,6 @@ SPDX-License-Identifier: EPL-2.0
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 

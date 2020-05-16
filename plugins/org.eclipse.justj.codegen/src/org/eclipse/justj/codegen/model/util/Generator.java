@@ -133,7 +133,7 @@ public class Generator
     SubMonitor modelMonitor = overallMonitor.split(1);
     modelMonitor.setWorkRemaining(9);
 
-    modelMonitor.beginTask("Generate Model Resources " + target, 6);
+    modelMonitor.beginTask("Generate Model Resources " + target, 7);
 
     String name = model.getName();
     modelMonitor.subTask("Generating .gitignore");
@@ -158,6 +158,11 @@ public class Generator
     save(
       org.eclipse.justj.codegen.templates.releng.parent.plugins.POMXML.create(null).generate(model),
       parentTarget.appendSegment("plugins").appendSegment("pom.xml"),
+      modelMonitor.split(1));
+
+    save(
+      org.eclipse.justj.codegen.templates.releng.parent.promotion.POMXML.create(null).generate(model),
+      parentTarget.appendSegment("promotion").appendSegment("pom.xml"),
       modelMonitor.split(1));
 
     String aboutURL = model.getAboutURL();
