@@ -11,10 +11,18 @@
 package org.eclipse.justj.codegen.model.impl;
 
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.Copyrightable;
 import org.eclipse.justj.codegen.model.ModelPackage;
 
@@ -27,6 +35,7 @@ import org.eclipse.justj.codegen.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link org.eclipse.justj.codegen.model.impl.CopyrightableImpl#getAnnotations <em>Annotations</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.CopyrightableImpl#getCopyrightHolder <em>Copyright Holder</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.CopyrightableImpl#getCopyrightYear <em>Copyright Year</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.CopyrightableImpl#getCopyrightText <em>Copyright Text</em>}</li>
@@ -36,6 +45,16 @@ import org.eclipse.justj.codegen.model.ModelPackage;
  */
 public abstract class CopyrightableImpl extends MinimalEObjectImpl.Container implements Copyrightable
 {
+  /**
+   * The cached value of the '{@link #getAnnotations() <em>Annotations</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAnnotations()
+   * @generated
+   * @ordered
+   */
+  protected EList<Annotation> annotations;
+
   /**
    * The default value of the '{@link #getCopyrightHolder() <em>Copyright Holder</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -115,6 +134,21 @@ public abstract class CopyrightableImpl extends MinimalEObjectImpl.Container imp
   protected EClass eStaticClass()
   {
     return ModelPackage.Literals.COPYRIGHTABLE;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<Annotation> getAnnotations()
+  {
+    if (annotations == null)
+    {
+      annotations = new EObjectContainmentEList<Annotation>(Annotation.class, this, ModelPackage.COPYRIGHTABLE__ANNOTATIONS);
+    }
+    return annotations;
   }
 
   /**
@@ -204,10 +238,28 @@ public abstract class CopyrightableImpl extends MinimalEObjectImpl.Container imp
    * @generated
    */
   @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case ModelPackage.COPYRIGHTABLE__ANNOTATIONS:
+        return ((InternalEList<?>)getAnnotations()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
     {
+      case ModelPackage.COPYRIGHTABLE__ANNOTATIONS:
+        return getAnnotations();
       case ModelPackage.COPYRIGHTABLE__COPYRIGHT_HOLDER:
         return getCopyrightHolder();
       case ModelPackage.COPYRIGHTABLE__COPYRIGHT_YEAR:
@@ -223,11 +275,16 @@ public abstract class CopyrightableImpl extends MinimalEObjectImpl.Container imp
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
+      case ModelPackage.COPYRIGHTABLE__ANNOTATIONS:
+        getAnnotations().clear();
+        getAnnotations().addAll((Collection<? extends Annotation>)newValue);
+        return;
       case ModelPackage.COPYRIGHTABLE__COPYRIGHT_HOLDER:
         setCopyrightHolder((String)newValue);
         return;
@@ -251,6 +308,9 @@ public abstract class CopyrightableImpl extends MinimalEObjectImpl.Container imp
   {
     switch (featureID)
     {
+      case ModelPackage.COPYRIGHTABLE__ANNOTATIONS:
+        getAnnotations().clear();
+        return;
       case ModelPackage.COPYRIGHTABLE__COPYRIGHT_HOLDER:
         setCopyrightHolder(COPYRIGHT_HOLDER_EDEFAULT);
         return;
@@ -274,6 +334,8 @@ public abstract class CopyrightableImpl extends MinimalEObjectImpl.Container imp
   {
     switch (featureID)
     {
+      case ModelPackage.COPYRIGHTABLE__ANNOTATIONS:
+        return annotations != null && !annotations.isEmpty();
       case ModelPackage.COPYRIGHTABLE__COPYRIGHT_HOLDER:
         return COPYRIGHT_HOLDER_EDEFAULT == null ? copyrightHolder != null : !COPYRIGHT_HOLDER_EDEFAULT.equals(copyrightHolder);
       case ModelPackage.COPYRIGHTABLE__COPYRIGHT_YEAR:

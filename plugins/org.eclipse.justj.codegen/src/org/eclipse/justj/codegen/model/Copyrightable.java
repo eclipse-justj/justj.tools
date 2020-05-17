@@ -11,6 +11,7 @@
 package org.eclipse.justj.codegen.model;
 
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link org.eclipse.justj.codegen.model.Copyrightable#getAnnotations <em>Annotations</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.Copyrightable#getCopyrightHolder <em>Copyright Holder</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.Copyrightable#getCopyrightYear <em>Copyright Year</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.Copyrightable#getCopyrightText <em>Copyright Text</em>}</li>
@@ -34,6 +36,19 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Copyrightable extends EObject
 {
+  /**
+   * Returns the value of the '<em><b>Annotations</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.justj.codegen.model.Annotation}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Annotations</em>' containment reference list.
+   * @see org.eclipse.justj.codegen.model.ModelPackage#getCopyrightable_Annotations()
+   * @model containment="true"
+   *        extendedMetaData="name='annotation' kind='element'"
+   * @generated
+   */
+  EList<Annotation> getAnnotations();
+
   /**
    * Returns the value of the '<em><b>Copyright Holder</b></em>' attribute.
    * <!-- begin-user-doc -->

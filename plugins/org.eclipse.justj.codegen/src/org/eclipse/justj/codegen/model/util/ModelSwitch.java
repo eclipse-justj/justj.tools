@@ -11,9 +11,12 @@
 package org.eclipse.justj.codegen.model.util;
 
 
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.Switch;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.Copyrightable;
 import org.eclipse.justj.codegen.model.JVM;
 import org.eclipse.justj.codegen.model.Model;
@@ -170,6 +173,27 @@ public class ModelSwitch<T> extends Switch<T>
         }
         return result;
       }
+      case ModelPackage.ANNOTATION:
+      {
+        Annotation annotation = (Annotation)theEObject;
+        T result = caseAnnotation(annotation);
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
+      case ModelPackage.DETAIL:
+      {
+        @SuppressWarnings("unchecked")
+        Map.Entry<String, String> detail = (Map.Entry<String, String>)theEObject;
+        T result = caseDetail(detail);
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
       default:
         return defaultCase(theEObject);
     }
@@ -267,6 +291,38 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTouchable(Touchable object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Annotation</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Annotation</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAnnotation(Annotation object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Detail</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Detail</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDetail(Map.Entry<String, String> object)
   {
     return null;
   }

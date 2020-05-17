@@ -33,7 +33,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIConverter;
 
 
-public class CodeGenUtil
+public final class CodeGenUtil
 {
   private static final Path CACHE_FOLDER;
   static

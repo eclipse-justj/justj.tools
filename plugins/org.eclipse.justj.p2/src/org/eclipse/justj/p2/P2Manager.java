@@ -321,6 +321,7 @@ public class P2Manager
     {
       System.out.println("Cleaning milestones " + milestoneRepository);
     }
+
     if (Files.isDirectory(milestoneRepository))
     {
       RepositoryAnalyzer repositoryAnalyzer = updateSiteGenerator.getRepositoryAnalyzer(Collections.singletonList(milestoneRepository));

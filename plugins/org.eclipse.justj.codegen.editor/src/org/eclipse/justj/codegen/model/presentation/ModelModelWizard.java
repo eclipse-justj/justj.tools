@@ -307,22 +307,22 @@ public class ModelModelWizard extends Wizard implements INewWizard
   public class ModelModelWizardNewFileCreationPage extends WizardNewFileCreationPage
   {
     /**
-     * Pass in the selection.
-     * <!-- begin-user-doc -->
+    	 * Pass in the selection.
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     public ModelModelWizardNewFileCreationPage(String pageId, IStructuredSelection selection)
     {
       super(pageId, selection);
     }
 
     /**
-     * The framework calls this to see if the file is correct.
-     * <!-- begin-user-doc -->
+    	 * The framework calls this to see if the file is correct.
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     @Override
     protected boolean validatePage()
     {
@@ -341,10 +341,10 @@ public class ModelModelWizard extends Wizard implements INewWizard
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     public IFile getModelFile()
     {
       return ResourcesPlugin.getWorkspace().getRoot().getFile(getContainerFullPath().append(getFileName()));
@@ -360,42 +360,42 @@ public class ModelModelWizard extends Wizard implements INewWizard
   public class ModelModelWizardInitialObjectCreationPage extends WizardPage
   {
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     protected Combo initialObjectField;
 
     /**
-     * @generated
-     * <!-- begin-user-doc -->
+    	 * @generated
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     */
+    	 */
     protected List<String> encodings;
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     protected Combo encodingField;
 
     /**
-     * Pass in the selection.
-     * <!-- begin-user-doc -->
+    	 * Pass in the selection.
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     public ModelModelWizardInitialObjectCreationPage(String pageId)
     {
       super(pageId);
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     @Override
     public void createControl(Composite parent)
     {
@@ -470,10 +470,10 @@ public class ModelModelWizard extends Wizard implements INewWizard
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     protected ModifyListener validator = new ModifyListener()
       {
         @Override
@@ -484,20 +484,20 @@ public class ModelModelWizard extends Wizard implements INewWizard
       };
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     protected boolean validatePage()
     {
       return getInitialObjectName() != null && getEncodings().contains(encodingField.getText());
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     @Override
     public void setVisible(boolean visible)
     {
@@ -518,10 +518,10 @@ public class ModelModelWizard extends Wizard implements INewWizard
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     public String getInitialObjectName()
     {
       String label = initialObjectField.getText();
@@ -537,21 +537,21 @@ public class ModelModelWizard extends Wizard implements INewWizard
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     public String getEncoding()
     {
       return encodingField.getText();
     }
 
     /**
-     * Returns the label for the specified type name.
-     * <!-- begin-user-doc -->
+    	 * Returns the label for the specified type name.
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     protected String getLabel(String typeName)
     {
       try
@@ -566,10 +566,10 @@ public class ModelModelWizard extends Wizard implements INewWizard
     }
 
     /**
-     * <!-- begin-user-doc -->
+    	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+    	 * @generated
+    	 */
     protected Collection<String> getEncodings()
     {
       if (encodings == null)

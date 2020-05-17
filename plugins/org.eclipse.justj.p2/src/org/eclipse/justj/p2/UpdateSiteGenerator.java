@@ -35,9 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -379,7 +377,7 @@ public class UpdateSiteGenerator
         {
           if (destinationMetadataRepository instanceof AbstractMetadataRepository)
           {
-            String repositoryName = getRepositoryName(destinationMetadataRepository) + ' ' + getLabel(buildType);
+            String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType);
             destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
 
             if (destinationArtifactRepository instanceof AbstractArtifactRepository)
@@ -494,17 +492,16 @@ public class UpdateSiteGenerator
 
   /**
    * Returns the computed name from the features in the repository.
-   * This will be a featur ename followed the range of versions of the installable units in the repository.
+   * This will be a feature name followed the range of versions of the installable units in the repository.
    * If there is only one version then it will be followed by only that one version.
    * If there are none, then it's just 'Unknown'.
    * @param repository the repository.
    * @return the computed name for the repository.
    */
-  private String getRepositoryName(IMetadataRepository repository)
+  private String getRepositoryVersion(IMetadataRepository repository)
   {
     IQueryResult<IInstallableUnit> groups = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
     List<BasicVersion> versions = new ArrayList<BasicVersion>();
-    Set<String> names = new TreeSet<>();
     for (Iterator<IInstallableUnit> i = groups.iterator(); i.hasNext();)
     {
       IInstallableUnit group = i.next();
@@ -517,27 +514,23 @@ public class UpdateSiteGenerator
           versions.add(basicVersion);
         }
       }
-
-      String name = group.getProperty(IInstallableUnit.PROP_NAME, null);
-      names.add(name);
     }
 
-    String name = names.isEmpty() ? "Unknown" : names.iterator().next();
     if (versions.isEmpty())
     {
-      return name;
+      return "0.0.0";
     }
     else if (versions.size() == 1)
     {
       BasicVersion version = versions.get(0);
-      return name + " " + version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
+      return version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
     }
     else
     {
       Collections.sort(versions);
       BasicVersion minVersion = versions.get(0);
       BasicVersion maxVersion = versions.get(versions.size() - 1);
-      return name + " " + minVersion.getMajor() + "." + minVersion.getMinor() + "." + minVersion.getMicro() + "-" + maxVersion.getMajor() + "." + maxVersion.getMinor() + "."
+      return minVersion.getMajor() + "." + minVersion.getMinor() + "." + minVersion.getMicro() + "-" + maxVersion.getMajor() + "." + maxVersion.getMinor() + "."
         + maxVersion.getMicro();
     }
   }
@@ -589,7 +582,7 @@ public class UpdateSiteGenerator
             // Compute an appropriate name for the repository after it has been populated.
             if (destinationMetadataRepository instanceof ICompositeRepository<?>)
             {
-              String repositoryName = getRepositoryName(destinationMetadataRepository) + ' ' + getLabel(buildType) + (latest ? " Latest" : " Composite");
+              String repositoryName = projectLabel + " " + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType) + (latest ? " Latest" : " Composite");
               destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
               save((ICompositeRepository<?>)destinationMetadataRepository);
 
@@ -770,8 +763,14 @@ public class UpdateSiteGenerator
    */
   private void generateIndex(UpdateSiteIndexGenerator updateSiteIndexGenerator) throws Exception
   {
+    Path targetIndex = updateSiteIndexGenerator.getFolder().resolve("index.html");
+    if (verbose)
+    {
+      System.out.println("Generating " + targetIndex);
+    }
+
     String indexHTML = new UpdateSiteIndex().generate(updateSiteIndexGenerator);
-    try (OutputStream out = Files.newOutputStream(updateSiteIndexGenerator.getFolder().resolve("index.html")))
+    try (OutputStream out = Files.newOutputStream(targetIndex))
     {
       byte[] bytes = indexHTML.getBytes("UTF-8");
       out.write(bytes);
@@ -792,6 +791,11 @@ public class UpdateSiteGenerator
    */
   public void generateDownloads(Path target) throws Exception
   {
+    if (verbose)
+    {
+      System.out.println("Generating downloads " + target);
+    }
+
     if (Files.isDirectory(target))
     {
       if (Files.isRegularFile(target.resolve("content.jar")))
@@ -812,6 +816,7 @@ public class UpdateSiteGenerator
         //
         if (!callables.isEmpty())
         {
+          System.out.println("Creating archive " + target);
           createArchive(target);
           for (Callable<Path> callable : callables)
           {
@@ -1110,35 +1115,6 @@ public class UpdateSiteGenerator
     }
 
     /**
-     * Returns the two-segment version of the largest version of the {@code org.eclipse.emf.sdk.feature.group} in the repository.
-     *
-     * @return the version of the EMF SDK.
-     *
-     * @throws ProvisionException
-     */
-    public String getVersion() throws ProvisionException
-    {
-      IMetadataRepository repository = getCompositeMetadataRepository();
-      IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUQuery("org.eclipse.emf.sdk.feature.group"), new NullProgressMonitor());
-      BasicVersion maxVersion = null;
-      for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
-      {
-        IInstallableUnit iu = i.next();
-        Version version = iu.getVersion();
-        if (version instanceof BasicVersion)
-        {
-          BasicVersion basicVersion = (BasicVersion)version;
-          if (maxVersion == null || maxVersion.compareTo(basicVersion) < 0)
-          {
-            maxVersion = basicVersion;
-          }
-        }
-      }
-
-      return maxVersion.getMajor() + "." + maxVersion.getMinor();
-    }
-
-    /**
      * Returns the list of child locations in the composite, or {@code null}, if the repository isn't a composite.
      * The URIs in the repository must be file locations and those are the locations returned.
      *
@@ -1242,7 +1218,7 @@ public class UpdateSiteGenerator
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
       {
         IInstallableUnit iu = i.next();
-        String name = iu.getProperty("org.eclipse.equinox.p2.name", null);
+        String name = iu.getProperty(IInstallableUnit.PROP_NAME, null);
         if (!resultAll.contains(name))
         {
           resultAll.add(name);
@@ -1266,12 +1242,12 @@ public class UpdateSiteGenerator
     }
 
     /**
-     * Returns a sorted list of all the features in the repository.
-     * @return a sorted list of all the features in the repository.
+     * Returns a sorted map of all the features in the repository and their requirements.
+     * @return a sorted map of all the features in the repository and their requirements.
      */
-    public List<String> getFeatures()
+    public Map<String, List<String>> getFeatures()
     {
-      List<String> result = new ArrayList<String>();
+      Map<String, List<String>> result = new TreeMap<>();
       IMetadataRepository repository = getCompositeMetadataRepository();
       IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
@@ -1279,16 +1255,47 @@ public class UpdateSiteGenerator
         IInstallableUnit iu = i.next();
         if (!iu.getId().endsWith(".source.feature.group"))
         {
-          String name = iu.getProperty("org.eclipse.equinox.p2.name", null);
+          String name = iu.getProperty(IInstallableUnit.PROP_NAME, null);
           name += " " + iu.getVersion();
           name = name.substring(0, name.lastIndexOf('.'));
-          if (!result.contains(name))
+
+          List<String> lines = new ArrayList<>();
+          String description = iu.getProperty(IInstallableUnit.PROP_DESCRIPTION, null);
+          lines.add("<span style=\"white-space: normal;\">" + description + "</span>");
+
+          for (IRequirement requirement : iu.getRequirements())
           {
-            result.add(name);
+            if (requirement instanceof IRequiredCapability)
+            {
+              IRequiredCapability requiredCapability = (IRequiredCapability)requirement;
+              String requirementName = requiredCapability.getName();
+              VersionRange range = requiredCapability.getRange();
+
+              String line = requirementName;
+              line += "<span style=\"color: DarkOliveGreen; font-size: 90%;\">";
+              if (!VersionRange.emptyRange.equals(range))
+              {
+                line += " " + range;
+              }
+
+              if (requiredCapability.getMin() == 0)
+              {
+                line += " optional";
+                if (requiredCapability.isGreedy())
+                {
+                  line += " greedy";
+                }
+              }
+
+              line += "</span>";
+
+              lines.add(line);
+            }
           }
+
+          result.put(name, lines);
         }
       }
-      Collections.sort(result);
       return result;
     }
 
@@ -1296,10 +1303,11 @@ public class UpdateSiteGenerator
      * Returns a map from bundle name to a list of information for that bundle for each bundle in the repository.
      * @return a map from bundle name to a list of information for that bundle for each bundle in the repository.
      */
-    public Map<String, List<String>> getBundles()
+    public Map<String, List<String>> getBundles(Map<String, Long> bundleSizes)
     {
       Map<String, List<String>> result = new TreeMap<String, List<String>>();
       IMetadataRepository repository = getCompositeMetadataRepository();
+      IArtifactRepository artifactRepository = getCompositeArtifactRepository();
       IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
       {
@@ -1314,19 +1322,47 @@ public class UpdateSiteGenerator
             String name = providedCapability.getName();
             if ("org.eclipse.equinox.p2.eclipse.type".equals(namespace) && "bundle".equals(name))
             {
-              String iuName = iu.getProperty("org.eclipse.equinox.p2.name", null);
+              String iuName = iu.getProperty(IInstallableUnit.PROP_NAME, null);
               iuName += " " + iu.getVersion();
               iuName = iuName.substring(0, iuName.lastIndexOf('.'));
               if (!result.containsKey(iuName))
               {
-                lines.add(0, "\u21D6 " + id + " " + iu.getVersion());
+                lines.add(0, "\u21D6 " + id + " <span style=\"color: DarkOliveGreen; font-size: 90%;\">" + iu.getVersion() + "</span>");
+
+                long size = 0;
+                Collection<IArtifactKey> artifacts = iu.getArtifacts();
+                for (IArtifactKey artifactKey : artifacts)
+                {
+                  IArtifactDescriptor[] artifactDescriptors = artifactRepository.getArtifactDescriptors(artifactKey);
+                  for (IArtifactDescriptor artifactDescriptor : artifactDescriptors)
+                  {
+                    String downloadSize = artifactDescriptor.getProperty(IArtifactDescriptor.DOWNLOAD_SIZE);
+                    if (downloadSize != null)
+                    {
+                      try
+                      {
+                        size = Long.parseLong(downloadSize);
+                      }
+                      catch (RuntimeException exception)
+                      {
+                        // Ignore.
+                      }
+                    }
+                  }
+                }
+
+                if (size != 0)
+                {
+                  bundleSizes.put(iuName, size);
+                }
+
                 result.put(iuName, lines);
               }
             }
             else if ("java.package".equals(namespace))
             {
               Version version = providedCapability.getVersion();
-              lines.add("\u2196 " + name + (Version.emptyVersion.equals(version) ? "" : " " + version));
+              lines.add("\u2196 " + name + (Version.emptyVersion.equals(version) ? "" : " <span style=\"color: DarkOliveGreen; font-size: 90%;\">" + version + "</span>"));
             }
           }
 
@@ -1337,7 +1373,7 @@ public class UpdateSiteGenerator
               IRequiredCapability requiredCapability = (IRequiredCapability)requirement;
               String namespace = requiredCapability.getNamespace();
               String line = null;
-              if ("osgi.bundle".equals(namespace))
+              if ("osgi.bundle".equals(namespace) || IInstallableUnit.NAMESPACE_IU_ID.equals(namespace))
               {
                 line = "\u21D8 ";
               }
@@ -1345,12 +1381,14 @@ public class UpdateSiteGenerator
               {
                 line = "\u2198 ";
               }
+
               if (line != null)
               {
                 String name = requiredCapability.getName();
                 VersionRange range = requiredCapability.getRange();
 
                 line += name;
+                line += "<span style=\"color: DarkOliveGreen; font-size: 90%;\">";
                 if (!VersionRange.emptyRange.equals(range))
                 {
                   line += " " + range;
@@ -1364,6 +1402,7 @@ public class UpdateSiteGenerator
                     line += " greedy";
                   }
                 }
+                line += "</span>";
 
                 lines.add(line);
               }

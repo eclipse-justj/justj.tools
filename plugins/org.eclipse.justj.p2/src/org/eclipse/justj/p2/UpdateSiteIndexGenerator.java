@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.eclipse.justj.p2.UpdateSiteGenerator.RepositoryAnalyzer;
@@ -56,9 +57,19 @@ public class UpdateSiteIndexGenerator
   private List<String> sdks;
 
   /**
-   * The list of features in this folder's repository.
+   * The features in this folder's repository.
    */
-  private List<String> features;
+  private Map<String, List<String>> features;
+
+  /**
+   * The bundles in this folder's repository.
+   */
+  private Map<String, List<String>> bundles;
+
+  /**
+   * The bundle sizes in this folder's repository.
+   */
+  private Map<String, Long> bundleSizes;
 
   /**
    * The update site index generator for the parent folder.
@@ -540,7 +551,7 @@ public class UpdateSiteIndexGenerator
   public boolean isSDK(String feature)
   {
     List<String> sdks = getSDKs();
-    List<String> features = getFeatures();
+    Map<String, List<String>> features = getFeatures();
     if (sdks.size() != features.size())
     {
       for (String sdk : getSDKs())
@@ -555,10 +566,10 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
-   * Returns the feature names in this folder's repository.
-   * @return the feature names in this folder's repository.
+   * Returns the feature information for this folder's repository.
+   * @return the feature information for this folder's repository.
    */
-  public List<String> getFeatures()
+  public Map<String, List<String>> getFeatures()
   {
     if (features == null)
     {
@@ -573,7 +584,27 @@ public class UpdateSiteIndexGenerator
    */
   public Map<String, List<String>> getBundles()
   {
-    return repositoryAnalyzer.getBundles();
+    if (bundles == null)
+    {
+      bundleSizes = new TreeMap<>();
+      bundles = repositoryAnalyzer.getBundles(bundleSizes);
+    }
+    return bundles;
+  }
+
+  public String getBundleSize(String bundle)
+  {
+    getBundles();
+    Long bundleSize = bundleSizes.get(bundle);
+    if (bundleSize == null)
+    {
+      return "";
+    }
+    else
+    {
+      float size = ((float)bundleSize) / 1024;
+      return String.format(java.util.Locale.US, "%,.1f", size);
+    }
   }
 
   public String getFolderID(String folder)

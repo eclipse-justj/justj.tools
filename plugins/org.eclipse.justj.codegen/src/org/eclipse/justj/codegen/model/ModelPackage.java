@@ -88,13 +88,22 @@ public interface ModelPackage extends EPackage
   int COPYRIGHTABLE = 3;
 
   /**
+   * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COPYRIGHTABLE__ANNOTATIONS = 0;
+
+  /**
    * The feature id for the '<em><b>Copyright Holder</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COPYRIGHTABLE__COPYRIGHT_HOLDER = 0;
+  int COPYRIGHTABLE__COPYRIGHT_HOLDER = 1;
 
   /**
    * The feature id for the '<em><b>Copyright Year</b></em>' attribute.
@@ -103,7 +112,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COPYRIGHTABLE__COPYRIGHT_YEAR = 1;
+  int COPYRIGHTABLE__COPYRIGHT_YEAR = 2;
 
   /**
    * The feature id for the '<em><b>Copyright Text</b></em>' attribute.
@@ -112,7 +121,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COPYRIGHTABLE__COPYRIGHT_TEXT = 2;
+  int COPYRIGHTABLE__COPYRIGHT_TEXT = 3;
 
   /**
    * The number of structural features of the '<em>Copyrightable</em>' class.
@@ -121,7 +130,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COPYRIGHTABLE_FEATURE_COUNT = 3;
+  int COPYRIGHTABLE_FEATURE_COUNT = 4;
 
   /**
    * The number of operations of the '<em>Copyrightable</em>' class.
@@ -141,6 +150,15 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   int MODEL = 0;
+
+  /**
+   * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MODEL__ANNOTATIONS = COPYRIGHTABLE__ANNOTATIONS;
 
   /**
    * The feature id for the '<em><b>Copyright Holder</b></em>' attribute.
@@ -297,6 +315,15 @@ public interface ModelPackage extends EPackage
   int JVM = 1;
 
   /**
+   * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int JVM__ANNOTATIONS = COPYRIGHTABLE__ANNOTATIONS;
+
+  /**
    * The feature id for the '<em><b>Copyright Holder</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -360,13 +387,22 @@ public interface ModelPackage extends EPackage
   int JVM__LABEL = COPYRIGHTABLE_FEATURE_COUNT + 3;
 
   /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int JVM__DESCRIPTION = COPYRIGHTABLE_FEATURE_COUNT + 4;
+
+  /**
    * The feature id for the '<em><b>Model</b></em>' container reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int JVM__MODEL = COPYRIGHTABLE_FEATURE_COUNT + 4;
+  int JVM__MODEL = COPYRIGHTABLE_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>About Text Extra</b></em>' attribute.
@@ -375,7 +411,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int JVM__ABOUT_TEXT_EXTRA = COPYRIGHTABLE_FEATURE_COUNT + 5;
+  int JVM__ABOUT_TEXT_EXTRA = COPYRIGHTABLE_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Variants</b></em>' containment reference list.
@@ -384,7 +420,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int JVM__VARIANTS = COPYRIGHTABLE_FEATURE_COUNT + 6;
+  int JVM__VARIANTS = COPYRIGHTABLE_FEATURE_COUNT + 7;
 
   /**
    * The number of structural features of the '<em>JVM</em>' class.
@@ -393,7 +429,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int JVM_FEATURE_COUNT = COPYRIGHTABLE_FEATURE_COUNT + 7;
+  int JVM_FEATURE_COUNT = COPYRIGHTABLE_FEATURE_COUNT + 8;
 
   /**
    * The number of operations of the '<em>JVM</em>' class.
@@ -413,6 +449,15 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   int VARIANT = 2;
+
+  /**
+   * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VARIANT__ANNOTATIONS = COPYRIGHTABLE__ANNOTATIONS;
 
   /**
    * The feature id for the '<em><b>Copyright Holder</b></em>' attribute.
@@ -597,6 +642,98 @@ public interface ModelPackage extends EPackage
   int TOUCHABLE_OPERATION_COUNT = 0;
 
   /**
+   * The meta object id for the '{@link org.eclipse.justj.codegen.model.impl.AnnotationImpl <em>Annotation</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.justj.codegen.model.impl.AnnotationImpl
+   * @see org.eclipse.justj.codegen.model.impl.ModelPackageImpl#getAnnotation()
+   * @generated
+   */
+  int ANNOTATION = 6;
+
+  /**
+   * The feature id for the '<em><b>Source</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ANNOTATION__SOURCE = 0;
+
+  /**
+   * The feature id for the '<em><b>Details</b></em>' map.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ANNOTATION__DETAILS = 1;
+
+  /**
+   * The number of structural features of the '<em>Annotation</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ANNOTATION_FEATURE_COUNT = 2;
+
+  /**
+   * The number of operations of the '<em>Annotation</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ANNOTATION_OPERATION_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.justj.codegen.model.impl.DetailImpl <em>Detail</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.justj.codegen.model.impl.DetailImpl
+   * @see org.eclipse.justj.codegen.model.impl.ModelPackageImpl#getDetail()
+   * @generated
+   */
+  int DETAIL = 7;
+
+  /**
+   * The feature id for the '<em><b>Key</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DETAIL__KEY = 0;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DETAIL__VALUE = 1;
+
+  /**
+   * The number of structural features of the '<em>Detail</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DETAIL_FEATURE_COUNT = 2;
+
+  /**
+   * The number of operations of the '<em>Detail</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DETAIL_OPERATION_COUNT = 0;
+
+  /**
    * The meta object id for the '{@link org.eclipse.justj.codegen.model.Phase <em>Phase</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -604,7 +741,7 @@ public interface ModelPackage extends EPackage
    * @see org.eclipse.justj.codegen.model.impl.ModelPackageImpl#getPhase()
    * @generated
    */
-  int PHASE = 6;
+  int PHASE = 8;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.justj.codegen.model.Model <em>Model</em>}'.
@@ -770,6 +907,17 @@ public interface ModelPackage extends EPackage
   EAttribute getJVM_Label();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.justj.codegen.model.JVM#getDescription <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Description</em>'.
+   * @see org.eclipse.justj.codegen.model.JVM#getDescription()
+   * @see #getJVM()
+   * @generated
+   */
+  EAttribute getJVM_Description();
+
+  /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.justj.codegen.model.JVM#getVariants <em>Variants</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -878,6 +1026,17 @@ public interface ModelPackage extends EPackage
   EClass getCopyrightable();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.justj.codegen.model.Copyrightable#getAnnotations <em>Annotations</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Annotations</em>'.
+   * @see org.eclipse.justj.codegen.model.Copyrightable#getAnnotations()
+   * @see #getCopyrightable()
+   * @generated
+   */
+  EReference getCopyrightable_Annotations();
+
+  /**
    * Returns the meta object for the attribute '{@link org.eclipse.justj.codegen.model.Copyrightable#getCopyrightHolder <em>Copyright Holder</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -962,6 +1121,74 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EReference getTouchable_Touchpoints();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.justj.codegen.model.Annotation <em>Annotation</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Annotation</em>'.
+   * @see org.eclipse.justj.codegen.model.Annotation
+   * @generated
+   */
+  EClass getAnnotation();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.justj.codegen.model.Annotation#getSource <em>Source</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Source</em>'.
+   * @see org.eclipse.justj.codegen.model.Annotation#getSource()
+   * @see #getAnnotation()
+   * @generated
+   */
+  EAttribute getAnnotation_Source();
+
+  /**
+   * Returns the meta object for the map '{@link org.eclipse.justj.codegen.model.Annotation#getDetails <em>Details</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the map '<em>Details</em>'.
+   * @see org.eclipse.justj.codegen.model.Annotation#getDetails()
+   * @see #getAnnotation()
+   * @generated
+   */
+  EReference getAnnotation_Details();
+
+  /**
+   * Returns the meta object for class '{@link java.util.Map.Entry <em>Detail</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Detail</em>'.
+   * @see java.util.Map.Entry
+   * @model keyDataType="org.eclipse.emf.ecore.EString"
+   *        valueDataType="org.eclipse.emf.ecore.EString"
+   *        valueAnnotation="http://www.eclipse.org/emf/2002/GenModel propertyMultiLine='true'"
+   *        valueExtendedMetaData="kind='element'"
+   * @generated
+   */
+  EClass getDetail();
+
+  /**
+   * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Key</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Key</em>'.
+   * @see java.util.Map.Entry
+   * @see #getDetail()
+   * @generated
+   */
+  EAttribute getDetail_Key();
+
+  /**
+   * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see java.util.Map.Entry
+   * @see #getDetail()
+   * @generated
+   */
+  EAttribute getDetail_Value();
 
   /**
    * Returns the meta object for enum '{@link org.eclipse.justj.codegen.model.Phase <em>Phase</em>}'.
@@ -1122,6 +1349,14 @@ public interface ModelPackage extends EPackage
     EAttribute JVM__LABEL = eINSTANCE.getJVM_Label();
 
     /**
+    	 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute JVM__DESCRIPTION = eINSTANCE.getJVM_Description();
+
+    /**
     	 * The meta object literal for the '<em><b>Variants</b></em>' containment reference list feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1206,6 +1441,14 @@ public interface ModelPackage extends EPackage
     EClass COPYRIGHTABLE = eINSTANCE.getCopyrightable();
 
     /**
+    	 * The meta object literal for the '<em><b>Annotations</b></em>' containment reference list feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference COPYRIGHTABLE__ANNOTATIONS = eINSTANCE.getCopyrightable_Annotations();
+
+    /**
     	 * The meta object literal for the '<em><b>Copyright Holder</b></em>' attribute feature.
     	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1272,6 +1515,58 @@ public interface ModelPackage extends EPackage
     	 * @generated
     	 */
     EReference TOUCHABLE__TOUCHPOINTS = eINSTANCE.getTouchable_Touchpoints();
+
+    /**
+    	 * The meta object literal for the '{@link org.eclipse.justj.codegen.model.impl.AnnotationImpl <em>Annotation</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see org.eclipse.justj.codegen.model.impl.AnnotationImpl
+    	 * @see org.eclipse.justj.codegen.model.impl.ModelPackageImpl#getAnnotation()
+    	 * @generated
+    	 */
+    EClass ANNOTATION = eINSTANCE.getAnnotation();
+
+    /**
+    	 * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute ANNOTATION__SOURCE = eINSTANCE.getAnnotation_Source();
+
+    /**
+    	 * The meta object literal for the '<em><b>Details</b></em>' map feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EReference ANNOTATION__DETAILS = eINSTANCE.getAnnotation_Details();
+
+    /**
+    	 * The meta object literal for the '{@link org.eclipse.justj.codegen.model.impl.DetailImpl <em>Detail</em>}' class.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @see org.eclipse.justj.codegen.model.impl.DetailImpl
+    	 * @see org.eclipse.justj.codegen.model.impl.ModelPackageImpl#getDetail()
+    	 * @generated
+    	 */
+    EClass DETAIL = eINSTANCE.getDetail();
+
+    /**
+    	 * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute DETAIL__KEY = eINSTANCE.getDetail_Key();
+
+    /**
+    	 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+    	 * <!-- begin-user-doc -->
+    	 * <!-- end-user-doc -->
+    	 * @generated
+    	 */
+    EAttribute DETAIL__VALUE = eINSTANCE.getDetail_Value();
 
     /**
     	 * The meta object literal for the '{@link org.eclipse.justj.codegen.model.Phase <em>Phase</em>}' enum.

@@ -11,12 +11,15 @@
 package org.eclipse.justj.codegen.model.impl;
 
 
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.JVM;
 import org.eclipse.justj.codegen.model.Model;
 import org.eclipse.justj.codegen.model.ModelFactory;
@@ -86,6 +89,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createVariant();
       case ModelPackage.TOUCHPOINT:
         return createTouchpoint();
+      case ModelPackage.ANNOTATION:
+        return createAnnotation();
+      case ModelPackage.DETAIL:
+        return (EObject)createDetail();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -171,6 +178,29 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TouchpointImpl touchpoint = new TouchpointImpl();
     return touchpoint;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Annotation createAnnotation()
+  {
+    AnnotationImpl annotation = new AnnotationImpl();
+    return annotation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Map.Entry<String, String> createDetail()
+  {
+    DetailImpl detail = new DetailImpl();
+    return detail;
   }
 
   /**

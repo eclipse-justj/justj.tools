@@ -26,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getLabel <em>Label</em>}</li>
+ *   <li>{@link org.eclipse.justj.codegen.model.JVM#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getModel <em>Model</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getAboutTextExtra <em>About Text Extra</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getVariants <em>Variants</em>}</li>
@@ -102,6 +103,29 @@ public interface JVM extends Copyrightable, Touchable
    * @generated
    */
   void setLabel(String value);
+
+  /**
+   * Returns the value of the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Description</em>' attribute.
+   * @see #setDescription(String)
+   * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Description()
+   * @model annotation="http://www.eclipse.org/emf/2002/GenModel propertyMultiLine='true'"
+   *        extendedMetaData="kind='element'"
+   * @generated
+   */
+  String getDescription();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.justj.codegen.model.JVM#getDescription <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Description</em>' attribute.
+   * @see #getDescription()
+   * @generated
+   */
+  void setDescription(String value);
 
   /**
    * Returns the value of the '<em><b>Variants</b></em>' containment reference list.

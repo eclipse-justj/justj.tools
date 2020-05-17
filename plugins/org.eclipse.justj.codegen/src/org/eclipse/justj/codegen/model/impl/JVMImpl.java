@@ -43,6 +43,7 @@ import org.eclipse.justj.codegen.model.Variant;
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getLabel <em>Label</em>}</li>
+ *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getModel <em>Model</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getAboutTextExtra <em>About Text Extra</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getVariants <em>Variants</em>}</li>
@@ -121,6 +122,26 @@ public class JVMImpl extends CopyrightableImpl implements JVM
    * @ordered
    */
   protected String label = LABEL_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected static final String DESCRIPTION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected String description = DESCRIPTION_EDEFAULT;
 
   /**
    * The default value of the '{@link #getAboutTextExtra() <em>About Text Extra</em>}' attribute.
@@ -266,6 +287,33 @@ public class JVMImpl extends CopyrightableImpl implements JVM
     if (eNotificationRequired())
     {
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JVM__LABEL, oldLabel, label));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setDescription(String newDescription)
+  {
+    String oldDescription = description;
+    description = newDescription;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JVM__DESCRIPTION, oldDescription, description));
     }
   }
 
@@ -449,6 +497,8 @@ public class JVMImpl extends CopyrightableImpl implements JVM
         return getVersion();
       case ModelPackage.JVM__LABEL:
         return getLabel();
+      case ModelPackage.JVM__DESCRIPTION:
+        return getDescription();
       case ModelPackage.JVM__MODEL:
         return getModel();
       case ModelPackage.JVM__ABOUT_TEXT_EXTRA:
@@ -482,6 +532,9 @@ public class JVMImpl extends CopyrightableImpl implements JVM
         return;
       case ModelPackage.JVM__LABEL:
         setLabel((String)newValue);
+        return;
+      case ModelPackage.JVM__DESCRIPTION:
+        setDescription((String)newValue);
         return;
       case ModelPackage.JVM__MODEL:
         setModel((Model)newValue);
@@ -519,6 +572,9 @@ public class JVMImpl extends CopyrightableImpl implements JVM
       case ModelPackage.JVM__LABEL:
         setLabel(LABEL_EDEFAULT);
         return;
+      case ModelPackage.JVM__DESCRIPTION:
+        setDescription(DESCRIPTION_EDEFAULT);
+        return;
       case ModelPackage.JVM__MODEL:
         setModel((Model)null);
         return;
@@ -550,6 +606,8 @@ public class JVMImpl extends CopyrightableImpl implements JVM
         return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
       case ModelPackage.JVM__LABEL:
         return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
+      case ModelPackage.JVM__DESCRIPTION:
+        return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
       case ModelPackage.JVM__MODEL:
         return getModel() != null;
       case ModelPackage.JVM__ABOUT_TEXT_EXTRA:
@@ -622,6 +680,8 @@ public class JVMImpl extends CopyrightableImpl implements JVM
     result.append(version);
     result.append(", label: ");
     result.append(label);
+    result.append(", description: ");
+    result.append(description);
     result.append(", aboutTextExtra: ");
     result.append(aboutTextExtra);
     result.append(')');

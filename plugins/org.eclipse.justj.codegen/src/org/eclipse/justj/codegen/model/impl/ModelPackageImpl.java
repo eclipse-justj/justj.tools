@@ -11,6 +11,8 @@
 package org.eclipse.justj.codegen.model.impl;
 
 
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
@@ -18,6 +20,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.Copyrightable;
 import org.eclipse.justj.codegen.model.Model;
 import org.eclipse.justj.codegen.model.ModelFactory;
@@ -77,6 +80,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass touchableEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass annotationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass detailEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -325,9 +342,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   @Override
+  public EAttribute getJVM_Description()
+  {
+    return (EAttribute)jvmEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EReference getJVM_Variants()
   {
-    return (EReference)jvmEClass.getEStructuralFeatures().get(5);
+    return (EReference)jvmEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -338,7 +366,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   @Override
   public EReference getJVM_Model()
   {
-    return (EReference)jvmEClass.getEStructuralFeatures().get(3);
+    return (EReference)jvmEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -349,7 +377,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   @Override
   public EAttribute getJVM_AboutTextExtra()
   {
-    return (EAttribute)jvmEClass.getEStructuralFeatures().get(4);
+    return (EAttribute)jvmEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -435,9 +463,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   @Override
-  public EAttribute getCopyrightable_CopyrightHolder()
+  public EReference getCopyrightable_Annotations()
   {
-    return (EAttribute)copyrightableEClass.getEStructuralFeatures().get(0);
+    return (EReference)copyrightableEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -446,7 +474,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   @Override
-  public EAttribute getCopyrightable_CopyrightYear()
+  public EAttribute getCopyrightable_CopyrightHolder()
   {
     return (EAttribute)copyrightableEClass.getEStructuralFeatures().get(1);
   }
@@ -457,9 +485,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   @Override
-  public EAttribute getCopyrightable_CopyrightText()
+  public EAttribute getCopyrightable_CopyrightYear()
   {
     return (EAttribute)copyrightableEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getCopyrightable_CopyrightText()
+  {
+    return (EAttribute)copyrightableEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -523,6 +562,72 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   @Override
+  public EClass getAnnotation()
+  {
+    return annotationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getAnnotation_Source()
+  {
+    return (EAttribute)annotationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getAnnotation_Details()
+  {
+    return (EReference)annotationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getDetail()
+  {
+    return detailEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDetail_Key()
+  {
+    return (EAttribute)detailEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getDetail_Value()
+  {
+    return (EAttribute)detailEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EEnum getPhase()
   {
     return phaseEEnum;
@@ -578,6 +683,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(jvmEClass, JVM__NAME);
     createEAttribute(jvmEClass, JVM__VERSION);
     createEAttribute(jvmEClass, JVM__LABEL);
+    createEAttribute(jvmEClass, JVM__DESCRIPTION);
     createEReference(jvmEClass, JVM__MODEL);
     createEAttribute(jvmEClass, JVM__ABOUT_TEXT_EXTRA);
     createEReference(jvmEClass, JVM__VARIANTS);
@@ -590,6 +696,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEReference(variantEClass, VARIANT__JVM);
 
     copyrightableEClass = createEClass(COPYRIGHTABLE);
+    createEReference(copyrightableEClass, COPYRIGHTABLE__ANNOTATIONS);
     createEAttribute(copyrightableEClass, COPYRIGHTABLE__COPYRIGHT_HOLDER);
     createEAttribute(copyrightableEClass, COPYRIGHTABLE__COPYRIGHT_YEAR);
     createEAttribute(copyrightableEClass, COPYRIGHTABLE__COPYRIGHT_TEXT);
@@ -600,6 +707,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     touchableEClass = createEClass(TOUCHABLE);
     createEReference(touchableEClass, TOUCHABLE__TOUCHPOINTS);
+
+    annotationEClass = createEClass(ANNOTATION);
+    createEAttribute(annotationEClass, ANNOTATION__SOURCE);
+    createEReference(annotationEClass, ANNOTATION__DETAILS);
+
+    detailEClass = createEClass(DETAIL);
+    createEAttribute(detailEClass, DETAIL__KEY);
+    createEAttribute(detailEClass, DETAIL__VALUE);
 
     // Create enums
     phaseEEnum = createEEnum(PHASE);
@@ -861,6 +976,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
       IS_UNIQUE,
       !IS_DERIVED,
       IS_ORDERED);
+    initEAttribute(
+      getJVM_Description(),
+      ecorePackage.getEString(),
+      "description",
+      null,
+      0,
+      1,
+      org.eclipse.justj.codegen.model.JVM.class,
+      !IS_TRANSIENT,
+      !IS_VOLATILE,
+      IS_CHANGEABLE,
+      !IS_UNSETTABLE,
+      !IS_ID,
+      IS_UNIQUE,
+      !IS_DERIVED,
+      IS_ORDERED);
     initEReference(
       getJVM_Model(),
       this.getModel(),
@@ -999,6 +1130,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
       IS_ORDERED);
 
     initEClass(copyrightableEClass, Copyrightable.class, "Copyrightable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(
+      getCopyrightable_Annotations(),
+      this.getAnnotation(),
+      null,
+      "annotations",
+      null,
+      0,
+      -1,
+      Copyrightable.class,
+      !IS_TRANSIENT,
+      !IS_VOLATILE,
+      IS_CHANGEABLE,
+      IS_COMPOSITE,
+      !IS_RESOLVE_PROXIES,
+      !IS_UNSETTABLE,
+      IS_UNIQUE,
+      !IS_DERIVED,
+      IS_ORDERED);
     initEAttribute(
       getCopyrightable_CopyrightHolder(),
       ecorePackage.getEString(),
@@ -1102,6 +1251,76 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
       !IS_DERIVED,
       IS_ORDERED);
 
+    initEClass(annotationEClass, Annotation.class, "Annotation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(
+      getAnnotation_Source(),
+      ecorePackage.getEString(),
+      "source",
+      null,
+      0,
+      1,
+      Annotation.class,
+      !IS_TRANSIENT,
+      !IS_VOLATILE,
+      IS_CHANGEABLE,
+      !IS_UNSETTABLE,
+      !IS_ID,
+      IS_UNIQUE,
+      !IS_DERIVED,
+      IS_ORDERED);
+    initEReference(
+      getAnnotation_Details(),
+      this.getDetail(),
+      null,
+      "details",
+      null,
+      0,
+      -1,
+      Annotation.class,
+      !IS_TRANSIENT,
+      !IS_VOLATILE,
+      IS_CHANGEABLE,
+      IS_COMPOSITE,
+      !IS_RESOLVE_PROXIES,
+      !IS_UNSETTABLE,
+      IS_UNIQUE,
+      !IS_DERIVED,
+      IS_ORDERED);
+
+    initEClass(detailEClass, Map.Entry.class, "Detail", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(
+      getDetail_Key(),
+      ecorePackage.getEString(),
+      "key",
+      null,
+      0,
+      1,
+      Map.Entry.class,
+      !IS_TRANSIENT,
+      !IS_VOLATILE,
+      IS_CHANGEABLE,
+      !IS_UNSETTABLE,
+      !IS_ID,
+      IS_UNIQUE,
+      !IS_DERIVED,
+      IS_ORDERED);
+    initEAttribute(
+      getDetail_Value(),
+      ecorePackage.getEString(),
+      "value",
+      null,
+      0,
+      1,
+      Map.Entry.class,
+      !IS_TRANSIENT,
+      !IS_VOLATILE,
+      IS_CHANGEABLE,
+      !IS_UNSETTABLE,
+      !IS_ID,
+      IS_UNIQUE,
+      !IS_DERIVED,
+      IS_ORDERED);
+
     // Initialize enums and add enum literals
     initEEnum(phaseEEnum, Phase.class, "Phase");
     addEEnumLiteral(phaseEEnum, Phase.INSTALL);
@@ -1132,8 +1351,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
       new String []{
         "copyrightText",
         "Copyright (c) 2020 Eclipse contributors and others.\n\nThis program and the accompanying materials\nare made available under the terms of the Eclipse Public License 2.0\nwhich accompanies this distribution, and is available at\nhttps://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0" });
+    addAnnotation(getJVM_Description(), source, new String []{ "propertyMultiLine", "true" });
     addAnnotation(getJVM_AboutTextExtra(), source, new String []{ "propertyMultiLine", "true" });
     addAnnotation(getCopyrightable_CopyrightText(), source, new String []{ "propertyMultiLine", "true" });
+    addAnnotation(getDetail_Value(), source, new String []{ "propertyMultiLine", "true" });
   }
 
   /**
@@ -1146,11 +1367,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   {
     String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
     addAnnotation(getModel_JVMs(), source, new String []{ "name", "jvm", "kind", "element" });
+    addAnnotation(getJVM_Description(), source, new String []{ "kind", "element" });
     addAnnotation(getJVM_AboutTextExtra(), source, new String []{ "kind", "element" });
     addAnnotation(getJVM_Variants(), source, new String []{ "name", "variant", "kind", "element" });
     addAnnotation(getVariant_JVM(), source, new String []{ "name", "jvm", "kind", "element" });
+    addAnnotation(getCopyrightable_Annotations(), source, new String []{ "name", "annotation", "kind", "element" });
     addAnnotation(getCopyrightable_CopyrightText(), source, new String []{ "kind", "element" });
     addAnnotation(getTouchpoint_Instructions(), source, new String []{ "kind", "element", "name", "instruction" });
+    addAnnotation(getAnnotation_Details(), source, new String []{ "name", "detail", "kind", "element" });
+    addAnnotation(getDetail_Value(), source, new String []{ "kind", "element" });
   }
 
 } //ModelPackageImpl

@@ -47,8 +47,8 @@ SPDX-License-Identifier: EPL-2.0
         }
       }
 
-      function expand(id) {
-        var t = document.getElementById('all');
+      function expand(id, all_id) {
+        var t = document.getElementById(all_id);
         var e = document.getElementById(id);
         var f = document.getElementById(id+"_arrows");
         if (t.title == 'Collapse All'){
@@ -152,21 +152,22 @@ SPDX-License-Identifier: EPL-2.0
 <%}%>
 <%if (!parent.isRoot()) {
     String mainID = "main-list";
-    Map<String, String> repositories = parent.getRepositoryChildren(); boolean hasTwisty = repositories != null && repositories.size() > 1;%>
+    Map<String, String> repositories = parent.getRepositoryChildren();
+    boolean hasTwisty = repositories != null && repositories.size() > 1;%>
           <p style="text-align: center;">
   <%if (hasTwisty) {%>
             <button id="<%=mainID%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=mainID%>');">&#x25B7;</button>
   <%}%>
             <button title="Copy to Clipboard" class="orange" style="font-size: 150%; background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#p1')">&#x270e;</button>
             <span id="p1" style="font-size: 125%"><%=parent.getSiteURL()%></span>
-            <span <%if (hasTwisty){%>style="display: none;" <%}%>id="<%=mainID%>">
+            <span <%if (hasTwisty) {%>style="display: none;" <%}%>id="<%=mainID%>">
   <%if (repositories != null) {
       int count = 0;
       for (Map.Entry<String, String> entry : repositories.entrySet()) {
         String repository = entry.getKey();
         String relativeURL = entry.getValue();
         String id = parent.getFolderID(repository);%>
-      <%if (count++ != 0 ||!hasTwisty) {%>
+      <%if (count++ != 0 || !hasTwisty) {%>
             <br/>
       <%}%>
             <button title="Copy to Clipboard" class="orange" style="font-size: 125%; margin-left: 1em; background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#<%=id%>')">&#x270e;</button>
@@ -241,13 +242,13 @@ SPDX-License-Identifier: EPL-2.0
              This simple update site will be retained <b>permanently</b>.
            </p>
       <%}%>
-    <%}
-    }%>
-           <p>This update site provides access to the following features:</p>
+    <%}%>
+  <%}%>
 <%}%>
 <%if (!children.isEmpty()) {%>
   <%List<String> sdks = parent.getSDKs();
     if (!sdks.isEmpty()) {%>
+           <p>This update site provides access to the following features:</p>
            <ul>
     <%for (String sdk : sdks) {%>
              <li style="font-size: 90%;"><%=sdk%></li>
@@ -271,13 +272,35 @@ SPDX-License-Identifier: EPL-2.0
            <p>Click the header link or the update site link for more details.</p>
   <%}%>
 <%} else {%>
-  <%List<String> features = parent.getFeatures();
+  <%Map<String, List<String>> features = parent.getFeatures();
     if (!features.isEmpty()) {%>
-          <ul style="margin-left: -1em">
-    <%for (String feature : features) {%>
-      <%if (parent.isSDK(feature)) {%><b><%}%><li style="font-size: 90%;"><%=feature.replace(" ", "&nbsp;")%></li><%if (parent.isSDK(feature)) {%></b><%}%>
+           <p>
+             This update site provides access to the following features.
+             Each section is expandable via
+    <%{
+        StringBuilder onClick = new StringBuilder();
+        for (String feature : features.keySet()) {
+          onClick.append("expand('").append(parent.getFolderID(feature) + "_feature").append("', 'all_features');");
+        }%>
+             <span style="white-space: nowrap;">the&nbsp;<button id="all_features" title="Expand All" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="toggle('all_features');<%=onClick%>">&#x25B7;</button>&nbsp;glyph</span>
     <%}%>
-          </ul>
+             to provide detailed information about the requirements of each feature.
+           </p>
+           <ul style="margin-left: -1em; list-style-type: none; padding: 0; margin: 0;">
+    <%for (Map.Entry<String, List<String>> entry : features.entrySet()) {
+        String feature = entry.getKey();
+        String id = parent.getFolderID(feature) + "_feature";%>
+             <li style="font-size: 90%;">
+              <button id="<%=id%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=id%>');">&#x25B7;</button>
+              <span style="font-size:100%;"><%if (parent.isSDK(feature)) {%><b><%}%><%=feature.replace(" ", "&nbsp;")%><%if (parent.isSDK(feature)) {%></b><%}%></span>
+              <div id="<%=id%>" style="display:none; margin-left: 2em; white-space: nowrap;">
+      <%for (String line : entry.getValue()) {%>
+                <%=line%><br/>
+      <%}%>
+              </div>
+             </li>
+    <%}%>
+           </ul>
   <%}%>
   <%Map<String, List<String>> bundles = parent.getBundles();
     if (!bundles.isEmpty()) {%>
@@ -288,7 +311,7 @@ SPDX-License-Identifier: EPL-2.0
     <%{
         StringBuilder onClick = new StringBuilder();
         for (String bundle : bundles.keySet()) {
-          onClick.append("expand('").append(parent.getFolderID(bundle)).append("');");
+          onClick.append("expand('").append(parent.getFolderID(bundle)).append("', 'all');");
         }%>
              <span style="white-space: nowrap;">the&nbsp;<button id="all" title="Expand All" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="toggle('all');<%=onClick%>">&#x25B7;</button>&nbsp;glyph</span>
     <%}%>
@@ -312,11 +335,12 @@ SPDX-License-Identifier: EPL-2.0
           <ul style="margin-left: -1em; list-style-type: none; padding: 0; margin: 0;">
     <%for (Map.Entry<String, List<String>> entry : bundles.entrySet()) {
         String bundle = entry.getKey();
+        String bundleSize = parent.getBundleSize(bundle);
         String id = parent.getFolderID(bundle);%>
             <li style="font-size: 90%;">
               <button id="<%=id%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=id%>');">&#x25B7;</button>
-              <span style="font-size:100%;"><%=bundle.replace(" ", "&nbsp;")%></span>
-              <div id="<%=id%>" style="display:none; margin-left: 2em;">
+              <span style="font-size:100%;"><%=bundle.replace(" ", "&nbsp;")%><%if (!bundleSize.isEmpty()){%>&nbsp;&nbsp;<b style="color: SteelBlue;"><%=bundleSize%>KB</span><%}%></b>
+              <div id="<%=id%>" style="display:none; margin-left: 2em; white-space: nowrap;">
       <%for (String line : entry.getValue()) {%>
                 <%=line%><br/>
       <%}%>

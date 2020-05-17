@@ -11,6 +11,8 @@ SPDX-License-Identifier: EPL-2.0
 <%@jet package="org.eclipse.justj.codegen.templates.feature" class="FeatureProperties" imports="org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
 <%JVM jvm = (JVM)argument;
   String jvmLabel = jvm.getLabel();
+  String description = jvm.getDescription();
+  boolean hasDescription = description != null && !description.trim().isEmpty();
   Model model = jvm.getModel();
   String modelLabel = model.getLabel();
   String provider = model.getProvider();%>
@@ -18,5 +20,8 @@ SPDX-License-Identifier: EPL-2.0
 
 providerName = <%=provider%>
 featureName = <%=modelLabel%> <%=jvmLabel%>
-description = Contains the plug-ins and fragments for the <%=jvmLabel%>
+description = Contains the plug-ins and fragments for the <%=jvmLabel%>.<%if (hasDescription) {%>\n\<%}%>
+<%if (hasDescription) {%>
+<%=Generator.composeLines(description, "", "\\n\\" + NL)%>
+<%}%>
 copyright = <%=Generator.getCopyright(argument, "", "\\n\\" + NL)%>\n

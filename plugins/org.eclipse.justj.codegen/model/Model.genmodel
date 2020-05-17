@@ -32,6 +32,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/version"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/label"/>
+      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/description"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Model.ecore#//JVM/model"/>
       <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/aboutTextExtra"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//JVM/variants"/>
@@ -44,6 +45,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Model.ecore#//Variant/jVM"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Model.ecore#//Copyrightable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Copyrightable/annotations"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightHolder"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightYear"/>
       <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightText"/>
@@ -54,6 +56,14 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Model.ecore#//Touchable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Touchable/touchpoints"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//Annotation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Annotation/source"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Annotation/details"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//Detail">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Detail/key"/>
+      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Detail/value"/>
     </genClasses>
   </genPackages>
   <codeStyle>UnnecessaryDeprecatedMethod</codeStyle>

@@ -11,10 +11,13 @@
 package org.eclipse.justj.codegen.model.util;
 
 
+import java.util.Map;
+
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.Copyrightable;
 import org.eclipse.justj.codegen.model.JVM;
 import org.eclipse.justj.codegen.model.Model;
@@ -120,6 +123,18 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTouchable(Touchable object)
       {
         return createTouchableAdapter();
+      }
+
+      @Override
+      public Adapter caseAnnotation(Annotation object)
+      {
+        return createAnnotationAdapter();
+      }
+
+      @Override
+      public Adapter caseDetail(Map.Entry<String, String> object)
+      {
+        return createDetailAdapter();
       }
 
       @Override
@@ -229,6 +244,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTouchableAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.justj.codegen.model.Annotation <em>Annotation</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.justj.codegen.model.Annotation
+   * @generated
+   */
+  public Adapter createAnnotationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link java.util.Map.Entry <em>Detail</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see java.util.Map.Entry
+   * @generated
+   */
+  public Adapter createDetailAdapter()
   {
     return null;
   }

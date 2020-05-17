@@ -182,6 +182,56 @@ public class ModelItemProviderAdapterFactory extends ModelAdapterFactory impleme
   }
 
   /**
+   * This keeps track of the one adapter used for all {@link org.eclipse.justj.codegen.model.Annotation} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected AnnotationItemProvider annotationItemProvider;
+
+  /**
+   * This creates an adapter for a {@link org.eclipse.justj.codegen.model.Annotation}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createAnnotationAdapter()
+  {
+    if (annotationItemProvider == null)
+    {
+      annotationItemProvider = new AnnotationItemProvider(this);
+    }
+
+    return annotationItemProvider;
+  }
+
+  /**
+   * This keeps track of the one adapter used for all {@link java.util.Map.Entry} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected DetailItemProvider detailItemProvider;
+
+  /**
+   * This creates an adapter for a {@link java.util.Map.Entry}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createDetailAdapter()
+  {
+    if (detailItemProvider == null)
+    {
+      detailItemProvider = new DetailItemProvider(this);
+    }
+
+    return detailItemProvider;
+  }
+
+  /**
    * This returns the root adapter factory that contains this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -313,6 +363,14 @@ public class ModelItemProviderAdapterFactory extends ModelAdapterFactory impleme
     if (touchpointItemProvider != null)
     {
       touchpointItemProvider.dispose();
+    }
+    if (annotationItemProvider != null)
+    {
+      annotationItemProvider.dispose();
+    }
+    if (detailItemProvider != null)
+    {
+      detailItemProvider.dispose();
     }
   }
 

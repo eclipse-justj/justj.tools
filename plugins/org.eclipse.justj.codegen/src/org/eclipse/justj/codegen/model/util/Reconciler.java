@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -46,6 +47,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -54,6 +56,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.Copyrightable;
 import org.eclipse.justj.codegen.model.JVM;
 import org.eclipse.justj.codegen.model.Model;
@@ -203,6 +206,8 @@ public class Reconciler
       manifestMonitor.worked(1);
     }
 
+    refactorCommonProperties(modelCopy);
+
     if (failure instanceof IOException)
     {
       throw (IOException)failure;
@@ -230,6 +235,65 @@ public class Reconciler
     }
 
     return modelCopy;
+  }
+
+  protected void refactorCommonProperties(Model model)
+  {
+    EList<JVM> jvms = model.getJVMs();
+    for (JVM jvm : jvms)
+    {
+      EList<Variant> variants = jvm.getVariants();
+      Map<String, String> commonProperties = new TreeMap<>();
+      Set<String> conflictingKeys = new HashSet<String>();
+      for (Variant variant : variants)
+      {
+        Annotation annotation = ModelUtil.getAnnotation(variant, ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI);
+        if (annotation == null)
+        {
+          commonProperties.clear();
+          break;
+        }
+
+        for (Map.Entry<String, String> entry : annotation.getDetails().entrySet())
+        {
+          String key = entry.getKey();
+          String value = entry.getValue();
+          if (commonProperties.containsKey(key))
+          {
+            String oldValue = commonProperties.put(key, value);
+            if (!Objects.equals(oldValue, value))
+            {
+              conflictingKeys.add(key);
+            }
+          }
+          else
+          {
+            commonProperties.put(key, value);
+          }
+        }
+      }
+
+      commonProperties.keySet().removeAll(conflictingKeys);
+
+      if (!commonProperties.isEmpty())
+      {
+        for (Variant variant : variants)
+        {
+          Annotation annotation = ModelUtil.getAnnotation(variant, ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI);
+          EMap<String, String> details = annotation.getDetails();
+          details.keySet().removeAll(commonProperties.keySet());
+          if (details.isEmpty())
+          {
+            EcoreUtil.delete(annotation);
+          }
+        }
+
+        Annotation annotation = ModelFactory.eINSTANCE.createAnnotation();
+        annotation.getDetails().putAll(commonProperties);
+        annotation.setSource(ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI);
+        jvm.getAnnotations().add(annotation);
+      }
+    }
   }
 
   private static class TarAnalyzer extends CodeGenUtil.UntarHandler
@@ -275,21 +339,34 @@ public class Reconciler
     {
       String jreName = properties.getProperty("org.eclipse.justj.name");
       String label = properties.getProperty("org.eclipse.justj.label");
+      String description = properties.getProperty("org.eclipse.justj.description");
 
       String javaVersion = getCleanVersion(properties.getProperty("java.version"));
 
       JVM jvm = getJVM(model, jreName, javaVersion);
       jvm.setLabel(label);
+      jvm.setDescription(description);
+
+      TreeMap<String, String> details = new TreeMap<>();
+      for (Map.Entry<Object, Object> entry : properties.entrySet())
+      {
+        details.put(entry.getKey().toString(), entry.getValue().toString());
+      }
 
       String os = properties.getProperty("osgi.os");
       String arch = properties.getProperty("osgi.arch");
       Variant variant = getVariant(jvm, os, arch);
 
+      Annotation annotation = ModelFactory.eINSTANCE.createAnnotation();
+      annotation.setSource(ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI);
+      annotation.getDetails().putAll(details);
+      variant.getAnnotations().add(annotation);
+
       if (jvm.getAboutTextExtra() == null)
       {
         String aboutTextExtra = "\nVisit http://www.eclipse.org/justj";
         String vendor = properties.getProperty("org.eclipse.justj.url.vendor");
-        aboutTextExtra += "\n\nProvides Java Runtimes derived from " + vendor;
+        aboutTextExtra += "\n\nProvides Java Runtimes derived from " + vendor + ".";
         jvm.setAboutTextExtra(aboutTextExtra);
       }
 

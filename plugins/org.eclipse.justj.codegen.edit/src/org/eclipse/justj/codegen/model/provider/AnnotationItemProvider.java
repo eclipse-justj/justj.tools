@@ -28,18 +28,18 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-import org.eclipse.justj.codegen.model.Copyrightable;
+import org.eclipse.justj.codegen.model.Annotation;
 import org.eclipse.justj.codegen.model.ModelFactory;
 import org.eclipse.justj.codegen.model.ModelPackage;
 
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.justj.codegen.model.Copyrightable} object.
+ * This is the item provider adapter for a {@link org.eclipse.justj.codegen.model.Annotation} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class CopyrightableItemProvider extends ItemProviderAdapter
+public class AnnotationItemProvider extends ItemProviderAdapter
   implements
     IEditingDomainItemProvider,
     IStructuredItemContentProvider,
@@ -53,7 +53,7 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
    * <!-- end-user-doc -->
    * @generated
    */
-  public CopyrightableItemProvider(AdapterFactory adapterFactory)
+  public AnnotationItemProvider(AdapterFactory adapterFactory)
   {
     super(adapterFactory);
   }
@@ -71,76 +71,28 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
     {
       super.getPropertyDescriptors(object);
 
-      addCopyrightHolderPropertyDescriptor(object);
-      addCopyrightYearPropertyDescriptor(object);
-      addCopyrightTextPropertyDescriptor(object);
+      addSourcePropertyDescriptor(object);
     }
     return itemPropertyDescriptors;
   }
 
   /**
-   * This adds a property descriptor for the Copyright Holder feature.
+   * This adds a property descriptor for the Source feature.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected void addCopyrightHolderPropertyDescriptor(Object object)
+  protected void addSourcePropertyDescriptor(Object object)
   {
     itemPropertyDescriptors.add(
       createItemPropertyDescriptor(
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
-        getString("_UI_Copyrightable_copyrightHolder_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_Copyrightable_copyrightHolder_feature", "_UI_Copyrightable_type"),
-        ModelPackage.Literals.COPYRIGHTABLE__COPYRIGHT_HOLDER,
+        getString("_UI_Annotation_source_feature"),
+        getString("_UI_PropertyDescriptor_description", "_UI_Annotation_source_feature", "_UI_Annotation_type"),
+        ModelPackage.Literals.ANNOTATION__SOURCE,
         true,
         false,
-        false,
-        ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-        null,
-        null));
-  }
-
-  /**
-   * This adds a property descriptor for the Copyright Year feature.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected void addCopyrightYearPropertyDescriptor(Object object)
-  {
-    itemPropertyDescriptors.add(
-      createItemPropertyDescriptor(
-        ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-        getResourceLocator(),
-        getString("_UI_Copyrightable_copyrightYear_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_Copyrightable_copyrightYear_feature", "_UI_Copyrightable_type"),
-        ModelPackage.Literals.COPYRIGHTABLE__COPYRIGHT_YEAR,
-        true,
-        false,
-        false,
-        ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-        null,
-        null));
-  }
-
-  /**
-   * This adds a property descriptor for the Copyright Text feature.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected void addCopyrightTextPropertyDescriptor(Object object)
-  {
-    itemPropertyDescriptors.add(
-      createItemPropertyDescriptor(
-        ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-        getResourceLocator(),
-        getString("_UI_Copyrightable_copyrightText_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_Copyrightable_copyrightText_feature", "_UI_Copyrightable_type"),
-        ModelPackage.Literals.COPYRIGHTABLE__COPYRIGHT_TEXT,
-        true,
-        true,
         false,
         ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
         null,
@@ -161,7 +113,7 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
     if (childrenFeatures == null)
     {
       super.getChildrenFeatures(object);
-      childrenFeatures.add(ModelPackage.Literals.COPYRIGHTABLE__ANNOTATIONS);
+      childrenFeatures.add(ModelPackage.Literals.ANNOTATION__DETAILS);
     }
     return childrenFeatures;
   }
@@ -181,6 +133,18 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
   }
 
   /**
+   * This returns Annotation.gif.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object getImage(Object object)
+  {
+    return overlayImage(object, getResourceLocator().getImage("full/obj16/Annotation"));
+  }
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -195,13 +159,27 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
    * This returns the label text for the adapted class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   @Override
   public String getText(Object object)
   {
-    String label = ((Copyrightable)object).getCopyrightHolder();
-    return label == null || label.length() == 0 ? getString("_UI_Copyrightable_type") : getString("_UI_Copyrightable_type") + " " + label;
+    Annotation eAnnotation = (Annotation)object;
+    StringBuilder result = new StringBuilder();
+    String source = eAnnotation.getSource();
+    if (source != null)
+    {
+      int index = source.lastIndexOf("/");
+      if (index == -1)
+      {
+        result.append(source);
+      }
+      else
+      {
+        result.append(source.substring(index + 1));
+      }
+    }
+    return result.toString();
   }
 
   /**
@@ -216,14 +194,12 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
   {
     updateChildren(notification);
 
-    switch (notification.getFeatureID(Copyrightable.class))
+    switch (notification.getFeatureID(Annotation.class))
     {
-      case ModelPackage.COPYRIGHTABLE__COPYRIGHT_HOLDER:
-      case ModelPackage.COPYRIGHTABLE__COPYRIGHT_YEAR:
-      case ModelPackage.COPYRIGHTABLE__COPYRIGHT_TEXT:
+      case ModelPackage.ANNOTATION__SOURCE:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
         return;
-      case ModelPackage.COPYRIGHTABLE__ANNOTATIONS:
+      case ModelPackage.ANNOTATION__DETAILS:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
         return;
     }
@@ -242,7 +218,7 @@ public class CopyrightableItemProvider extends ItemProviderAdapter
   {
     super.collectNewChildDescriptors(newChildDescriptors, object);
 
-    newChildDescriptors.add(createChildParameter(ModelPackage.Literals.COPYRIGHTABLE__ANNOTATIONS, ModelFactory.eINSTANCE.createAnnotation()));
+    newChildDescriptors.add(createChildParameter(ModelPackage.Literals.ANNOTATION__DETAILS, ModelFactory.eINSTANCE.create(ModelPackage.Literals.DETAIL)));
   }
 
   /**
