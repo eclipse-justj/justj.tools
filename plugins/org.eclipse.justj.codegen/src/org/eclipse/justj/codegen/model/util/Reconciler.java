@@ -467,7 +467,7 @@ public class Reconciler
       jvm.setVersion(javaVersion);
       jvms.add(jvm);
 
-      ECollections.sort(jvms, (j1, j2) -> j1.getName().compareTo(j2.getName()));
+      sortJVMs(jvms);
       return jvm;
     }
 
@@ -527,9 +527,19 @@ public class Reconciler
 
       variant.setLabel(label);
       variants.add(variant);
-      ECollections.sort(variants, (v1, v2) -> v1.getOs().compareTo(v2.getOs()));
+      sortVariants(variants);
       return variant;
     }
+  }
+
+  public static void sortVariants(EList<Variant> variants)
+  {
+    ECollections.sort(variants, (v1, v2) -> v1.getOs().compareTo(v2.getOs()));
+  }
+
+  public static void sortJVMs(EList<JVM> jvms)
+  {
+    ECollections.sort(jvms, (j1, j2) -> j1.getName().compareTo(j2.getName()));
   }
 
   private Map<URI, Path> loadManifest(SubMonitor monitor) throws IOException, InterruptedException

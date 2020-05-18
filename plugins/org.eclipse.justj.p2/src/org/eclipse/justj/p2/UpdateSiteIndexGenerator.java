@@ -21,8 +21,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.justj.codegen.model.util.Indexer.Property;
 import org.eclipse.justj.p2.UpdateSiteGenerator.RepositoryAnalyzer;
 
 
@@ -77,6 +80,16 @@ public class UpdateSiteIndexGenerator
   private final UpdateSiteIndexGenerator parent;
 
   /**
+   * Additional properties to show for each bundle.
+   */
+  private Map<String, Map<String, String>> bundleDetails;
+
+  /**
+   * An addition resource induced from the p2 metadata.
+   */
+  private Resource resource;
+
+  /**
    * Creates an instance for the given folder with the given update site generator
    * @param folder
    * @param updateSiteGenerator
@@ -126,6 +139,30 @@ public class UpdateSiteIndexGenerator
   public Path getFolder()
   {
     return folder;
+  }
+
+  /**
+   * Returns the location of the resource in this folder, or {@code null}.
+   * @return the location of the resource in this folder, or {@code null}.
+   */
+  public String getResourceURL()
+  {
+    Resource resource = getResource();
+    return resource == null ? null : resource.getURI().lastSegment();
+  }
+
+  /**
+   * Returns a resource induced from the p2 metadata.
+   * @return a resource induced from the p2 metadata, or {@code null}.
+   */
+  public Resource getResource()
+  {
+    if (getChildren().isEmpty())
+    {
+      getBundles();
+    }
+
+    return resource;
   }
 
   /**
@@ -587,7 +624,10 @@ public class UpdateSiteIndexGenerator
     if (bundles == null)
     {
       bundleSizes = new TreeMap<>();
-      bundles = repositoryAnalyzer.getBundles(bundleSizes);
+      bundleDetails = new TreeMap<>();
+      AtomicReference<Resource> resourceReference = new AtomicReference<>();
+      bundles = repositoryAnalyzer.getBundles(bundleSizes, bundleDetails, repositoryAnalyzer.buildAdditionalDetails(resourceReference));
+      resource = resourceReference.get();
     }
     return bundles;
   }
@@ -605,6 +645,13 @@ public class UpdateSiteIndexGenerator
       float size = ((float)bundleSize) / 1024;
       return String.format(java.util.Locale.US, "%,.1f", size);
     }
+  }
+
+  public List<Property> getProperties(String bundle)
+  {
+    getBundles();
+    Map<String, String> details = bundleDetails.get(bundle);
+    return Property.create(details);
   }
 
   public String getFolderID(String folder)

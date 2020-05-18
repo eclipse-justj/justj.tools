@@ -8,10 +8,13 @@ https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
 --%>
-<%@jet package="org.eclipse.justj.p2" class="UpdateSiteIndex" imports="java.io.* java.util.*"%>
-<%UpdateSiteIndexGenerator parent = (UpdateSiteIndexGenerator)argument;%>
-<%List<UpdateSiteIndexGenerator> children = parent.getChildren();
-  String title = parent.getTitle();%>
+<%@jet package="org.eclipse.justj.p2" class="UpdateSiteIndex" imports="java.io.* java.util.* org.eclipse.justj.codegen.model.util.Indexer.Property"%>
+<%UpdateSiteIndexGenerator parent = (UpdateSiteIndexGenerator)argument;
+  List<UpdateSiteIndexGenerator> children = parent.getChildren();
+  String title = parent.getTitle();
+  String toggleExpand = "<span style=\"font-size: 100%;\" class=\"orange toggle-state-on\">&#x25E2;</span>";
+  String toggleCollapse = "<span style=\"font-size: 100%;\" class=\"orange toggle-state-off\">&#x25B7;</span>";
+  int toggleCounter = 0;%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -26,6 +29,55 @@ SPDX-License-Identifier: EPL-2.0
 </head>
 
   <body id="body_solstice">
+<%if (parent.getChildren().isEmpty()) {%>
+    <style>
+.toggle {
+  display: none;
+}
+
+.toggle-label {
+  font-size: 100%;
+  margin-bottom: 0px;
+  font-weight: normal;
+}
+
+.toggle + .toggle-label + .toggle-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all .4s ease-in-out;
+}
+
+.toggle + .toggle-label > .toggle-state-on {
+  display: none;
+}
+
+.toggle + .toggle-label > .toggle-state-off {
+  display: inherit;
+}
+
+.toggle:checked + .toggle-label > .toggle-state-on {
+  display: inherit;
+}
+
+.toggle:checked + .toggle-label > .toggle-state-off {
+  display: none;
+}
+
+.toggle:checked + .toggle-label + .toggle-content {
+  max-height: none;
+  opacity: 1;
+}
+
+.toggle-content {
+  padding-left: 2em;
+}
+
+.toggle-label:hover, .toggle-label:hover * {
+  cursor: pointer;
+}
+    </style>
+<%}%>
     <script>
 
       function copyToClipboard(element) {
@@ -271,7 +323,13 @@ SPDX-License-Identifier: EPL-2.0
            </p>
            <p>Click the header link or the update site link for more details.</p>
   <%}%>
-<%} else {%>
+<%} else {
+    String resourceURL = parent.getResourceURL();%>
+  <%if (resourceURL != null) {%>
+           <p>
+             This update site's source code is generated from <a href="<%=resourceURL%>" target="model"><%=resourceURL%></a>.
+           </p>
+  <%}%>
   <%Map<String, List<String>> features = parent.getFeatures();
     if (!features.isEmpty()) {%>
            <p>
@@ -336,11 +394,41 @@ SPDX-License-Identifier: EPL-2.0
     <%for (Map.Entry<String, List<String>> entry : bundles.entrySet()) {
         String bundle = entry.getKey();
         String bundleSize = parent.getBundleSize(bundle);
-        String id = parent.getFolderID(bundle);%>
+        String id = parent.getFolderID(bundle);
+        List<Property> properties = parent.getProperties(bundle);%>
             <li style="font-size: 90%;">
               <button id="<%=id%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=id%>');">&#x25B7;</button>
-              <span style="font-size:100%;"><%=bundle.replace(" ", "&nbsp;")%><%if (!bundleSize.isEmpty()){%>&nbsp;&nbsp;<b style="color: SteelBlue;"><%=bundleSize%>KB</span><%}%></b>
+              <span style="font-size:100%;"><%=bundle.replace(" ", "&nbsp;")%><%if (!bundleSize.isEmpty()) {%>&nbsp;&nbsp;<b style="color: SteelBlue;"><%=bundleSize%>KB</span><%}%></b>
               <div id="<%=id%>" style="display:none; margin-left: 2em; white-space: nowrap;">
+      <%if (!properties.isEmpty()) {
+          int mainID = ++toggleCounter;%>
+         <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
+         <label for="toggle-id-<%=mainID%>" class="toggle-label" style="font-size: 100%;"><%=toggleExpand%><%=toggleCollapse%> Properties</label>
+         <ul class="toggle-content" style="margin-top: 0px; white-space: normal;">
+        <%for (Property property : properties) {
+            List<String> propertyChildren = property.getChildren();
+            if (propertyChildren.isEmpty()) {%>
+           <li>
+             <%=property.getKey()%> = <%=property.getValue()%>
+           </li>
+          <%} else {
+              int valueID = ++toggleCounter;%>
+           <li>
+             <input type="checkbox" id="toggle-id-<%=valueID%>" class="toggle"/>
+             <label for="toggle-id-<%=valueID%>" class="toggle-label"><%=toggleExpand%><%=toggleCollapse%> <%=property.getKey()%></label>
+             <ul class="toggle-content" style="margin-top: 0px;">
+            <%for (String value : propertyChildren) {
+                valueID = ++toggleCounter;%>
+               <li>
+                 <%=value%>
+               </li>
+            <%}%>
+             </ul>
+            </li>
+          <%}%>
+        <%}%>
+         </ul>
+      <%}%>
       <%for (String line : entry.getValue()) {%>
                 <%=line%><br/>
       <%}%>

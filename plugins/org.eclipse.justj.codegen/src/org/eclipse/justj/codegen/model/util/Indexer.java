@@ -204,12 +204,7 @@ public class Indexer
 
     public List<Property> getProperties()
     {
-      List<Property> result = new ArrayList<>();
-      for (Map.Entry<String, String> entry : properties.entrySet())
-      {
-        result.add(new Property(entry.getKey(), entry.getValue()));
-      }
-      return result;
+      return Property.create(properties);
     }
 
     public URI getDownloadURI()
@@ -245,9 +240,28 @@ public class Indexer
       this.value = value;
     }
 
+    public static List<Property> create(Map<String, String> properties)
+    {
+      List<Property> result = new ArrayList<>();
+      if (properties != null)
+      {
+        for (Map.Entry<String, String> entry : properties.entrySet())
+        {
+          result.add(new Property(entry.getKey(), entry.getValue()));
+        }
+      }
+      return result;
+    }
+
+    protected boolean isImportant()
+    {
+      return "org.eclipse.justj.modules".equals(key) || "org.osgi.framework.system.packages".equals(key) || "org.eclipse.justj.jlink.args".equals(key)
+        || "org.eclipse.justj.description".equals(key);
+    }
+
     public String getKey()
     {
-      if ("org.eclipse.justj.modules".equals(key) || "org.osgi.framework.system.packages".equals(key) || "org.eclipse.justj.args".equals(key))
+      if (isImportant())
       {
         return "<b>" + key + "</b>";
       }
@@ -265,7 +279,8 @@ public class Indexer
       }
       else
       {
-        return escapeHTML(value);
+        String result = escapeHTML(value);
+        return isImportant() ? "<b>" + result + "</b>" : result;
       }
     }
 

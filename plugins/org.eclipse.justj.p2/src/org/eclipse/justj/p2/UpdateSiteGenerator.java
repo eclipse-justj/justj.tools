@@ -31,12 +31,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -51,6 +53,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.equinox.internal.p2.metadata.BasicVersion;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.p2.core.ProvisionException;
@@ -76,6 +79,7 @@ import org.eclipse.equinox.p2.repository.artifact.spi.AbstractArtifactRepository
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.spi.AbstractMetadataRepository;
+import org.eclipse.justj.codegen.model.util.ModelUtil;
 
 
 /**
@@ -469,9 +473,9 @@ public class UpdateSiteGenerator
   public RepositoryAnalyzer getRepositoryAnalyzer(List<Path> repositories)
   {
     RepositoryAnalyzer repositoryAnalyzer = new RepositoryAnalyzer();
-    RepositoryDescriptor repositoryDescriptor = new RepositoryDescriptor();
     for (Path repository : repositories)
     {
+      RepositoryDescriptor repositoryDescriptor = new RepositoryDescriptor();
       repositoryDescriptor.setLocation(createURI(repository));
       repositoryAnalyzer.addSource(repositoryDescriptor);
     }
@@ -774,6 +778,23 @@ public class UpdateSiteGenerator
     {
       byte[] bytes = indexHTML.getBytes("UTF-8");
       out.write(bytes);
+    }
+
+    Resource resource = updateSiteIndexGenerator.getResource();
+    if (resource != null)
+    {
+      Path targetResource = updateSiteIndexGenerator.getFolder().resolve(resource.getURI().lastSegment());
+      System.out.println("Generating " + targetResource);
+      try (ByteArrayOutputStream out = new ByteArrayOutputStream())
+      {
+        resource.save(out, null);
+        out.close();
+
+        try (OutputStream targetOut = Files.newOutputStream(targetResource))
+        {
+          targetOut.write(out.toByteArray());
+        }
+      }
     }
 
     for (UpdateSiteIndexGenerator child : updateSiteIndexGenerator.getChildren())
@@ -1261,7 +1282,7 @@ public class UpdateSiteGenerator
 
           List<String> lines = new ArrayList<>();
           String description = iu.getProperty(IInstallableUnit.PROP_DESCRIPTION, null);
-          lines.add("<span style=\"white-space: normal;\">" + description + "</span>");
+          lines.add("<span style=\"white-space: normal; color: Navy;\">" + description + "</span>");
 
           for (IRequirement requirement : iu.getRequirements())
           {
@@ -1301,9 +1322,15 @@ public class UpdateSiteGenerator
 
     /**
      * Returns a map from bundle name to a list of information for that bundle for each bundle in the repository.
+     * @param bundleSizes returns the computed sizes of the associated artifact.
+     * @param bundleDetails returns the computed additional properties.
+     * @param iuBundleDetails provides the computed additional properties.
      * @return a map from bundle name to a list of information for that bundle for each bundle in the repository.
      */
-    public Map<String, List<String>> getBundles(Map<String, Long> bundleSizes)
+    public Map<String, List<String>> getBundles(
+      Map<String, Long> bundleSizes,
+      Map<String, Map<String, String>> bundleDetails,
+      Map<IInstallableUnit, Map<String, String>> iuBundleDetails)
     {
       Map<String, List<String>> result = new TreeMap<String, List<String>>();
       IMetadataRepository repository = getCompositeMetadataRepository();
@@ -1357,6 +1384,12 @@ public class UpdateSiteGenerator
                 }
 
                 result.put(iuName, lines);
+
+                Map<String, String> iuBundleDetail = iuBundleDetails.get(iu);
+                if (iuBundleDetail != null)
+                {
+                  bundleDetails.put(iuName, iuBundleDetail);
+                }
               }
             }
             else if ("java.package".equals(namespace))
@@ -1549,6 +1582,35 @@ public class UpdateSiteGenerator
       {
         throw new IllegalStateException(exception);
       }
+    }
+
+    public Map<IInstallableUnit, Map<String, String>> buildAdditionalDetails(AtomicReference<Resource> resourceReference)
+    {
+      Map<IInstallableUnit, Map<String, String>> result = new HashMap<IInstallableUnit, Map<String, String>>();
+      ModelUtil.P2Processor processor = new ModelUtil.P2Processor();
+      IMetadataRepository metadataRepository = getMetadataRepository();
+      for (IInstallableUnit iu : metadataRepository.query(QueryUtil.ALL_UNITS, new NullProgressMonitor()))
+      {
+        String id = iu.getId();
+        Version version = iu.getVersion();
+        Map<String, String> properties = new TreeMap<>(iu.getProperties());
+        for (Map.Entry<String, String> entry : properties.entrySet())
+        {
+          String value = iu.getProperty(entry.getKey(), null);
+          entry.setValue(value);
+        }
+
+        Map<String, String> additionalProperties = processor.process(id, version.toString(), properties);
+        if (additionalProperties != null)
+        {
+          result.put(iu, additionalProperties);
+        }
+      }
+
+      Resource resource = (Resource)processor.build();
+      resourceReference.set(resource);
+
+      return result;
     }
 
     @Override
