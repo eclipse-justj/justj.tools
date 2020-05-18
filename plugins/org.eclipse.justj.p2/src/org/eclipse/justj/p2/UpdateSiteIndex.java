@@ -125,9 +125,9 @@ public class UpdateSiteIndex
   protected final String TEXT_97 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all');";
   protected final String TEXT_98 = NL + "             to provide detailed information about the exports and imports of each bundle." + NL + "           </p>" + NL + "           <ul>" + NL + "             <li>" + NL + "               The &#x21D6; glyph denotes the exported bundle identifier along with its full version." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x2196; glyph denotes an exported java package along with its full version, if specified." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x21D8; glyph denotes a required bundle along with its version range, if specified, as well as information about whether the requirement is optional and if so, whether it's greedy." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x2198; glyph denotes a required package along with its version range, if specified." + NL + "             </li>" + NL + "           </ul>" + NL + "" + NL + "          <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
   protected final String TEXT_99 = NL + "            <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
-  protected final String TEXT_100 = "&nbsp;&nbsp;<b style=\"color: SteelBlue;\">";
-  protected final String TEXT_101 = "KB</span>";
-  protected final String TEXT_102 = "</b>" + NL + "              <div id=\"";
+  protected final String TEXT_100 = "&nbsp;&nbsp;<";
+  protected final String TEXT_101 = " style=\"color: SteelBlue;\">";
+  protected final String TEXT_102 = "</";
   protected final String TEXT_103 = NL + "         <input type=\"checkbox\" id=\"toggle-id-";
   protected final String TEXT_104 = "\" class=\"toggle\"/>" + NL + "         <label for=\"toggle-id-";
   protected final String TEXT_105 = "\" class=\"toggle-label\" style=\"font-size: 100%;\">";
@@ -464,6 +464,7 @@ public class UpdateSiteIndex
     for (Map.Entry<String, List<String>> entry : bundles.entrySet()) {
         String bundle = entry.getKey();
         String bundleSize = parent.getBundleSize(bundle);
+        String xmlTag = bundleSize.endsWith("MB") ? "b" : "span";
         String id = parent.getFolderID(bundle);
         List<Property> properties = parent.getProperties(bundle);
     stringBuffer.append(TEXT_99);
@@ -474,10 +475,14 @@ public class UpdateSiteIndex
     stringBuffer.append(bundle.replace(" ", "&nbsp;"));
     if (!bundleSize.isEmpty()) {
     stringBuffer.append(TEXT_100);
-    stringBuffer.append(bundleSize);
+    stringBuffer.append(xmlTag);
     stringBuffer.append(TEXT_101);
-    }
+    stringBuffer.append(bundleSize);
     stringBuffer.append(TEXT_102);
+    stringBuffer.append(xmlTag);
+    stringBuffer.append(TEXT_19);
+    }
+    stringBuffer.append(TEXT_90);
     stringBuffer.append(id);
     stringBuffer.append(TEXT_91);
     if (!properties.isEmpty()) {

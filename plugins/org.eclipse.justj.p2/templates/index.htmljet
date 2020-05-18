@@ -394,11 +394,12 @@ SPDX-License-Identifier: EPL-2.0
     <%for (Map.Entry<String, List<String>> entry : bundles.entrySet()) {
         String bundle = entry.getKey();
         String bundleSize = parent.getBundleSize(bundle);
+        String xmlTag = bundleSize.endsWith("MB") ? "b" : "span";
         String id = parent.getFolderID(bundle);
         List<Property> properties = parent.getProperties(bundle);%>
             <li style="font-size: 90%;">
               <button id="<%=id%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=id%>');">&#x25B7;</button>
-              <span style="font-size:100%;"><%=bundle.replace(" ", "&nbsp;")%><%if (!bundleSize.isEmpty()) {%>&nbsp;&nbsp;<b style="color: SteelBlue;"><%=bundleSize%>KB</span><%}%></b>
+              <span style="font-size:100%;"><%=bundle.replace(" ", "&nbsp;")%><%if (!bundleSize.isEmpty()) {%>&nbsp;&nbsp;<<%=xmlTag%> style="color: SteelBlue;"><%=bundleSize%></<%=xmlTag%>><%}%></span>
               <div id="<%=id%>" style="display:none; margin-left: 2em; white-space: nowrap;">
       <%if (!properties.isEmpty()) {
           int mainID = ++toggleCounter;%>

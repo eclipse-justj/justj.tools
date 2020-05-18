@@ -643,7 +643,14 @@ public class UpdateSiteIndexGenerator
     else
     {
       float size = ((float)bundleSize) / 1024;
-      return String.format(java.util.Locale.US, "%,.1f", size);
+      if (size > 1024 * 5)
+      {
+        return String.format(java.util.Locale.US, "%,.1f", size / 1024) + "MB";
+      }
+      else
+      {
+        return String.format(java.util.Locale.US, "%,.1f", size) + "KB";
+      }
     }
   }
 

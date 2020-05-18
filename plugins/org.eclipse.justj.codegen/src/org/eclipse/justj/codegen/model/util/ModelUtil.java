@@ -164,11 +164,18 @@ public final class ModelUtil
         }
       }
 
-      EList<JVM> modelJVMs = model.getJVMs();
-      modelJVMs.addAll(jvms);
-      Reconciler.sortJVMs(modelJVMs);
-      Resource resource = model.eResource();
-      return resource;
+      if (model == null)
+      {
+        return null;
+      }
+      else
+      {
+        EList<JVM> modelJVMs = model.getJVMs();
+        modelJVMs.addAll(jvms);
+        Reconciler.sortJVMs(modelJVMs);
+        Resource resource = model.eResource();
+        return resource;
+      }
     }
   }
 }

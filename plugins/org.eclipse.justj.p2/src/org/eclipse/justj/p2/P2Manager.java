@@ -180,8 +180,8 @@ public class P2Manager
     Path milestoneLatest = updateSiteGenerator.getCompositeUpdateSiteDestination("milestone", true);
     Path source = updateSiteGenerator.getLatest(milestoneLatest);
     ensureSourceMilestoneExists(source);
-    String targetName = source.getFileName().toString().substring(1);
-    Path target = updateSiteGenerator.getPromoteUpdateSiteDestination("release", targetName);
+    String version = updateSiteGenerator.getVersion(source);
+    Path target = updateSiteGenerator.getPromoteUpdateSiteDestination("release", version);
     Assert.isTrue(!Files.exists(target), "The release '" + target + "' already exists");
     updateSiteGenerator.mirrorUpdateSite(source, target, "release");
 
@@ -463,6 +463,7 @@ public class P2Manager
       String titleImage = getArgument("-title-image", args, "https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-426x100.png");
       String bodyImage = getArgument("-body-image", args, null);
       String targetURL = getArgument("-target-url", args, null);
+      String versionIU = getArgument("-version-iu", args, null);
 
       Assert.isTrue(!Paths.get(relativeTargetFolder).isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
 
@@ -595,6 +596,7 @@ public class P2Manager
         Paths.get(relativeTargetFolder),
         targetURL,
         retainedNightlyBuilds,
+        versionIU,
         breadcrumbs,
         favicon,
         titleImage,

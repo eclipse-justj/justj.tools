@@ -103,7 +103,7 @@ public class UpdateSiteGenerator
   /**
    * The prefix qualifier associated with the {@link #BUILD_TYPES}.
    */
-  public static final List<String> BUILD_TYPE_QUALIFIERS = Arrays.asList(new String []{ "N", "S", "R" });
+  public static final List<String> BUILD_TYPE_QUALIFIERS = Arrays.asList(new String []{ "N", "S", "" });
 
   /**
    * Where the downloads are expected to be using https.
@@ -173,15 +173,21 @@ public class UpdateSiteGenerator
   private final boolean verbose;
 
   /**
+   * The IU prefix filter for determining the version of the repo.
+   */
+  private String versionIU;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
    * @param buildURL the URL of the site that produces these builds.
    * @param projectRoot the root location of the site.
-   * @param relativeTargetFolder the relative location below the root at which to targe the generation.
+   * @param relativeTargetFolder the relative location below the root at which to target the generation.
    * @param targetURL the URL at which the site will live once promoted.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
-   * @param breadcrumbs a map from label to URL for populating the site's bread crubms.
+   * @param versionIU a prefix for the IUs that will be used to determine the overall version.
+   * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
    * @param favicon the URL of the site's favicon.
    * @param titleImage the URL of the site's title image.
    * @param bodyImage the URL if the image used in the body.
@@ -195,6 +201,7 @@ public class UpdateSiteGenerator
     Path relativeTargetFolder,
     String targetURL,
     int retainedNightlyBuilds,
+    String versionIU,
     Map<String, String> breadcrumbs,
     String favicon,
     String titleImage,
@@ -204,6 +211,7 @@ public class UpdateSiteGenerator
     this.projectLabel = projectLabel;
     this.buildURL = buildURL;
     this.targetURL = targetURL;
+    this.versionIU = versionIU;
     this.breadcrumbs = breadcrumbs;
     this.favicon = favicon;
     this.titleImage = titleImage;
@@ -449,6 +457,22 @@ public class UpdateSiteGenerator
     {
       return targetRelativeURL;
     }
+  }
+
+  /**
+   * Returns the version of the {@code org.eclipse.emf.sdk.feature.group} installable unit in the target repository.
+   * @param targetRepository the repository location.
+   * @return the associated semantic version of the repository.
+   * @throws Exception
+   */
+  public String getVersion(Path targetRepository) throws Exception
+  {
+    RepositoryAnalyzer repositoryAnalyzer = new RepositoryAnalyzer();
+    RepositoryDescriptor repositoryDescriptor = new RepositoryDescriptor();
+    repositoryDescriptor.setLocation(createURI(targetRepository));
+    repositoryAnalyzer.addSource(repositoryDescriptor);
+    String version = repositoryAnalyzer.getVersion(versionIU);
+    return version;
   }
 
   /**
@@ -866,6 +890,7 @@ public class UpdateSiteGenerator
   public static void sort(List<Path> repositories)
   {
     Map<Long, Path> orderedRepositories = new TreeMap<>();
+    Map<Version, Path> orderedVersionedRepositories = new TreeMap<>(Collections.reverseOrder());
     for (Path repository : repositories)
     {
       String name = repository.getFileName().toString();
@@ -891,12 +916,14 @@ public class UpdateSiteGenerator
       }
       else
       {
-        throw new IllegalArgumentException(repository.toString());
+        Version version = Version.create(name);
+        orderedVersionedRepositories.put(version, repository);
       }
     }
 
     repositories.clear();
     repositories.addAll(orderedRepositories.values());
+    repositories.addAll(orderedVersionedRepositories.values());
   }
 
   public static Path getCanonicalPath(Path path) throws IOException
@@ -1133,6 +1160,39 @@ public class UpdateSiteGenerator
     public String getName()
     {
       return getMetadataRepository().getName();
+    }
+
+    /**
+     * Returns the three-segment version of the largest version of the IU with the prefix as its ID in the repository.
+     *
+     * @param prefix the prefix used to filter down the IUs to consider, or {@code null} to consider all IUs.
+     * @return the three-segment version of the largest version of the IU with the prefix as its ID in the repository.
+     *
+     * @throws ProvisionException
+     */
+    public String getVersion(String prefix) throws ProvisionException
+    {
+      IMetadataRepository repository = getCompositeMetadataRepository();
+      IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
+      BasicVersion maxVersion = null;
+      for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
+      {
+        IInstallableUnit iu = i.next();
+        if (prefix == null || iu.getId().startsWith(prefix))
+        {
+          Version version = iu.getVersion();
+          if (version instanceof BasicVersion)
+          {
+            BasicVersion basicVersion = (BasicVersion)version;
+            if (maxVersion == null || maxVersion.compareTo(basicVersion) < 0)
+            {
+              maxVersion = basicVersion;
+            }
+          }
+        }
+      }
+
+      return maxVersion.getMajor() + "." + maxVersion.getMinor() + "." + maxVersion.getMicro();
     }
 
     /**

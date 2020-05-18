@@ -93,6 +93,7 @@ SPDX-License-Identifier: EPL-2.0
                 -promote ${project.basedir}/../../org.eclipse.justj.tools.site/target/repository
                 -timestamp ${build.timestamp}
                 -type ${build.type}
+                -version-iu org.eclipse.justj.tools
                 -breadcrumb "JustJ https://www.eclipse.org/justj/?page=download"
                 -breadcrumb "Tools"
                 -favicon https://www.eclipse.org/justj/justj_favicon.ico
