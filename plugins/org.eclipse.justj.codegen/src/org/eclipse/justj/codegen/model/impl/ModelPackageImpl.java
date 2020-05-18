@@ -1366,6 +1366,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   protected void createExtendedMetaDataAnnotations()
   {
     String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
+    addAnnotation(getModel_ProviderImageData(), source, new String []{ "kind", "element" });
     addAnnotation(getModel_JVMs(), source, new String []{ "name", "jvm", "kind", "element" });
     addAnnotation(getJVM_Description(), source, new String []{ "kind", "element" });
     addAnnotation(getJVM_AboutTextExtra(), source, new String []{ "kind", "element" });

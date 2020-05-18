@@ -152,6 +152,7 @@ public interface Model extends Copyrightable, Touchable
    * @see #setProviderImageData(byte[])
    * @see org.eclipse.justj.codegen.model.ModelPackage#getModel_ProviderImageData()
    * @model dataType="org.eclipse.emf.ecore.xml.type.Base64Binary" required="true"
+   *        extendedMetaData="kind='element'"
    * @generated
    */
   byte[] getProviderImageData();
