@@ -114,7 +114,7 @@ SPDX-License-Identifier: EPL-2.0
     <div class="novaContent container" id="novaContent">
 
       <div id="maincontent">
-        <h2 style=""><%=title%> - <%=folderName%></h2>
+        <h2 style=""><%=title%> - <%=folderName%><a href="justj.manifest" target="manifest" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/>.manifest</a></h2>
       These JREs were created using jlink:
       <pre style="margin-top: 5px;">jlink --add-modules=$org.eclipse.justj.modules $org.eclipse.justj.jlink.args</pre>
       Each JRE below has been tested by using it to launch Eclipse and recording the key system properties.
