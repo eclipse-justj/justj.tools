@@ -158,10 +158,10 @@ SPDX-License-Identifier: EPL-2.0
          </ul>
 
        </td>
-       <td style="vertical-align: top;">
+       <td style="vertical-align: top; xmin-width: 3em; xmax-width: 3em;">
          <a href="<%=jre.getDownloadURI()%>"><div class="col-sm-6 downloadLink-icon"><i class="fa fa-download"></i></div></a>
        </td>
-       <td style="vertical-align: top;">
+       <td style="vertical-align: top; min-width: 6em; max-width: 6em;">
          <span style="text-align: right;"><%=jre.getSizeInMegaBytes()%>MB</span>
        </td>
     </table>
