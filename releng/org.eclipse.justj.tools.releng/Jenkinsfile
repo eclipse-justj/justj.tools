@@ -83,7 +83,7 @@ pipeline {
               if [[ $PROMOTE == false ]]; then
                 promotion_argument='-Dorg.eclipse.justj.p2.manager.args='
               fi
-              mvn $promotion_argument -DPACK_AND_SIGN=true -Dorg.eclipse.justj.p2.manager.build.url=$JOB_URL -Dorg.eclipse.justj.p2.manager.relative=$PUBLISH_LOCATION -Dbuild.type=$BUILD_TYPE -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
+              mvn  --no-transfer-progress $promotion_argument -DPACK_AND_SIGN=true -Dorg.eclipse.justj.p2.manager.build.url=$JOB_URL -Dorg.eclipse.justj.p2.manager.relative=$PUBLISH_LOCATION -Dbuild.type=$BUILD_TYPE -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
               '''
           }
         }
