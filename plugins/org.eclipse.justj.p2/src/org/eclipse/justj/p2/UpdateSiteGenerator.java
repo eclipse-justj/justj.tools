@@ -462,16 +462,17 @@ public class UpdateSiteGenerator
   /**
    * Returns the version of the {@code org.eclipse.emf.sdk.feature.group} installable unit in the target repository.
    * @param targetRepository the repository location.
+   * @param qualified whether to include the qualifier in the version.
    * @return the associated semantic version of the repository.
    * @throws Exception
    */
-  public String getVersion(Path targetRepository) throws Exception
+  public String getVersion(Path targetRepository, boolean qualified) throws Exception
   {
     RepositoryAnalyzer repositoryAnalyzer = new RepositoryAnalyzer();
     RepositoryDescriptor repositoryDescriptor = new RepositoryDescriptor();
     repositoryDescriptor.setLocation(createURI(targetRepository));
     repositoryAnalyzer.addSource(repositoryDescriptor);
-    String version = repositoryAnalyzer.getVersion(versionIU);
+    String version = repositoryAnalyzer.getVersion(versionIU, qualified);
     return version;
   }
 
@@ -1163,11 +1164,12 @@ public class UpdateSiteGenerator
      * Returns the three-segment version of the largest version of the IU with the prefix as its ID in the repository.
      *
      * @param prefix the prefix used to filter down the IUs to consider, or {@code null} to consider all IUs.
+     * @param qualified whether to include the qualifier in the version.
      * @return the three-segment version of the largest version of the IU with the prefix as its ID in the repository.
      *
      * @throws ProvisionException
      */
-    public String getVersion(String prefix) throws ProvisionException
+    public String getVersion(String prefix, boolean qualified) throws ProvisionException
     {
       IMetadataRepository repository = getCompositeMetadataRepository();
       IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
@@ -1189,7 +1191,7 @@ public class UpdateSiteGenerator
         }
       }
 
-      return maxVersion.getMajor() + "." + maxVersion.getMinor() + "." + maxVersion.getMicro();
+      return maxVersion.getMajor() + "." + maxVersion.getMinor() + "." + maxVersion.getMicro() + (qualified ? "." + maxVersion.getQualifier() : "");
     }
 
     /**

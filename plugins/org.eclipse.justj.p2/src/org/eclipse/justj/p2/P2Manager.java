@@ -180,9 +180,15 @@ public class P2Manager
     Path milestoneLatest = updateSiteGenerator.getCompositeUpdateSiteDestination("milestone", true);
     Path source = updateSiteGenerator.getLatest(milestoneLatest);
     ensureSourceMilestoneExists(source);
-    String version = updateSiteGenerator.getVersion(source);
+    String version = updateSiteGenerator.getVersion(source, false);
     Path target = updateSiteGenerator.getPromoteUpdateSiteDestination("release", version);
-    Assert.isTrue(!Files.exists(target), "The release '" + target + "' already exists");
+    Path primaryTarget = target;
+    if (Files.exists(target))
+    {
+      version = updateSiteGenerator.getVersion(source, true);
+      target = updateSiteGenerator.getPromoteUpdateSiteDestination("release", version);
+      Assert.isTrue(!Files.exists(target), "The release '" + target + "' already exists and so does '" + primaryTarget + "'");
+    }
     updateSiteGenerator.mirrorUpdateSite(source, target, "release");
 
     Path milestone = updateSiteGenerator.getCompositeUpdateSiteDestination("milestone", false);
