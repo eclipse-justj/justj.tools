@@ -559,7 +559,7 @@ public class P2Manager
           ProcessLauncher processLauncher = new ProcessLauncher(
             verbose,
             "rsync",
-            "-avsOh",
+            "-avsh",
             "--exclude",
             "*.zip",
             "--exclude",
@@ -623,7 +623,7 @@ public class P2Manager
               ProcessLauncher processLauncher = new ProcessLauncher(
                 verbose,
                 "rsync",
-                "-avsOh",
+                "-avsh",
                 host + ":" + hostPath + "/" + toShellPath(relativeTargetFolder) + "/",
                 toShellPath(normalizedAbsolutePath));
 
@@ -675,7 +675,7 @@ public class P2Manager
           ProcessLauncher processLauncher = new ProcessLauncher(
             verbose,
             "rsync",
-            "-avsOh",
+            "-avsh",
             toShellPath(normalizedAbsolutePath) + "/",
             host + ":" + hostPath + "/" + relativeTargetFolder + "/");
 
