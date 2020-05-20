@@ -189,7 +189,8 @@ public class P2Manager
     for (Path child : Files.list(milestone).collect(Collectors.toList()))
     {
       String name = child.getFileName().toString();
-      if (!"latest".equals(name) && Files.isDirectory(child) && Files.isRegularFile(child.resolve("content.jar")) && !Files.isRegularFile(child.resolve("DELETED")))
+      if (!"latest".equals(name) && Files.isDirectory(child) && Files.isRegularFile(child.resolve("content.jar")) && !Files.isRegularFile(child.resolve("DELETED"))
+        && !Files.isRegularFile(child.resolve("STALE")))
       {
         Files.createFile(child.resolve("STALE"));
       }
