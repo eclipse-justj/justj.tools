@@ -22,6 +22,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -47,10 +48,10 @@ public class Indexer
 
   private final URI downloadURI;
 
+  private final List<JRE> jres = new ArrayList<>();
+
   public static void main(String[] args) throws IOException
   {
-    // System.out.print(JREIndex.create(null).generate(null));
-
     Path path = Paths.get(args[0]);
     Path realPath = path.toRealPath();
     System.out.println("Indexing: " + realPath);
@@ -69,7 +70,49 @@ public class Indexer
     target = manifestURI.trimSegments(1).appendSegment("");
   }
 
-  void generate(IProgressMonitor monitor) throws IOException
+  public List<JRE> getJREs()
+  {
+    return jres;
+  }
+
+  public Map<String, String> getBreadcrumbs()
+  {
+    // Compute the labels in the right order continuing only as far as the project root.
+    List<String> labels = new ArrayList<String>();
+    for (URI uri = downloadURI.trimSegments(1); uri.segmentCount() > 1; uri = uri.trimSegments(1))
+    {
+      String name = uri.lastSegment();
+      labels.add(0, Character.toUpperCase(name.charAt(0)) + name.substring(1));
+    }
+
+    // Compute the up-links in the reverse order.
+    Map<String, String> links = new LinkedHashMap<String, String>();
+    String link = null;
+    for (int i = labels.size() - 1; i >= 0; --i)
+    {
+      String label = labels.get(i);
+      links.put(label, link);
+
+      if (link == null)
+      {
+        link = "../";
+      }
+      else
+      {
+        link = "../" + link;
+      }
+    }
+
+    // Build another map in the right order.
+    Map<String, String> breadcumbs = new LinkedHashMap<String, String>();
+    for (String label : labels)
+    {
+      breadcumbs.put(label, links.get(label));
+    }
+    return breadcumbs;
+  }
+
+  public void generate(IProgressMonitor monitor) throws IOException
   {
     SubMonitor overallMonitor = SubMonitor.convert(monitor);
 
@@ -78,7 +121,6 @@ public class Indexer
     int size = jreURIs.size();
 
     overallMonitor.beginTask("Processing " + size + " JREs from " + manifestURI, size);
-    List<JRE> jres = new ArrayList<>();
     for (String jreURI : jreURIs)
     {
       URI uri = URI.createURI(jreURI);
@@ -109,7 +151,7 @@ public class Indexer
         return difference > 4 ? 1 : difference < -4 ? -1 : 0;
       });
 
-    save(JREIndex.create(null).generate(jres), URI.createURI("index.html").resolve(target), SubMonitor.convert(monitor));
+    save(JREIndex.create(null).generate(this), URI.createURI("index.html").resolve(target), SubMonitor.convert(monitor));
   }
 
   protected void save(String text, URI target, SubMonitor monitor) throws IOException

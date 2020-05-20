@@ -8,10 +8,10 @@ https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
 --%>
-<%@jet package="org.eclipse.justj.codegen.templates.index" class="JREIndex" imports="java.util.* org.eclipse.justj.codegen.model.util.Indexer.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%@jet package="org.eclipse.justj.codegen.templates.index" class="JREIndex" imports="java.util.* org.eclipse.justj.codegen.model.util.Indexer org.eclipse.justj.codegen.model.util.Indexer.*" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
 <%String title = "JustJ JREs";
-  @SuppressWarnings("unchecked")
-  List<JRE> jres = (List<JRE>)argument;
+  Indexer indexer = (Indexer)argument;
+  List<JRE> jres = indexer.getJREs();
   String folderName = jres.get(0).getDownloadFolder();
   String toggleExpand = "<span style=\"font-size: 100%;\" class=\"orange toggle-state-on\">&#x25E2;</span>";
   String toggleCollapse = "<span style=\"font-size: 100%;\" class=\"orange toggle-state-off\">&#x25B7;</span>";
@@ -101,8 +101,16 @@ SPDX-License-Identifier: EPL-2.0
             <ol class="breadcrumb">
               <li><a href="https://www.eclipse.org/">Home</a></li>
               <li><a href="https://www.eclipse.org/projects/">Projects</a></li>
-              <li><a href="https://www.eclipse.org/justj">JustJ</a></li>
-              <li class="active">Generated JREs - <%=folderName%></li>
+              <li><a href="https://www.eclipse.org/justj?page=download">JustJ</a></li>
+<%for (Map.Entry<String, String> entry : indexer.getBreadcrumbs().entrySet()) {%>
+  <%if (entry.getValue() == null) {%>
+              <li class="active"><%=entry.getKey()%></li>
+  <%} else if (entry.getValue().trim().isEmpty()) {%>
+              <li><%=entry.getKey()%></li>
+  <%} else {%>
+              <li><a href="<%=entry.getValue()%>"><%=entry.getKey()%></a></li>
+  <%}%>
+<%}%>
             </ol>
           </div>
           <div class="col-sm-8 margin-top-15"></div>
