@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PUBLISH_LOCATION = 'sandbox/tools/updates'
+    PUBLISH_LOCATION = 'tools/updates'
   }
 
   parameters {
@@ -38,7 +38,6 @@ pipeline {
       steps {
         echo "BUILD_TYPE=${params.BUILD_TYPE}"
         echo "PROMOTE=${params.PROMOTE}"
-        echo "REFRESH_PARAMETERS=${params.REFRESH_PARAMETERS}"
         script {
           env.PROMOTE = params.PROMOTE
           env.BUILD_TYPE = params.BUILD_TYPE
@@ -47,10 +46,6 @@ pipeline {
     }
 
     stage('Git Checkout') {
-      when {
-        not { expression { return params.REFRESH_PARAMETERS } }
-      }
-
       steps {
         script {
           def gitVariables = checkout(
@@ -72,10 +67,6 @@ pipeline {
     }
 
     stage('Build Tools') {
-      when {
-        not { expression { return params.REFRESH_PARAMETERS } }
-      }
-
       steps {
         sshagent(['projects-storage.eclipse.org-bot-ssh']) {
           dir('justj.tools') {

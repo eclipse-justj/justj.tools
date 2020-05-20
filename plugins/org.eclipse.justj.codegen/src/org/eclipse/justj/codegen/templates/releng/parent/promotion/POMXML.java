@@ -86,7 +86,7 @@ public class POMXML
   protected static final String _60 = "<id>eclipse.repo</id>";
   protected static final String _61 = "<id>justj.tools.repo</id>";
   protected static final String _62 = "<id>promote</id>";
-  protected static final String _63 = "<justj.tools.repo>https://download.eclipse.org/justj/sandbox/tools/updates/nightly/latest</justj.tools.repo>";
+  protected static final String _63 = "<justj.tools.repo>https://download.eclipse.org/justj/tools/updates/nightly/latest</justj.tools.repo>";
   protected static final String _64 = "<layout>p2</layout>";
   protected static final String _65 = "<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>";
   protected static final String _66 = "<modelVersion>4.0.0</modelVersion>";
