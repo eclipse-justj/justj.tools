@@ -95,7 +95,6 @@ SPDX-License-Identifier: EPL-2.0
                 -type ${build.type}
                 -version-iu org.eclipse.justj.tools
                 -breadcrumb "JustJ https://www.eclipse.org/justj/?page=download"
-                -breadcrumb "Tools"
                 -favicon https://www.eclipse.org/justj/justj_favicon.ico
                 -title-image https://www.eclipse.org/justj/justj_title.svg
                 -body-image https://www.eclipse.org/justj/justj_incubation.svg
