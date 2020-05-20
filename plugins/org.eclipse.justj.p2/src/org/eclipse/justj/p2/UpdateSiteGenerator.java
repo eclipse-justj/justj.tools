@@ -529,7 +529,7 @@ public class UpdateSiteGenerator
   private String getRepositoryVersion(IMetadataRepository repository)
   {
     IQueryResult<IInstallableUnit> groups = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
-    List<BasicVersion> versions = new ArrayList<BasicVersion>();
+    List<Version> versions = new ArrayList<Version>();
     for (Iterator<IInstallableUnit> i = groups.iterator(); i.hasNext();)
     {
       IInstallableUnit group = i.next();
@@ -537,9 +537,10 @@ public class UpdateSiteGenerator
       if (iuVersion.isOSGiCompatible() && iuVersion instanceof BasicVersion)
       {
         BasicVersion basicVersion = (BasicVersion)iuVersion;
-        if (!versions.contains(basicVersion))
+        Version unqualifiedVersion = BasicVersion.createOSGi(basicVersion.getMajor(), basicVersion.getMinor(), basicVersion.getMicro());
+        if (!versions.contains(unqualifiedVersion))
         {
-          versions.add(basicVersion);
+          versions.add((BasicVersion)unqualifiedVersion);
         }
       }
     }
@@ -550,16 +551,14 @@ public class UpdateSiteGenerator
     }
     else if (versions.size() == 1)
     {
-      BasicVersion version = versions.get(0);
-      return version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
+      return versions.get(0).toString();
     }
     else
     {
       Collections.sort(versions);
-      BasicVersion minVersion = versions.get(0);
-      BasicVersion maxVersion = versions.get(versions.size() - 1);
-      return minVersion.getMajor() + "." + minVersion.getMinor() + "." + minVersion.getMicro() + "-" + maxVersion.getMajor() + "." + maxVersion.getMinor() + "."
-        + maxVersion.getMicro();
+      Version minVersion = versions.get(0);
+      Version maxVersion = versions.get(versions.size() - 1);
+      return minVersion + " - " + maxVersion;
     }
   }
 
@@ -597,11 +596,9 @@ public class UpdateSiteGenerator
 
     // We must set the user dir to ensure that we produce a composite that uses relative URIs!
     //
-    String oldUserDir = System.getProperty("user.dir");
+    String oldUserDir = System.setProperty("user.dir", destination.toString());
     try
     {
-      System.setProperty("user.dir", destination.toString());
-
       CompositeRepositoryApplication compositeRepositoryApplication = new CompositeRepositoryApplication()
         {
           @Override

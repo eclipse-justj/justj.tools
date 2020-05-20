@@ -394,27 +394,41 @@ public class UpdateSiteIndexGenerator
   public Map<String, String> getBreadcrumbs()
   {
     Path root = updateSiteGenerator.getUpdateSiteRoot();
+    Path projectRoot = updateSiteGenerator.getProjectRoot();
 
-    // Compute the labels in the right order.
+    // Compute the labels in the right order continuing only as far as the project root.
     List<String> labels = new ArrayList<String>();
     for (Path file = folder; file.getParent() != null; file = file.getParent())
     {
-      String name = file.getFileName().toString();
-      labels.add(0, Character.toUpperCase(name.charAt(0)) + name.substring(1));
-
-      if (file.equals(root))
+      if (file.equals(projectRoot))
       {
         break;
       }
+
+      String name = file.getFileName().toString();
+      labels.add(0, Character.toUpperCase(name.charAt(0)) + name.substring(1));
     }
 
-    // Compute the uplinks in the reverse order.
-    Map<String, String> result = new LinkedHashMap<String, String>();
+    // Compute the up-links in the reverse order.
+    Map<String, String> links = new LinkedHashMap<String, String>();
     String link = null;
     for (int i = labels.size() - 1; i >= 0; --i)
     {
       String label = labels.get(i);
-      result.put(label, link);
+      if (link != null)
+      {
+        Path linkFolder = folder.resolve(link).normalize().getParent();
+        if (linkFolder.startsWith(root))
+        {
+          // Don't assume there is an index.html above the update site root.
+          links.put(label, link);
+        }
+        else
+        {
+          links.put(label, link.replace("index.html", ""));
+        }
+      }
+
       if (link == null)
       {
         link = "../index.html";
@@ -429,7 +443,7 @@ public class UpdateSiteIndexGenerator
     Map<String, String> breadcumbs = new LinkedHashMap<String, String>(updateSiteGenerator.getBreadcrumbs());
     for (String label : labels)
     {
-      breadcumbs.put(label, result.get(label));
+      breadcumbs.put(label, links.get(label));
     }
     return breadcumbs;
   }
