@@ -113,7 +113,7 @@ public class JdepsIndex
   protected static final String _63 = "<li style=\"color: FireBrick; font-size: 80%;\">";
   protected static final String _64 = "<li>";
   protected static final String _65 = "<li><a href=\"";
-  protected static final String _66 = "<li><a href=\"https://download.eclipse.org/jdeps\">Jdeps</a></li>";
+  protected static final String _66 = "<li><a href=\"https://download.eclipse.org/justj/jdeps\">Jdeps</a></li>";
   protected static final String _67 = "<li><a href=\"https://www.eclipse.org/\">Home</a></li>";
   protected static final String _68 = "<li><a href=\"https://www.eclipse.org/justj?page=download\">JustJ</a></li>";
   protected static final String _69 = "<li><a href=\"https://www.eclipse.org/projects/\">Projects</a></li>";
@@ -352,11 +352,6 @@ public class JdepsIndex
   public String getDownloadFolder()
   {
     return "";
-  }
-
-  public static class JRE
-  {
-
   }
 
   public String generate()

@@ -181,11 +181,6 @@ public class JdepsIndex
     return "";
   }
 
-  public static class JRE
-  {
-
-  }
-
   public String generate()
   {
     return null;
