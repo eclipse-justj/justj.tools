@@ -1,0 +1,212 @@
+<%--
+Copyright (c) 2020 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet
+  package="org.eclipse.justj.codegen.templates.jdeps"
+  class="JdepsIndex"
+  imports=""
+  builder="StringBuilder builder = new StringBuilder()"
+  nlString='"\\n"'
+  minimize="true"
+  skeleton="platform:/resource/org.eclipse.justj.codegen/src/org/eclipse/justj/codegen/model/util/JdepsIndex.java"%>
+<%String title = "JustJ Jdeps";
+  int toggleCounter = 0;%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title><%=title%></title>
+  <meta name="keywords" content="eclipse,justj"/>
+  <meta name="description" content="JustJ's JDeps Report"/>
+  <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css"/>
+  <link rel="icon" type="image/ico" href="https://www.eclipse.org/justj/justj_favicon.ico"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+      function expand_collapse(id, targetId) {
+        var e = document.getElementById(id);
+        var checked = e.checked;
+        var target = document.getElementById(targetId);
+        var targets = target.getElementsByTagName('input');
+        for (var i = 0; i < targets.length; i++) {
+          var input = targets[i];
+          input.checked = checked;
+        }
+      }
+  </script>
+</head>
+
+  <body id="body_solstice">
+    <style>
+.toggle {
+  display: none;
+}
+
+.toggle-label {
+  font-size: 100%;
+  margin-bottom: 0px;
+  font-weight: normal;
+}
+
+.toggle + .toggle-label + .toggle-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all .4s ease-in-out;
+}
+
+.toggle + .toggle-label > .toggle-state-on {
+  display: none;
+}
+
+.toggle + .toggle-label > .toggle-state-off {
+  display: inherit;
+}
+
+.toggle:checked + .toggle-label > .toggle-state-on {
+  display: inherit;
+}
+
+.toggle:checked + .toggle-label > .toggle-state-off {
+  display: none;
+}
+
+.toggle:checked + .toggle-label + .toggle-content {
+  max-height: none;
+  opacity: 1;
+}
+
+.toggle-content {
+  padding-left: 2em;
+}
+
+.toggle-label:hover, .toggle-label:hover * {
+  cursor: pointer;
+}
+
+.plain:link, .plain:visited {
+  color: inherit;
+}
+
+label:target {
+  border: 1px solid black;
+}
+    </style>
+
+    <header role="banner" id="header-wrapper">
+      <div class="container">
+        <div class="row" id="header-row">
+          <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
+            <div class="wrapper-logo-default">
+              <a href="https://www.eclipse.org/justj?page=index">
+                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; space: nowrap; display: inline-block;" alt="Project Logo" src="https://www.eclipse.org/justj/justj_title.svg"/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hidden-print default-breadcrumbs" id="breadcrumb">
+      <div class="container">
+        <h3 class="sr-only">Breadcrumbs</h3>
+        <div class="row">
+          <div class="col-sm-16 padding-left-30">
+            <ol class="breadcrumb">
+              <li><a href="https://www.eclipse.org/">Home</a></li>
+              <li><a href="https://www.eclipse.org/projects/">Projects</a></li>
+              <li><a href="https://www.eclipse.org/justj?page=download">JustJ</a></li>
+              <li><a href="https://download.eclipse.org/jdeps">Jdeps</a></li>
+<%for (Map.Entry<String, String> entry : getBreadcrumbs().entrySet()) {%>
+  <%if (entry.getValue() == null) {%>
+              <li class="active"><%=entry.getKey()%></li>
+  <%} else if (entry.getValue().trim().isEmpty()) {%>
+              <li><%=entry.getKey()%></li>
+  <%} else {%>
+              <li><a href="<%=entry.getValue()%>"><%=entry.getKey()%></a></li>
+  <%}%>
+<%}%>
+            </ol>
+          </div>
+          <div class="col-sm-8 margin-top-15"></div>
+        </div>
+      </div>
+    </section>
+
+    <main class="no-promo">
+    <div class="novaContent container" id="novaContent">
+
+      <div id="maincontent">
+        <h2 style=""><%=title%>: <a style="font-size: 66%;" href="<%=repoURI%>"><%=repoURI%></a></h2>
+      The plugins of this repository have been analyzed for module dependencies using jdeps.
+      The plugin dependencies of each module and the module dependencies of each plugin are summarized below.
+
+    <hr/>
+    <h4>
+      Module Dependencies
+      <input type="checkbox" id="toggle-id-<%=++toggleCounter%>" class="toggle" onclick="expand_collapse('toggle-id-<%=toggleCounter%>', 'mod-deps');"/>
+      <label for="toggle-id-<%=toggleCounter%>" class="toggle-label"><%=getToggleExpand(true)%></label>
+    </h4>
+
+    <div id="mod-deps">
+<%for (Map.Entry<String, Set<Plugin>> entry : modulePlugins.entrySet()) {
+    int mainID = ++toggleCounter;%>
+         <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
+         <label for="toggle-id-<%=mainID%>" class="toggle-label" id="<%=entry.getKey()%>"><%=getToggleExpand(true)%> <%=entry.getKey()%></label>
+         <ul class="toggle-content" style="margin-left: 1em; margin-bottom: 0;">
+  <%for (Plugin plugin : entry.getValue()) {%>
+           <li>
+           <a href="#<%=plugin.getAnchor()%>" class="plain"><%=plugin.getId()%> <span style="color: DarkOliveGreen; font-size: 90%;"><%=plugin.getVersion()%></span></a>
+           </li>
+  <%}%>
+         </ul>
+<%}%>
+    </div>
+
+    <hr/>
+    <h4>
+      Plugin Dependencies
+      <input type="checkbox" id="toggle-id-<%=++toggleCounter%>" class="toggle" onclick="expand_collapse('toggle-id-<%=toggleCounter%>', 'plugin-deps');"/>
+      <label for="toggle-id-<%=toggleCounter%>" class="toggle-label"><%=getToggleExpand(true)%></label>
+    </h4>
+
+    <div id="plugin-deps">
+<%for (Map.Entry<Plugin, Set<String>> entry : pluginModules.entrySet()) {
+    Plugin plugin = entry.getKey();
+    Set<String> modules = entry.getValue();
+    List<String> errors = pluginErrors.get(plugin);
+    int mainID = ++toggleCounter;%>
+         <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
+         <label for="toggle-id-<%=mainID%>" class="toggle-label" id="<%=plugin.getAnchor()%>">
+           <%=getToggleExpand(!modules.isEmpty() || errors != null)%>
+           <%=plugin.getId()%>
+           <span style="color: DarkOliveGreen; font-size: 90%;"><%=plugin.getVersion()%></label>
+         <ul class="toggle-content" style="margin-left: 1em; margin-bottom: 0;">
+  <%for (String module : modules) {%>
+           <li>
+           <a href="#<%=module%>" class="plain"><%=module%></a>
+           </li>
+  <%}%>
+  <%if (errors != null) {%>
+           <li style="color: FireBrick; font-size: 80%;">
+    <%for (String error : errors) {%>
+           <%=error%><br/>
+    <%}%>
+           </li>
+  <%}%>
+         </ul>
+<%}%>
+    </div>
+
+      </div>
+    </div>
+    </main>
+  </body>
+</html>
