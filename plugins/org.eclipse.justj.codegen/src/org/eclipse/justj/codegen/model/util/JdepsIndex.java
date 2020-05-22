@@ -32,6 +32,10 @@ import java.util.stream.Collectors;
 
 public class JdepsIndex
 {
+  private static Pattern MODULE_NAME_PATTERN = Pattern.compile("\\p{Alpha}\\p{Alnum}*(\\.\\p{Alpha}\\p{Alnum}*)*");
+
+  private static Pattern SPLIT_PACKAGE_WARNING_PATTERN = Pattern.compile("Warning: split package: ([^ ]+) jrt:/([^ ]+) ([^ ]+)");
+
   private final URI repoURI;
 
   private final Map<String, Set<Plugin>> modulePlugins = new TreeMap<String, Set<Plugin>>();
@@ -42,16 +46,37 @@ public class JdepsIndex
 
   private final Map<ModulePluginPair, Set<String>> splitPackages = new HashMap<>();
 
+  private final Map<Path, URI> indices = new TreeMap<>();
+
+  private final Map<Path, Set<String>> modules = new TreeMap<>();
+
   public static void main(String[] args)
   {
     try
     {
-      Path folder = Paths.get(args[0]);
-      URI repoURI = new URI(args[1]);
-      JdepsIndex jdepsIndex = new JdepsIndex(folder, repoURI);
-      String result = jdepsIndex.generate();
-      Files.write(folder.resolve("index.html"), Collections.singleton(result));
-      Files.write(folder.resolve("justj.modules"), jdepsIndex.modulePlugins.keySet());
+      String arg0 = args[0];
+      if ("-index".equals(arg0))
+      {
+        Path folder = Paths.get(args[1]);
+        JdepsIndex jdepsIndex = new JdepsIndex(folder);
+        String result = jdepsIndex.generate();
+        Files.write(folder.resolve("index.html"), Collections.singleton(result));
+        Set<String> allModules = new TreeSet<String>();
+        for (Set<String> modules : jdepsIndex.modules.values())
+        {
+          allModules.addAll(modules);
+        }
+        Files.write(folder.resolve("justj.modules"), allModules);
+      }
+      else
+      {
+        Path folder = Paths.get(arg0);
+        URI repoURI = new URI(args[1]);
+        JdepsIndex jdepsIndex = new JdepsIndex(folder, repoURI);
+        String result = jdepsIndex.generate();
+        Files.write(folder.resolve("index.html"), Collections.singleton(result));
+        Files.write(folder.resolve("justj.modules"), jdepsIndex.modulePlugins.keySet());
+      }
     }
     catch (Exception exception)
     {
@@ -65,9 +90,47 @@ public class JdepsIndex
     throw new UnsupportedOperationException("Cannot create without arguments");
   }
 
-  private static Pattern MODULE_NAME_PATTERN = Pattern.compile("\\p{Alpha}\\p{Alnum}*(\\.\\p{Alpha}\\p{Alnum}*)*");
+  public JdepsIndex(Path folder) throws Exception
+  {
+    repoURI = new URI("https://download.eclipse.org/");
+    for (Path path : Files.list(folder).collect(Collectors.toList()))
+    {
+      visit(folder, path);
+    }
 
-  private static Pattern SPLIT_PACKAGE_WARNING_PATTERN = Pattern.compile("Warning: split package: ([^ ]+) jrt:/([^ ]+) ([^ ]+)");
+    for (Path path : indices.keySet())
+    {
+      Path justjModules = folder.resolve(path).getParent().resolve("justj.modules");
+      Set<String> repoModules = new TreeSet<>(Files.readAllLines(justjModules));
+      modules.put(path, repoModules);
+    }
+  }
+
+  public Set<String> getModules(Path path)
+  {
+    return modules.get(path);
+  }
+
+  protected void visit(Path root, Path path) throws Exception
+  {
+    if (Files.isDirectory(path))
+    {
+      for (Path child : Files.list(path).collect(Collectors.toList()))
+      {
+        visit(root, child);
+      }
+    }
+    else if (Files.isRegularFile(path) && path.endsWith("index.html"))
+    {
+      Path relativePath = root.relativize(path);
+      Path parent = relativePath.getParent();
+      if (parent != null)
+      {
+        indices.put(relativePath, new URI("https://download.eclipse.org/" + parent.toString().replace('\\', '/')));
+        System.err.println("###" + indices);
+      }
+    }
+  }
 
   public JdepsIndex(Path folder, URI repoURI) throws Exception
   {
@@ -176,9 +239,9 @@ public class JdepsIndex
     // Compute the labels in the right order continuing only as far as the project root.
     List<String> labels = new ArrayList<String>();
     Path path = Paths.get(repoURI.getPath());
-    for (Path foo = path; foo != null; foo = foo.getParent())
+    for (Path visitedPath = path; visitedPath != null; visitedPath = visitedPath.getParent())
     {
-      Path fileName = foo.getFileName();
+      Path fileName = visitedPath.getFileName();
       if (fileName == null)
       {
         break;
