@@ -17,12 +17,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -36,6 +40,8 @@ public class JdepsIndex
 
   private final Map<Plugin, List<String>> pluginErrors = new TreeMap<>();
 
+  private final Map<ModulePluginPair, Set<String>> splitPackages = new HashMap<>();
+
   public static void main(String[] args)
   {
     try
@@ -45,6 +51,7 @@ public class JdepsIndex
       JdepsIndex jdepsIndex = new JdepsIndex(folder, repoURI);
       String result = jdepsIndex.generate();
       Files.write(folder.resolve("index.html"), Collections.singleton(result));
+      Files.write(folder.resolve("justj.modules"), jdepsIndex.modulePlugins.keySet());
     }
     catch (Exception exception)
     {
@@ -58,6 +65,10 @@ public class JdepsIndex
     throw new UnsupportedOperationException("Cannot create without arguments");
   }
 
+  private static Pattern MODULE_NAME_PATTERN = Pattern.compile("\\p{Alpha}\\p{Alnum}*(\\.\\p{Alpha}\\p{Alnum}*)*");
+
+  private static Pattern SPLIT_PACKAGE_WARNING_PATTERN = Pattern.compile("Warning: split package: ([^ ]+) jrt:/([^ ]+) ([^ ]+)");
+
   public JdepsIndex(Path folder, URI repoURI) throws Exception
   {
     this.repoURI = repoURI;
@@ -65,14 +76,14 @@ public class JdepsIndex
     for (Path path : Files.list(folder).collect(Collectors.toList()))
     {
       String fileName = path.getFileName().toString();
-      if (fileName.endsWith("out-deps") || fileName.endsWith("err-deps"))
+      if (fileName.endsWith("out-deps") || fileName.endsWith("error-deps"))
       {
         int versionSeparatorIndex = fileName.lastIndexOf('_');
         int jarStartIndex = fileName.lastIndexOf(".jar");
 
         String id = fileName.substring(0, versionSeparatorIndex);
         String version = fileName.substring(versionSeparatorIndex + 1, jarStartIndex);
-        Plugin plugin = new Plugin(id, version, fileName);
+        Plugin plugin = new Plugin(id, version);
         List<String> lines = Files.readAllLines(path);
 
         if (fileName.endsWith("out-deps"))
@@ -84,7 +95,31 @@ public class JdepsIndex
             {
               if (!module.isEmpty())
               {
-                modules.add(module);
+                if (MODULE_NAME_PATTERN.matcher(module).matches())
+                {
+                  modules.add(module);
+                }
+                else
+                {
+                  Matcher matcher = SPLIT_PACKAGE_WARNING_PATTERN.matcher(module);
+                  if (matcher.matches())
+                  {
+                    String packageName = matcher.group(1);
+                    String moduleName = matcher.group(2);
+                    ModulePluginPair modulePluginPair = new ModulePluginPair(moduleName, plugin);
+                    Set<String> packages = splitPackages.get(modulePluginPair);
+                    if (packages == null)
+                    {
+                      packages = new TreeSet<>();
+                      splitPackages.put(modulePluginPair, packages);
+                    }
+                    packages.add(packageName);
+                  }
+                  else
+                  {
+                    System.err.println("Unrecongnized jdeps output '" + module + "'");
+                  }
+                }
               }
             }
           }
@@ -111,6 +146,12 @@ public class JdepsIndex
         }
       }
     }
+  }
+
+  public Set<String> getSplitPackages(String module, Plugin plugin)
+  {
+    Set<String> packages = splitPackages.get(new ModulePluginPair(module, plugin));
+    return packages == null ? Collections.emptySet() : packages;
   }
 
   public String getToggleExpand(boolean visible)
@@ -186,19 +227,60 @@ public class JdepsIndex
     return null;
   }
 
-  public class Plugin implements Comparable<Plugin>
+  public static final class ModulePluginPair
+  {
+    private final String module;
+
+    private final Plugin plugin;
+
+    public ModulePluginPair(String module, Plugin plugin)
+    {
+      this.module = module;
+      this.plugin = plugin;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      return Objects.hash(module, plugin);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+      {
+        return true;
+      }
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      ModulePluginPair other = (ModulePluginPair)obj;
+      return Objects.equals(module, other.module) && Objects.equals(plugin, other.plugin);
+    }
+
+    @Override
+    public String toString()
+    {
+      return module + "->" + plugin;
+    }
+  }
+
+  public static final class Plugin implements Comparable<Plugin>
   {
     private String version;
 
     private String id;
 
-    private String anchor;
-
-    public Plugin(String id, String version, String anchor)
+    public Plugin(String id, String version)
     {
       this.id = id;
       this.version = version;
-      this.anchor = anchor;
     }
 
     public String getId()
@@ -211,16 +293,42 @@ public class JdepsIndex
       return version;
     }
 
-    public String getAnchor()
-    {
-      return anchor;
-    }
-
     @Override
     public int compareTo(Plugin other)
     {
       int result = id.compareTo(other.id);
       return result == 0 ? version.compareTo(other.version) : result;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      return Objects.hash(id, version);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+      {
+        return true;
+      }
+      if (obj == null)
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass())
+      {
+        return false;
+      }
+      Plugin other = (Plugin)obj;
+      return Objects.equals(id, other.id) && Objects.equals(version, other.version);
+    }
+
+    @Override
+    public String toString()
+    {
+      return id + "_" + version;
     }
   }
 }

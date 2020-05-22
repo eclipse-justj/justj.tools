@@ -40,6 +40,41 @@ SPDX-License-Identifier: EPL-2.0
           input.checked = checked;
         }
       }
+
+      function filter(filter, id, targetClass) {
+        var e = document.getElementById(id);
+        var filterTargets = e.getElementsByClassName('filter-target');
+        for (var i = 0; i < filterTargets.length; i++) {
+          var target = filterTargets[i];
+          target.style.display = !filter ? target.localName = "li" ? "" : "block" : "none";
+        }
+        if (filter) {
+          var filterTargetsArray = [].slice.call(filterTargets);
+          var targets = e.getElementsByClassName(targetClass);
+          for (var i = 0; i < targets.length; i++) {
+            var target = targets[i];
+            target.style.display = "block";
+            for (var parent = target.parentNode; parent != e; parent = parent.parentNode) {
+              if (filterTargetsArray.includes(parent)) {
+                parent.style.display = parent.localName = "li" ? "" : "block";
+              }
+            }
+          }
+        }
+      }
+
+      var oldOnload = window.onload;
+      window.onload = function() {
+        document.getElementsByTag
+        var inputs = document.getElementsByTagName('input');
+        for (index = 0; index < inputs.length; ++index) {
+          var input = inputs[index];
+          input.checked = false;
+        }
+        if(oldOnload != null) {
+          oldUnload();
+        }
+      }
   </script>
 </head>
 
@@ -144,29 +179,56 @@ label:target {
     <div class="novaContent container" id="novaContent">
 
       <div id="maincontent">
-        <h2 style=""><%=title%>: <a style="font-size: 66%;" href="<%=repoURI%>"><%=repoURI%></a></h2>
+        <h2 style="">
+          <%=title%>: 
+          <a style="font-size: 66%;" href="<%=repoURI%>"><%=repoURI%></a>
+          <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/>.modules</a>
+        </h2>
+        <p>
       The plugins of this repository have been analyzed for module dependencies using jdeps.
       The plugin dependencies of each module and the module dependencies of each plugin are summarized below.
+        </p>
+        <p>
+      The jdeps analysis of a plugin may produce warnings about split packages,
+      i.e., if the jar exports packages that are the same as exported by the module on which it depends,
+      or it may fail, i.e., if the jar has module dependencies that don't resolve.
+      Filters are provided to show only these issues.
+        </p>
 
     <hr/>
     <h4>
       Module Dependencies
       <input type="checkbox" id="toggle-id-<%=++toggleCounter%>" class="toggle" onclick="expand_collapse('toggle-id-<%=toggleCounter%>', 'mod-deps');"/>
       <label for="toggle-id-<%=toggleCounter%>" class="toggle-label"><%=getToggleExpand(true)%></label>
+<%if (!splitPackages.isEmpty()) {%>
+      <input name="module-split-packages" type="checkbox" onclick="filter(this.checked, 'mod-deps', 'split-package');" onload="this.value = '';"/>
+      <label for="module-split-packages" style="font-size: 75%;">Show Only Split Packages</label>
+<%}%>
     </h4>
 
     <div id="mod-deps">
 <%for (Map.Entry<String, Set<Plugin>> entry : modulePlugins.entrySet()) {
+    String module = entry.getKey();
     int mainID = ++toggleCounter;%>
-         <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
-         <label for="toggle-id-<%=mainID%>" class="toggle-label" id="<%=entry.getKey()%>"><%=getToggleExpand(true)%> <%=entry.getKey()%></label>
-         <ul class="toggle-content" style="margin-left: 1em; margin-bottom: 0;">
+      <div class="filter-target">
+        <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
+        <label for="toggle-id-<%=mainID%>" class="toggle-label" id="<%=module%>"><%=getToggleExpand(true)%> <%=module%></label>
+        <ul class="toggle-content filter-target" style="margin-left: 1em; margin-bottom: 0;">
   <%for (Plugin plugin : entry.getValue()) {%>
-           <li>
-           <a href="#<%=plugin.getAnchor()%>" class="plain"><%=plugin.getId()%> <span style="color: DarkOliveGreen; font-size: 90%;"><%=plugin.getVersion()%></span></a>
-           </li>
+          <li class="filter-target">
+            <a href="#<%=plugin%>" class="plain"><%=plugin.getId()%> <span style="color: DarkOliveGreen; font-size: 90%;"><%=plugin.getVersion()%></span></a>
+    <%Set<String> splitPackages = getSplitPackages(module, plugin);
+      if (!splitPackages.isEmpty()) {%>
+            <ul style="margin-left: -2em; margin-top: 0; margin-bottom: 0; color: #E8BB14;" class="split-package filter-target">
+      <%for (String packageName : splitPackages) {%>
+              <li><%=packageName%></li>
+      <%}%>
+            </ul>
+    <%}%>
+          </li>
   <%}%>
-         </ul>
+        </ul>
+      </div>
 <%}%>
     </div>
 
@@ -175,6 +237,10 @@ label:target {
       Plugin Dependencies
       <input type="checkbox" id="toggle-id-<%=++toggleCounter%>" class="toggle" onclick="expand_collapse('toggle-id-<%=toggleCounter%>', 'plugin-deps');"/>
       <label for="toggle-id-<%=toggleCounter%>" class="toggle-label"><%=getToggleExpand(true)%></label>
+<%if (!pluginErrors.isEmpty()) {%>
+      <input name="plugin-errors" type="checkbox" onclick="filter(this.checked, 'plugin-deps', 'jdeps-error');" onload="this.value = '';"/>
+      <label for="plugin-errors" style="font-size: 75%;">Show Only Errors</label>
+<%}%>
     </h4>
 
     <div id="plugin-deps">
@@ -183,25 +249,35 @@ label:target {
     Set<String> modules = entry.getValue();
     List<String> errors = pluginErrors.get(plugin);
     int mainID = ++toggleCounter;%>
-         <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
-         <label for="toggle-id-<%=mainID%>" class="toggle-label" id="<%=plugin.getAnchor()%>">
-           <%=getToggleExpand(!modules.isEmpty() || errors != null)%>
-           <%=plugin.getId()%>
-           <span style="color: DarkOliveGreen; font-size: 90%;"><%=plugin.getVersion()%></label>
-         <ul class="toggle-content" style="margin-left: 1em; margin-bottom: 0;">
+      <div class="filter-target">
+        <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
+        <label for="toggle-id-<%=mainID%>" class="toggle-label" id="<%=plugin%>">
+         <%=getToggleExpand(!modules.isEmpty() || errors != null)%>
+         <%=plugin.getId()%>
+         <span style="color: DarkOliveGreen; font-size: 90%;"><%=plugin.getVersion()%></label>
+         <ul class="toggle-content filter-target" style="margin-left: 1em; margin-bottom: 0;">
   <%for (String module : modules) {%>
-           <li>
-           <a href="#<%=module%>" class="plain"><%=module%></a>
-           </li>
+          <li class="filter-target">
+            <a href="#<%=module%>" class="plain"><%=module%></a>
+    <%Set<String> splitPackages = getSplitPackages(module, plugin);
+      if (!splitPackages.isEmpty()) {%>
+            <ul style="margin-left: -2em; margin-top: 0; margin-bottom: 0; color: #E8BB14;">
+      <%for (String packageName : splitPackages) {%>
+              <li><%=packageName%></li>
+      <%}%>
+            </ul>
+    <%}%>
+          </li>
   <%}%>
   <%if (errors != null) {%>
-           <li style="color: FireBrick; font-size: 80%;">
+           <li style="color: FireBrick; font-size: 80%;" class="jdeps-error">
     <%for (String error : errors) {%>
            <%=error%><br/>
     <%}%>
-           </li>
+          </li>
   <%}%>
-         </ul>
+        </ul>
+      </div>
 <%}%>
     </div>
 
