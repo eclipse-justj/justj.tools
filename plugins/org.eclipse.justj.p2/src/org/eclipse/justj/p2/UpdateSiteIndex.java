@@ -104,70 +104,71 @@ public class UpdateSiteIndex
   protected final String TEXT_76 = "')\">&#x270e;</button>" + NL + "             <a href=\"";
   protected final String TEXT_77 = "\" id=\"";
   protected final String TEXT_78 = "</a>" + NL + "           </p>" + NL + "           <p>Click the header link or the update site link for more details.</p>";
-  protected final String TEXT_79 = NL + "           <p>" + NL + "             This update site's source code is generated from <a href=\"";
+  protected final String TEXT_79 = NL + "           <p>" + NL + "             This update site's source code is generated from" + NL + "             <a href=\"";
   protected final String TEXT_80 = "\" target=\"model\">";
-  protected final String TEXT_81 = "</a>." + NL + "           </p>";
-  protected final String TEXT_82 = NL + "           <p>" + NL + "             This update site provides access to the following features." + NL + "             Each section is expandable via";
-  protected final String TEXT_83 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all_features\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all_features');";
-  protected final String TEXT_84 = "\">&#x25B7;</button>&nbsp;glyph</span>";
-  protected final String TEXT_85 = NL + "             to provide detailed information about the requirements of each feature." + NL + "           </p>" + NL + "           <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
-  protected final String TEXT_86 = NL + "             <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
-  protected final String TEXT_87 = "');\">&#x25B7;</button>" + NL + "              <span style=\"font-size:100%;\">";
-  protected final String TEXT_88 = "<b>";
-  protected final String TEXT_89 = "</b>";
-  protected final String TEXT_90 = "</span>" + NL + "              <div id=\"";
-  protected final String TEXT_91 = "\" style=\"display:none; margin-left: 2em; white-space: nowrap;\">";
-  protected final String TEXT_92 = NL + "                ";
-  protected final String TEXT_93 = "<br/>";
-  protected final String TEXT_94 = NL + "              </div>" + NL + "             </li>";
-  protected final String TEXT_95 = NL + "           <h3>";
-  protected final String TEXT_96 = " Bundles</h3>" + NL + "           <p>" + NL + "             This update site provides access to the bundles listed below." + NL + "             Each section is expandable via";
-  protected final String TEXT_97 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all');";
-  protected final String TEXT_98 = NL + "             to provide detailed information about the exports and imports of each bundle." + NL + "           </p>" + NL + "           <ul>" + NL + "             <li>" + NL + "               The &#x21D6; glyph denotes the exported bundle identifier along with its full version." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x2196; glyph denotes an exported java package along with its full version, if specified." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x21D8; glyph denotes a required bundle along with its version range, if specified, as well as information about whether the requirement is optional and if so, whether it's greedy." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x2198; glyph denotes a required package along with its version range, if specified." + NL + "             </li>" + NL + "           </ul>" + NL + "" + NL + "          <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
-  protected final String TEXT_99 = NL + "            <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
-  protected final String TEXT_100 = "&nbsp;&nbsp;<";
-  protected final String TEXT_101 = " style=\"color: SteelBlue;\">";
-  protected final String TEXT_102 = "</";
-  protected final String TEXT_103 = NL + "         <input type=\"checkbox\" id=\"toggle-id-";
-  protected final String TEXT_104 = "\" class=\"toggle\"/>" + NL + "         <label for=\"toggle-id-";
-  protected final String TEXT_105 = "\" class=\"toggle-label\" style=\"font-size: 100%;\">";
-  protected final String TEXT_106 = " Properties</label>" + NL + "         <ul class=\"toggle-content\" style=\"margin-top: 0px; white-space: normal;\">";
-  protected final String TEXT_107 = NL + "           <li>";
-  protected final String TEXT_108 = NL + "             ";
-  protected final String TEXT_109 = " = ";
-  protected final String TEXT_110 = NL + "           </li>";
-  protected final String TEXT_111 = NL + "           <li>" + NL + "             <input type=\"checkbox\" id=\"toggle-id-";
-  protected final String TEXT_112 = "\" class=\"toggle\"/>" + NL + "             <label for=\"toggle-id-";
-  protected final String TEXT_113 = "\" class=\"toggle-label\">";
-  protected final String TEXT_114 = " ";
-  protected final String TEXT_115 = "</label>" + NL + "             <ul class=\"toggle-content\" style=\"margin-top: 0px;\">";
-  protected final String TEXT_116 = NL + "               <li>";
-  protected final String TEXT_117 = NL + "                 ";
-  protected final String TEXT_118 = NL + "               </li>";
-  protected final String TEXT_119 = NL + "             </ul>" + NL + "            </li>";
-  protected final String TEXT_120 = NL + "         </ul>";
-  protected final String TEXT_121 = NL + "              </div>" + NL + "            </li>";
-  protected final String TEXT_122 = NL + NL + "        </div>" + NL;
-  protected final String TEXT_123 = NL + "        <div style=\"padding-top: 100;\" id=\"rightcolumn\">" + NL + "          <div class=\"sideitem\">" + NL + "            <h6>Downloads</h6>" + NL + "            <p>" + NL + "              <a style=\"font-size: 75%; font-weight: bold;\" href=\"";
-  protected final String TEXT_124 = "</a>" + NL + "              <br/>" + NL + "              <a class=\"btn btn-warning\" style=\"margin-top: 5pt; font-size: 90%;\" href=\"";
-  protected final String TEXT_125 = "\" target=\"_blank\" title=\"Download ";
-  protected final String TEXT_126 = "\">Download</a>" + NL + "              <a class=\"btn btn-warning\" style=\"margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;\" href=\"";
-  protected final String TEXT_127 = "\">sha256</a>" + NL + "              <a class=\"btn btn-warning\" style=\"margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;\" href=\"";
-  protected final String TEXT_128 = "\">sha512</a>" + NL + "            </p>" + NL + "          </div>";
-  protected final String TEXT_129 = NL + "          <div class=\"sideitem\">" + NL + "            <h6>Git Commits</h6>";
-  protected final String TEXT_130 = NL + "            <p>" + NL + "              <button title=\"Copy Commit ID ";
-  protected final String TEXT_131 = " to Clipboard\" class=\"orange\" style=\"font-size: 150%; background-color: transparent; border: none; padding: 0px 0px;\" onclick=\"copyToClipboard('#";
-  protected final String TEXT_132 = "_commit_id')\">&#x270e;</button>" + NL + "              <a style=\"font-size: 100%;\" href=\"";
-  protected final String TEXT_133 = "\" target=\"";
-  protected final String TEXT_134 = "_git\">";
-  protected final String TEXT_135 = "</a>" + NL + "              <br/>" + NL + "              <tt><a id=\"";
-  protected final String TEXT_136 = "_commit_id\" class=\"btn btn-warning\" style=\"text-transform: none; margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 70%; padding-top: 0.2ex; padding-bottom: 0.2ex; padding-left: 0.2em; padding-right: 0.2em;\" href=\"";
-  protected final String TEXT_137 = "_git_commit\" title=\"";
-  protected final String TEXT_138 = " Git Commit ID\">";
-  protected final String TEXT_139 = "</a></tt>" + NL + "            </p>";
-  protected final String TEXT_140 = NL + "          </div>";
-  protected final String TEXT_141 = NL + "        </div>" + NL;
-  protected final String TEXT_142 = NL + "      </div>" + NL + "     </div>" + NL + "     </main>" + NL + "  </body>" + NL + "</html>";
+  protected final String TEXT_81 = "<img style=\"height: 2ex; space: nowrap; display: inline-block;\" alt=\"justj\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
+  protected final String TEXT_82 = "</a>." + NL + "           </p>";
+  protected final String TEXT_83 = NL + "           <p>" + NL + "             This update site provides access to the following features." + NL + "             Each section is expandable via";
+  protected final String TEXT_84 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all_features\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all_features');";
+  protected final String TEXT_85 = "\">&#x25B7;</button>&nbsp;glyph</span>";
+  protected final String TEXT_86 = NL + "             to provide detailed information about the requirements of each feature." + NL + "           </p>" + NL + "           <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
+  protected final String TEXT_87 = NL + "             <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
+  protected final String TEXT_88 = "');\">&#x25B7;</button>" + NL + "              <span style=\"font-size:100%;\">";
+  protected final String TEXT_89 = "<b>";
+  protected final String TEXT_90 = "</b>";
+  protected final String TEXT_91 = "</span>" + NL + "              <div id=\"";
+  protected final String TEXT_92 = "\" style=\"display:none; margin-left: 2em; white-space: nowrap;\">";
+  protected final String TEXT_93 = NL + "                ";
+  protected final String TEXT_94 = "<br/>";
+  protected final String TEXT_95 = NL + "              </div>" + NL + "             </li>";
+  protected final String TEXT_96 = NL + "           <h3>";
+  protected final String TEXT_97 = " Bundles</h3>" + NL + "           <p>" + NL + "             This update site provides access to the bundles listed below." + NL + "             Each section is expandable via";
+  protected final String TEXT_98 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all');";
+  protected final String TEXT_99 = NL + "             to provide detailed information about the exports and imports of each bundle." + NL + "           </p>" + NL + "           <ul>" + NL + "             <li>" + NL + "               The &#x21D6; glyph denotes the exported bundle identifier along with its full version." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x2196; glyph denotes an exported java package along with its full version, if specified." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x21D8; glyph denotes a required bundle along with its version range, if specified, as well as information about whether the requirement is optional and if so, whether it's greedy." + NL + "             </li>" + NL + "             <li>" + NL + "               The &#x2198; glyph denotes a required package along with its version range, if specified." + NL + "             </li>" + NL + "           </ul>" + NL + "" + NL + "          <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
+  protected final String TEXT_100 = NL + "            <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
+  protected final String TEXT_101 = "&nbsp;&nbsp;<";
+  protected final String TEXT_102 = " style=\"color: SteelBlue;\">";
+  protected final String TEXT_103 = "</";
+  protected final String TEXT_104 = NL + "         <input type=\"checkbox\" id=\"toggle-id-";
+  protected final String TEXT_105 = "\" class=\"toggle\"/>" + NL + "         <label for=\"toggle-id-";
+  protected final String TEXT_106 = "\" class=\"toggle-label\" style=\"font-size: 100%;\">";
+  protected final String TEXT_107 = " Properties</label>" + NL + "         <ul class=\"toggle-content\" style=\"margin-top: 0px; white-space: normal;\">";
+  protected final String TEXT_108 = NL + "           <li>";
+  protected final String TEXT_109 = NL + "             ";
+  protected final String TEXT_110 = " = ";
+  protected final String TEXT_111 = NL + "           </li>";
+  protected final String TEXT_112 = NL + "           <li>" + NL + "             <input type=\"checkbox\" id=\"toggle-id-";
+  protected final String TEXT_113 = "\" class=\"toggle\"/>" + NL + "             <label for=\"toggle-id-";
+  protected final String TEXT_114 = "\" class=\"toggle-label\">";
+  protected final String TEXT_115 = " ";
+  protected final String TEXT_116 = "</label>" + NL + "             <ul class=\"toggle-content\" style=\"margin-top: 0px;\">";
+  protected final String TEXT_117 = NL + "               <li>";
+  protected final String TEXT_118 = NL + "                 ";
+  protected final String TEXT_119 = NL + "               </li>";
+  protected final String TEXT_120 = NL + "             </ul>" + NL + "            </li>";
+  protected final String TEXT_121 = NL + "         </ul>";
+  protected final String TEXT_122 = NL + "              </div>" + NL + "            </li>";
+  protected final String TEXT_123 = NL + NL + "        </div>" + NL;
+  protected final String TEXT_124 = NL + "        <div style=\"padding-top: 100;\" id=\"rightcolumn\">" + NL + "          <div class=\"sideitem\">" + NL + "            <h6>Downloads</h6>" + NL + "            <p>" + NL + "              <a style=\"font-size: 75%; font-weight: bold;\" href=\"";
+  protected final String TEXT_125 = "</a>" + NL + "              <br/>" + NL + "              <a class=\"btn btn-warning\" style=\"margin-top: 5pt; font-size: 90%;\" href=\"";
+  protected final String TEXT_126 = "\" target=\"_blank\" title=\"Download ";
+  protected final String TEXT_127 = "\">Download</a>" + NL + "              <a class=\"btn btn-warning\" style=\"margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;\" href=\"";
+  protected final String TEXT_128 = "\">sha256</a>" + NL + "              <a class=\"btn btn-warning\" style=\"margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;\" href=\"";
+  protected final String TEXT_129 = "\">sha512</a>" + NL + "            </p>" + NL + "          </div>";
+  protected final String TEXT_130 = NL + "          <div class=\"sideitem\">" + NL + "            <h6>Git Commits</h6>";
+  protected final String TEXT_131 = NL + "            <p>" + NL + "              <button title=\"Copy Commit ID ";
+  protected final String TEXT_132 = " to Clipboard\" class=\"orange\" style=\"font-size: 150%; background-color: transparent; border: none; padding: 0px 0px;\" onclick=\"copyToClipboard('#";
+  protected final String TEXT_133 = "_commit_id')\">&#x270e;</button>" + NL + "              <a style=\"font-size: 100%;\" href=\"";
+  protected final String TEXT_134 = "\" target=\"";
+  protected final String TEXT_135 = "_git\">";
+  protected final String TEXT_136 = "</a>" + NL + "              <br/>" + NL + "              <tt><a id=\"";
+  protected final String TEXT_137 = "_commit_id\" class=\"btn btn-warning\" style=\"text-transform: none; margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 70%; padding-top: 0.2ex; padding-bottom: 0.2ex; padding-left: 0.2em; padding-right: 0.2em;\" href=\"";
+  protected final String TEXT_138 = "_git_commit\" title=\"";
+  protected final String TEXT_139 = " Git Commit ID\">";
+  protected final String TEXT_140 = "</a></tt>" + NL + "            </p>";
+  protected final String TEXT_141 = NL + "          </div>";
+  protected final String TEXT_142 = NL + "        </div>" + NL;
+  protected final String TEXT_143 = NL + "      </div>" + NL + "     </div>" + NL + "     </main>" + NL + "  </body>" + NL + "</html>";
 
   public String generate(Object argument)
   {
@@ -403,200 +404,205 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_79);
     stringBuffer.append(resourceURL);
     stringBuffer.append(TEXT_80);
-    stringBuffer.append(resourceURL);
+    if (resourceURL.startsWith("justj.")) {
     stringBuffer.append(TEXT_81);
+    stringBuffer.append(resourceURL.substring(5));
+    } else {
+    stringBuffer.append(resourceURL);
+    }
+    stringBuffer.append(TEXT_82);
     }
     Map<String, List<String>> features = parent.getFeatures();
     if (!features.isEmpty()) {
-    stringBuffer.append(TEXT_82);
+    stringBuffer.append(TEXT_83);
     {
         StringBuilder onClick = new StringBuilder();
         for (String feature : features.keySet()) {
           onClick.append("expand('").append(parent.getFolderID(feature) + "_feature").append("', 'all_features');");
         }
-    stringBuffer.append(TEXT_83);
-    stringBuffer.append(onClick);
     stringBuffer.append(TEXT_84);
-    }
+    stringBuffer.append(onClick);
     stringBuffer.append(TEXT_85);
+    }
+    stringBuffer.append(TEXT_86);
     for (Map.Entry<String, List<String>> entry : features.entrySet()) {
         String feature = entry.getKey();
         String id = parent.getFolderID(feature) + "_feature";
-    stringBuffer.append(TEXT_86);
+    stringBuffer.append(TEXT_87);
     stringBuffer.append(id);
     stringBuffer.append(TEXT_32);
     stringBuffer.append(id);
-    stringBuffer.append(TEXT_87);
-    if (parent.isSDK(feature)) {
     stringBuffer.append(TEXT_88);
-    }
-    stringBuffer.append(feature.replace(" ", "&nbsp;"));
     if (parent.isSDK(feature)) {
     stringBuffer.append(TEXT_89);
     }
+    stringBuffer.append(feature.replace(" ", "&nbsp;"));
+    if (parent.isSDK(feature)) {
     stringBuffer.append(TEXT_90);
-    stringBuffer.append(id);
-    stringBuffer.append(TEXT_91);
-    for (String line : entry.getValue()) {
-    stringBuffer.append(TEXT_92);
-    stringBuffer.append(line);
-    stringBuffer.append(TEXT_93);
     }
+    stringBuffer.append(TEXT_91);
+    stringBuffer.append(id);
+    stringBuffer.append(TEXT_92);
+    for (String line : entry.getValue()) {
+    stringBuffer.append(TEXT_93);
+    stringBuffer.append(line);
     stringBuffer.append(TEXT_94);
+    }
+    stringBuffer.append(TEXT_95);
     }
     stringBuffer.append(TEXT_70);
     }
     Map<String, List<String>> bundles = parent.getBundles();
     if (!bundles.isEmpty()) {
-    stringBuffer.append(TEXT_95);
-    stringBuffer.append(parent.getProjectLabel());
     stringBuffer.append(TEXT_96);
+    stringBuffer.append(parent.getProjectLabel());
+    stringBuffer.append(TEXT_97);
     {
         StringBuilder onClick = new StringBuilder();
         for (String bundle : bundles.keySet()) {
           onClick.append("expand('").append(parent.getFolderID(bundle)).append("', 'all');");
         }
-    stringBuffer.append(TEXT_97);
-    stringBuffer.append(onClick);
-    stringBuffer.append(TEXT_84);
-    }
     stringBuffer.append(TEXT_98);
+    stringBuffer.append(onClick);
+    stringBuffer.append(TEXT_85);
+    }
+    stringBuffer.append(TEXT_99);
     for (Map.Entry<String, List<String>> entry : bundles.entrySet()) {
         String bundle = entry.getKey();
         String bundleSize = parent.getBundleSize(bundle);
         String xmlTag = bundleSize.endsWith("MB") ? "b" : "span";
         String id = parent.getFolderID(bundle);
         List<Property> properties = parent.getProperties(bundle);
-    stringBuffer.append(TEXT_99);
+    stringBuffer.append(TEXT_100);
     stringBuffer.append(id);
     stringBuffer.append(TEXT_32);
     stringBuffer.append(id);
-    stringBuffer.append(TEXT_87);
+    stringBuffer.append(TEXT_88);
     stringBuffer.append(bundle.replace(" ", "&nbsp;"));
     if (!bundleSize.isEmpty()) {
-    stringBuffer.append(TEXT_100);
-    stringBuffer.append(xmlTag);
     stringBuffer.append(TEXT_101);
-    stringBuffer.append(bundleSize);
+    stringBuffer.append(xmlTag);
     stringBuffer.append(TEXT_102);
+    stringBuffer.append(bundleSize);
+    stringBuffer.append(TEXT_103);
     stringBuffer.append(xmlTag);
     stringBuffer.append(TEXT_19);
     }
-    stringBuffer.append(TEXT_90);
-    stringBuffer.append(id);
     stringBuffer.append(TEXT_91);
+    stringBuffer.append(id);
+    stringBuffer.append(TEXT_92);
     if (!properties.isEmpty()) {
           int mainID = ++toggleCounter;
-    stringBuffer.append(TEXT_103);
-    stringBuffer.append(mainID);
     stringBuffer.append(TEXT_104);
     stringBuffer.append(mainID);
     stringBuffer.append(TEXT_105);
+    stringBuffer.append(mainID);
+    stringBuffer.append(TEXT_106);
     stringBuffer.append(toggleExpand);
     stringBuffer.append(toggleCollapse);
-    stringBuffer.append(TEXT_106);
+    stringBuffer.append(TEXT_107);
     for (Property property : properties) {
             List<String> propertyChildren = property.getChildren();
             if (propertyChildren.isEmpty()) {
-    stringBuffer.append(TEXT_107);
     stringBuffer.append(TEXT_108);
-    stringBuffer.append(property.getKey());
     stringBuffer.append(TEXT_109);
-    stringBuffer.append(property.getValue());
+    stringBuffer.append(property.getKey());
     stringBuffer.append(TEXT_110);
+    stringBuffer.append(property.getValue());
+    stringBuffer.append(TEXT_111);
     } else {
               int valueID = ++toggleCounter;
-    stringBuffer.append(TEXT_111);
-    stringBuffer.append(valueID);
     stringBuffer.append(TEXT_112);
     stringBuffer.append(valueID);
     stringBuffer.append(TEXT_113);
+    stringBuffer.append(valueID);
+    stringBuffer.append(TEXT_114);
     stringBuffer.append(toggleExpand);
     stringBuffer.append(toggleCollapse);
-    stringBuffer.append(TEXT_114);
-    stringBuffer.append(property.getKey());
     stringBuffer.append(TEXT_115);
+    stringBuffer.append(property.getKey());
+    stringBuffer.append(TEXT_116);
     for (String value : propertyChildren) {
                 valueID = ++toggleCounter;
-    stringBuffer.append(TEXT_116);
     stringBuffer.append(TEXT_117);
-    stringBuffer.append(value);
     stringBuffer.append(TEXT_118);
-    }
+    stringBuffer.append(value);
     stringBuffer.append(TEXT_119);
-    }
     }
     stringBuffer.append(TEXT_120);
     }
-    for (String line : entry.getValue()) {
-    stringBuffer.append(TEXT_92);
-    stringBuffer.append(line);
-    stringBuffer.append(TEXT_93);
     }
     stringBuffer.append(TEXT_121);
+    }
+    for (String line : entry.getValue()) {
+    stringBuffer.append(TEXT_93);
+    stringBuffer.append(line);
+    stringBuffer.append(TEXT_94);
+    }
+    stringBuffer.append(TEXT_122);
     }
     stringBuffer.append(TEXT_70);
     }
     }
-    stringBuffer.append(TEXT_122);
+    stringBuffer.append(TEXT_123);
     if (parent.hasArchive()) {
     String archiveName = new File(parent.getArchive()).getName();
     String sha256Name = new File(parent.getDigest("SHA-256")).getName();
     String sha512Name = new File(parent.getDigest("SHA-512")).getName();
-    stringBuffer.append(TEXT_123);
+    stringBuffer.append(TEXT_124);
     stringBuffer.append(parent.getArchiveDownloadURL());
     stringBuffer.append(TEXT_49);
     stringBuffer.append(archiveName);
-    stringBuffer.append(TEXT_124);
-    stringBuffer.append(parent.getArchiveDownloadURL());
     stringBuffer.append(TEXT_125);
+    stringBuffer.append(parent.getArchiveDownloadURL());
+    stringBuffer.append(TEXT_126);
     stringBuffer.append(archiveName);
+    stringBuffer.append(TEXT_127);
+    stringBuffer.append(sha256Name);
     stringBuffer.append(TEXT_126);
     stringBuffer.append(sha256Name);
-    stringBuffer.append(TEXT_125);
-    stringBuffer.append(sha256Name);
-    stringBuffer.append(TEXT_127);
-    stringBuffer.append(sha512Name);
-    stringBuffer.append(TEXT_125);
-    stringBuffer.append(sha512Name);
     stringBuffer.append(TEXT_128);
+    stringBuffer.append(sha512Name);
+    stringBuffer.append(TEXT_126);
+    stringBuffer.append(sha512Name);
+    stringBuffer.append(TEXT_129);
     {
       Map<String, String> commits = parent.getCommits();
       if (!commits.isEmpty()) {
-    stringBuffer.append(TEXT_129);
+    stringBuffer.append(TEXT_130);
     for (Map.Entry<String, String> entry : commits.entrySet()) {
           String label = entry.getKey();
           String url = entry.getValue();
           String gitRepoURL = url.substring(0, url.indexOf("commit")) + "log/";
           String id = url.substring(url.indexOf('=') + 1);
-    stringBuffer.append(TEXT_130);
-    stringBuffer.append(id);
     stringBuffer.append(TEXT_131);
-    stringBuffer.append(label.toLowerCase());
+    stringBuffer.append(id);
     stringBuffer.append(TEXT_132);
+    stringBuffer.append(label.toLowerCase());
+    stringBuffer.append(TEXT_133);
     stringBuffer.append(gitRepoURL);
-    stringBuffer.append(TEXT_133);
-    stringBuffer.append(label.toLowerCase());
     stringBuffer.append(TEXT_134);
-    stringBuffer.append(label);
-    stringBuffer.append(TEXT_135);
     stringBuffer.append(label.toLowerCase());
+    stringBuffer.append(TEXT_135);
+    stringBuffer.append(label);
     stringBuffer.append(TEXT_136);
-    stringBuffer.append(url);
-    stringBuffer.append(TEXT_133);
     stringBuffer.append(label.toLowerCase());
     stringBuffer.append(TEXT_137);
-    stringBuffer.append(label);
+    stringBuffer.append(url);
+    stringBuffer.append(TEXT_134);
+    stringBuffer.append(label.toLowerCase());
     stringBuffer.append(TEXT_138);
-    stringBuffer.append(id);
+    stringBuffer.append(label);
     stringBuffer.append(TEXT_139);
-    }
+    stringBuffer.append(id);
     stringBuffer.append(TEXT_140);
-    }
     }
     stringBuffer.append(TEXT_141);
     }
+    }
     stringBuffer.append(TEXT_142);
+    }
+    stringBuffer.append(TEXT_143);
     return stringBuffer.toString();
   }
 }

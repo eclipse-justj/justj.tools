@@ -116,7 +116,7 @@ public final class ModelUtil
 
       if (model != null)
       {
-        URI uri = URI.createURI("model://" + id + "/" + version + "/model.jregen");
+        URI uri = URI.createURI("model://" + id + "/" + version + "/justj.jregen");
         Resource resource = resourceSet.createResource(uri, ModelPackage.eCONTENT_TYPE);
         try
         {
