@@ -523,11 +523,7 @@ public class ModelActionBarContributor extends EditingDomainActionBarContributor
     {
       Model model = (Model)((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(0).getContents().get(0);
 
-      System.err.println("###" + model.eResource().getURI());
-      System.err.println("###" + model.getTarget());
       Generator generator = new Generator(model);
-      System.err.println("###>" + generator.getTarget());
-
       Shell shell = activeEditorPart.getSite().getShell();
       if (MessageDialog.openConfirm(shell, "Generator Confirmation", "The results will be generated to '" + generator.getTarget() + "'"))
       {
@@ -567,8 +563,6 @@ public class ModelActionBarContributor extends EditingDomainActionBarContributor
       EditingDomain editingDomain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
       Model model = (Model)editingDomain.getResourceSet().getResources().get(0).getContents().get(0);
 
-      System.err.println("###" + model.eResource().getURI());
-      System.err.println("###" + model.getTarget());
       Reconciler reconciler = new Reconciler(model);
 
       Shell shell = activeEditorPart.getSite().getShell();

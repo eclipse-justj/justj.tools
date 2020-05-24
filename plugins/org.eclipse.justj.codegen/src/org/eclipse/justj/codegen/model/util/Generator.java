@@ -20,6 +20,8 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.EList;
@@ -51,6 +54,7 @@ import org.eclipse.justj.codegen.model.Phase;
 import org.eclipse.justj.codegen.model.Touchable;
 import org.eclipse.justj.codegen.model.Touchpoint;
 import org.eclipse.justj.codegen.model.Variant;
+import org.eclipse.justj.codegen.model.util.Generator.Description.Descriptor;
 
 
 public class Generator
@@ -63,13 +67,23 @@ public class Generator
 
   private final URIConverter uriConverter;
 
+  private final Description description;
+
   public static void main(String[] args) throws IOException
   {
     Path path = Paths.get(args[0]);
     Path realPath = path.toRealPath();
-    System.out.println("Generating: " + realPath);
+    if (!shouldDescribe())
+    {
+      System.out.println("Generating: " + realPath);
+    }
     Generator generator = new Generator(URI.createFileURI(realPath.toString()));
-    generator.generate(new Reconciler.PrintingProgressMonitor());
+    generator.generate(shouldDescribe() ? new NullProgressMonitor() : new Reconciler.PrintingProgressMonitor());
+  }
+
+  private static boolean shouldDescribe()
+  {
+    return "true".equals(System.getProperty("org.eclipse.justj.describe"));
   }
 
   public Generator(URI source) throws IOException
@@ -84,6 +98,7 @@ public class Generator
     model = (Model)resource.getContents().get(0);
     this.target = computeTarget(model);
     this.localCache = Reconciler.computeLocalCache(model);
+    this.description = new Description(target.appendSegment(""));
   }
 
   public Generator(Model model)
@@ -93,6 +108,7 @@ public class Generator
     uriConverter = resource.getResourceSet().getURIConverter();
     this.target = computeTarget(model);
     this.localCache = Reconciler.computeLocalCache(model);
+    this.description = new Description(target.appendSegment(""));
   }
 
   private URI computeTarget(Model model)
@@ -137,36 +153,80 @@ public class Generator
 
     String name = model.getName();
     modelMonitor.subTask("Generating .gitignore");
-    save(org.eclipse.justj.codegen.templates.GitIgnore.create(null).generate(model), target.appendSegment(".gitignore"), modelMonitor.split(1));
-    save(org.eclipse.justj.codegen.templates.POMXML.create(null).generate(model), target.appendSegment("pom.xml"), modelMonitor.split(1));
+    Descriptor descriptor = description.describe(target.appendSegment(""), "the root of the overall model scaffolding");
+    save(org.eclipse.justj.codegen.templates.GitIgnore.create(null).generate(model), target.appendSegment(".gitignore"), modelMonitor.split(1), "the root Git ignore information");
+    save(org.eclipse.justj.codegen.templates.POMXML.create(null).generate(model), target.appendSegment("pom.xml"), modelMonitor.split(1), "the root POM");
 
-    URI siteTarget = target.appendSegment("releng").appendSegment(name + ".site");
-    save(org.eclipse.justj.codegen.templates.releng.site.ProjectXML.create(null).generate(model), siteTarget.appendSegment(".project"), modelMonitor.split(1));
-    save(org.eclipse.justj.codegen.templates.releng.site.CategoryXML.create(null).generate(model), siteTarget.appendSegment("category.xml"), modelMonitor.split(1));
-    save(org.eclipse.justj.codegen.templates.releng.site.POMXML.create(null).generate(model), siteTarget.appendSegment("pom.xml"), modelMonitor.split(1));
-    save(org.eclipse.justj.codegen.templates.releng.site.SiteProperties.create(null).generate(model), siteTarget.appendSegment("site.properties"), modelMonitor.split(1));
+    URI relengTarget = target.appendSegment("releng");
+    description.describe(relengTarget.appendSegment(""), "the folder for the releng-related projects");
+    URI siteTarget = relengTarget.appendSegment(name + ".site");
+    description.describe(siteTarget.appendSegment(""), "the site project");
+    save(
+      org.eclipse.justj.codegen.templates.releng.site.ProjectXML.create(null).generate(model),
+      siteTarget.appendSegment(".project"),
+      modelMonitor.split(1),
+      "the site project information");
+    save(
+      org.eclipse.justj.codegen.templates.releng.site.CategoryXML.create(null).generate(model),
+      siteTarget.appendSegment("category.xml"),
+      modelMonitor.split(1),
+      "the site category with a single category for all features");
+    save(org.eclipse.justj.codegen.templates.releng.site.POMXML.create(null).generate(model), siteTarget.appendSegment("pom.xml"), modelMonitor.split(1), "the site POM");
+    save(
+      org.eclipse.justj.codegen.templates.releng.site.SiteProperties.create(null).generate(model),
+      siteTarget.appendSegment("site.properties"),
+      modelMonitor.split(1),
+      "the site properties");
 
-    URI parentTarget = target.appendSegment("releng").appendSegment(name + ".parent");
-    save(org.eclipse.justj.codegen.templates.releng.parent.ProjectXML.create(null).generate(model), parentTarget.appendSegment(".project"), modelMonitor.split(1));
-    save(org.eclipse.justj.codegen.templates.releng.parent.POMXML.create(null).generate(model), parentTarget.appendSegment("pom.xml"), modelMonitor.split(1));
+    URI parentTarget = relengTarget.appendSegment(name + ".parent");
+    description.describe(parentTarget.appendSegment(""), "the parent project containing the bulk of the Tycho build infrastructure");
+    save(
+      org.eclipse.justj.codegen.templates.releng.parent.ProjectXML.create(null).generate(model),
+      parentTarget.appendSegment(".project"),
+      modelMonitor.split(1),
+      "the parent project information");
+    save(
+      org.eclipse.justj.codegen.templates.releng.parent.POMXML.create(null).generate(model),
+      parentTarget.appendSegment("pom.xml"),
+      modelMonitor.split(1),
+      "the parent POM that composes all the other POMs");
 
+    URI relengFeaturesTarget = parentTarget.appendSegment("features");
+    description.describe(relengFeaturesTarget.appendSegment(""), "the folder for the features POM which composes all the features");
     save(
       org.eclipse.justj.codegen.templates.releng.parent.features.POMXML.create(null).generate(model),
-      parentTarget.appendSegment("features").appendSegment("pom.xml"),
-      modelMonitor.split(1));
+      relengFeaturesTarget.appendSegment("pom.xml"),
+      modelMonitor.split(1),
+      "the features POM");
 
+    URI relengPluginsTarget = parentTarget.appendSegment("plugins");
+    description.describe(relengPluginsTarget.appendSegment(""), "the folder for the plugins POM which composes all the plugins and fragments");
     save(
       org.eclipse.justj.codegen.templates.releng.parent.plugins.POMXML.create(null).generate(model),
-      parentTarget.appendSegment("plugins").appendSegment("pom.xml"),
-      modelMonitor.split(1));
+      relengPluginsTarget.appendSegment("pom.xml"),
+      modelMonitor.split(1),
+      "the plugins POM");
 
+    URI relengPromotionFolder = parentTarget.appendSegment("promotion");
+    description.describe(
+      relengPromotionFolder.appendSegment(""),
+      "the folder for the promotion POM which manages the promotion of the p2 update site to <code>download.eclipse.org</code>");
     save(
       org.eclipse.justj.codegen.templates.releng.parent.promotion.POMXML.create(null).generate(model),
-      parentTarget.appendSegment("promotion").appendSegment("pom.xml"),
-      modelMonitor.split(1));
+      relengPromotionFolder.appendSegment("pom.xml"),
+      modelMonitor.split(1),
+      "the promotion POM that uses <code>org.eclipse.justj.p2</code>");
 
     String aboutURL = model.getAboutURL();
     String aboutHTML = composeLines(load(URI.createURI(aboutURL)), "", org.eclipse.justj.codegen.templates.GitIgnore.create(null).NL);
+
+    URI featuresTarget = target.appendSegment("features");
+    description.describe(featuresTarget.appendSegment(""), "the folder for all the features; it will contain one feature per <code>JVM</code>");
+
+    URI pluginsTarget = target.appendSegment("plugins");
+    description.describe(
+      pluginsTarget.appendSegment(""),
+      "the folder for all the plugins and fragments; it will contain one main plugin per <code>JVM</code> and one or more fragments per <code>Variant</code>");
 
     for (JVM jvm : jvms)
     {
@@ -176,32 +236,91 @@ public class Generator
       jvmMonitor.setWorkRemaining(variants.size() + 18);
 
       String jvmName = jvm.getName();
-      URI featureTarget = target.appendSegment("features").appendSegment(name + "." + jvmName + "-feature");
-      save(org.eclipse.justj.codegen.templates.feature.ProjectXML.create(null).generate(jvm), featureTarget.appendSegment(".project"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.feature.BuildProperties.create(null).generate(jvm), featureTarget.appendSegment("build.properties"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.feature.FeatureProperties.create(null).generate(jvm), featureTarget.appendSegment("feature.properties"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.feature.FeatureXML.create(null).generate(jvm), featureTarget.appendSegment("feature.xml"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.feature.P2Inf.create(null).generate(jvm), featureTarget.appendSegment("p2.inf"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.feature.POMXML.create(null).generate(jvm), featureTarget.appendSegment("pom.xml"), jvmMonitor.split(1));
+      URI featureTarget = featuresTarget.appendSegment(name + "." + jvmName + "-feature");
+      description.describe(featureTarget.appendSegment(""), "the JRE-specific feature");
+      save(
+        org.eclipse.justj.codegen.templates.feature.ProjectXML.create(null).generate(jvm),
+        featureTarget.appendSegment(".project"),
+        jvmMonitor.split(1),
+        "the feature project information");
+      save(
+        org.eclipse.justj.codegen.templates.feature.BuildProperties.create(null).generate(jvm),
+        featureTarget.appendSegment("build.properties"),
+        jvmMonitor.split(1),
+        "the feature build properties");
+      save(
+        org.eclipse.justj.codegen.templates.feature.FeatureProperties.create(null).generate(jvm),
+        featureTarget.appendSegment("feature.properties"),
+        jvmMonitor.split(1),
+        " the feature NLS properties");
+      save(
+        org.eclipse.justj.codegen.templates.feature.FeatureXML.create(null).generate(jvm),
+        featureTarget.appendSegment("feature.xml"),
+        jvmMonitor.split(1),
+        "the feature structural information; it includes one plugin and one or more of its corresponding fragments");
+      save(
+        org.eclipse.justj.codegen.templates.feature.P2Inf.create(null).generate(jvm),
+        featureTarget.appendSegment("p2.inf"),
+        jvmMonitor.split(1),
+        "the directives for additional p2 feature metadata");
+      save(org.eclipse.justj.codegen.templates.feature.POMXML.create(null).generate(jvm), featureTarget.appendSegment("pom.xml"), jvmMonitor.split(1), "the feature POM");
 
-      URI pluginTarget = target.appendSegment("plugins").appendSegment(name + "." + jvmName);
-      save(org.eclipse.justj.codegen.templates.plugin.ProjectXML.create(null).generate(jvm), pluginTarget.appendSegment(".project"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.POMXML.create(null).generate(jvm), pluginTarget.appendSegment("pom.xml"), jvmMonitor.split(1));
+      URI pluginTarget = pluginsTarget.appendSegment(name + "." + jvmName);
+      description.describe(pluginTarget.appendSegment(""), "the JRE-specific plugin");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.ProjectXML.create(null).generate(jvm),
+        pluginTarget.appendSegment(".project"),
+        jvmMonitor.split(1),
+        "the plugin project information");
+      save(org.eclipse.justj.codegen.templates.plugin.POMXML.create(null).generate(jvm), pluginTarget.appendSegment("pom.xml"), jvmMonitor.split(1), "the plugin POM");
 
       URI pluginMetaInfTarget = pluginTarget.appendSegment("META-INF");
-      save(org.eclipse.justj.codegen.templates.plugin.Manifest.create(null).generate(jvm), pluginMetaInfTarget.appendSegment("MANIFEST.MF"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.EclipseInf.create(null).generate(jvm), pluginMetaInfTarget.appendSegment("eclipse.inf"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.P2Inf.create(null).generate(jvm), pluginMetaInfTarget.appendSegment("p2.inf"), jvmMonitor.split(1));
+      description.describe(pluginMetaInfTarget.appendSegment(""), "the plugin manifest folder");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.Manifest.create(null).generate(jvm),
+        pluginMetaInfTarget.appendSegment("MANIFEST.MF"),
+        jvmMonitor.split(1),
+        "the plugin manifest");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.EclipseInf.create(null).generate(jvm),
+        pluginMetaInfTarget.appendSegment("eclipse.inf"),
+        jvmMonitor.split(1),
+        "the plugin Tycho build information");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.P2Inf.create(null).generate(jvm),
+        pluginMetaInfTarget.appendSegment("p2.inf"),
+        jvmMonitor.split(1),
+        "the directives for additional p2 plugin metadata");
 
-      save(aboutHTML, pluginTarget.appendSegment("about.html"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.AboutIni.create(null).generate(jvm), pluginTarget.appendSegment("about.ini"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.AboutMappings.create(null).generate(jvm), pluginTarget.appendSegment("about.mappings"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.AboutProperties.create(null).generate(jvm), pluginTarget.appendSegment("about.properties"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.BuildProperties.create(null).generate(jvm), pluginTarget.appendSegment("build.properties"), jvmMonitor.split(1));
-      save(org.eclipse.justj.codegen.templates.plugin.PluginProperties.create(null).generate(jvm), pluginTarget.appendSegment("plugin.properties"), jvmMonitor.split(1));
+      save(aboutHTML, pluginTarget.appendSegment("about.html"), jvmMonitor.split(1), "the branding HTML");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.AboutIni.create(null).generate(jvm),
+        pluginTarget.appendSegment("about.ini"),
+        jvmMonitor.split(1),
+        "the plugin branding initialization file");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.AboutMappings.create(null).generate(jvm),
+        pluginTarget.appendSegment("about.mappings"),
+        jvmMonitor.split(1),
+        "the plugin branding mappings");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.AboutProperties.create(null).generate(jvm),
+        pluginTarget.appendSegment("about.properties"),
+        jvmMonitor.split(1),
+        "the plugin branding properties");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.BuildProperties.create(null).generate(jvm),
+        pluginTarget.appendSegment("build.properties"),
+        jvmMonitor.split(1),
+        "the plugin build properties");
+      save(
+        org.eclipse.justj.codegen.templates.plugin.PluginProperties.create(null).generate(jvm),
+        pluginTarget.appendSegment("plugin.properties"),
+        jvmMonitor.split(1),
+        "the plugin NLS properties");
 
       String providerImageName = model.getProviderImageName();
-      save(model.getProviderImageData(), pluginTarget.appendSegment(providerImageName), jvmMonitor.split(1));
+      save(model.getProviderImageData(), pluginTarget.appendSegment(providerImageName), jvmMonitor.split(1), "the plugin/feature branding image");
 
       for (Variant variant : variants)
       {
@@ -210,34 +329,69 @@ public class Generator
 
         String os = variant.getOs();
         String arch = variant.getArch();
-        URI fragmentTarget = target.appendSegment("plugins").appendSegment(name + "." + jvmName + "." + os + "." + arch);
-        save(org.eclipse.justj.codegen.templates.fragment.ProjectXML.create(null).generate(variant), fragmentTarget.appendSegment(".project"), variantMonitor.split(1));
+        URI fragmentTarget = pluginsTarget.appendSegment(name + "." + jvmName + "." + os + "." + arch);
+        description.describe(fragmentTarget.appendSegment(""), "the JRE-specific, os-specific fragment");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.ProjectXML.create(null).generate(variant),
+          fragmentTarget.appendSegment(".project"),
+          variantMonitor.split(1),
+          "the fragment project information");
 
         URI fragmentMetaInfTarget = fragmentTarget.appendSegment("META-INF");
-        save(org.eclipse.justj.codegen.templates.fragment.EclipseInf.create(null).generate(variant), fragmentMetaInfTarget.appendSegment("eclipse.inf"), variantMonitor.split(1));
-        save(org.eclipse.justj.codegen.templates.fragment.Manifest.create(null).generate(variant), fragmentMetaInfTarget.appendSegment("MANIFEST.MF"), variantMonitor.split(1));
-        save(org.eclipse.justj.codegen.templates.fragment.P2Inf.create(null).generate(variant), fragmentMetaInfTarget.appendSegment("p2.inf"), variantMonitor.split(1));
+        description.describe(fragmentMetaInfTarget.appendSegment(""), "the fragment manifest folder");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.EclipseInf.create(null).generate(variant),
+          fragmentMetaInfTarget.appendSegment("eclipse.inf"),
+          variantMonitor.split(1),
+          "the fragment Tycho build information");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.Manifest.create(null).generate(variant),
+          fragmentMetaInfTarget.appendSegment("MANIFEST.MF"),
+          variantMonitor.split(1),
+          "the fragment manifest");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.P2Inf.create(null).generate(variant),
+          fragmentMetaInfTarget.appendSegment("p2.inf"),
+          variantMonitor.split(1),
+          "the directives for additional p2 fragment metadata");
 
-        save(aboutHTML, fragmentTarget.appendSegment("about.html"), variantMonitor.split(1));
-        save(org.eclipse.justj.codegen.templates.fragment.AboutMappings.create(null).generate(variant), fragmentTarget.appendSegment("about.mappings"), variantMonitor.split(1));
+        save(aboutHTML, fragmentTarget.appendSegment("about.html"), variantMonitor.split(1), "the branding HTML");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.AboutMappings.create(null).generate(variant),
+          fragmentTarget.appendSegment("about.mappings"),
+          variantMonitor.split(1),
+          "the fragment branding mappings");
         save(
           org.eclipse.justj.codegen.templates.fragment.BuildProperties.create(null).generate(variant),
           fragmentTarget.appendSegment("build.properties"),
-          variantMonitor.split(1));
+          variantMonitor.split(1),
+          "the fragment build properties");
         save(
           org.eclipse.justj.codegen.templates.fragment.FragmentProperties.create(null).generate(variant),
           fragmentTarget.appendSegment("fragment.properties"),
-          variantMonitor.split(1));
-        save(org.eclipse.justj.codegen.templates.fragment.POMXML.create(null).generate(variant), fragmentTarget.appendSegment("pom.xml"), variantMonitor.split(1));
+          variantMonitor.split(1),
+          "the fragment NLS properties");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.POMXML.create(null).generate(variant),
+          fragmentTarget.appendSegment("pom.xml"),
+          variantMonitor.split(1),
+          "the fragment's POM");
 
         URI fragmentJRETarget = fragmentTarget.appendSegment("jre");
-        save(org.eclipse.justj.codegen.templates.fragment.GitIgnore.create(null).generate(variant), fragmentJRETarget.appendSegment(".gitignore"), variantMonitor.split(1));
+        description.describe(fragmentJRETarget.appendSegment(""), "folder containing the actual JRE");
+        save(
+          org.eclipse.justj.codegen.templates.fragment.GitIgnore.create(null).generate(variant),
+          fragmentJRETarget.appendSegment(".gitignore"),
+          variantMonitor.split(1),
+          "the Git ignore of the fragment's <code>jre</code> folder");
 
         URI fragmentSettingsTarget = fragmentTarget.appendSegment(".settings");
+        description.describe(fragmentSettingsTarget.appendSegment(""), "the fragment preferences folder");
         save(
           org.eclipse.justj.codegen.templates.fragment.PDEPrefs.create(null).generate(variant),
           fragmentSettingsTarget.appendSegment("org.eclipse.pde.prefs"),
-          variantMonitor.split(1));
+          variantMonitor.split(1),
+          "the fragment PDE preferences");
 
         String source = variant.getSource();
         if (source != null)
@@ -258,10 +412,18 @@ public class Generator
         }
       }
     }
+
+    if (shouldDescribe())
+    {
+      descriptor.sort();
+      String descriptionText = org.eclipse.justj.codegen.templates.description.Describer.create(null).generate(descriptor);
+      System.out.print(descriptionText);
+    }
   }
 
-  protected void save(String text, URI target, SubMonitor monitor) throws IOException
+  protected void save(String text, URI target, SubMonitor monitor, String description) throws IOException
   {
+    this.description.describe(target, description);
     monitor.subTask("Generating " + target.deresolve(this.target));
     try (OutputStream out = uriConverter.createOutputStream(target); PrintStream print = new PrintStream(out, true, "UTF-8"))
     {
@@ -280,8 +442,9 @@ public class Generator
     }
   }
 
-  protected void save(byte[] source, URI target, SubMonitor monitor) throws IOException
+  protected void save(byte[] source, URI target, SubMonitor monitor, String description) throws IOException
   {
+    this.description.describe(target, description);
     monitor.subTask("Generating " + target.deresolve(this.target));
     try (OutputStream out = uriConverter.createOutputStream(target); PrintStream print = new PrintStream(out, true, "UTF-8"))
     {
@@ -522,6 +685,124 @@ public class Generator
     @Override
     public void stop()
     {
+    }
+  }
+
+  public static class Description
+  {
+    private static String BUILD_ARTIFACTS = "https://ci.eclipse.org/justj/job/build-jres/lastSuccessfulBuild/artifact/jre-gen/";
+
+    private final URI root;
+
+    private final Map<URI, Descriptor> descriptors = new LinkedHashMap<>();
+
+    public Description(URI root)
+    {
+      this.root = root;
+    }
+
+    public Descriptor describe(URI uri, String description)
+    {
+      URI relativeURI = uri.deresolve(root);
+      if (relativeURI.isCurrentDocumentReference())
+      {
+        relativeURI = URI.createURI("/");
+      }
+      URI parentFolder = relativeURI.trimSegments(relativeURI.hasTrailingPathSeparator() ? 2 : 1).appendSegment("");
+      Descriptor descriptor = descriptors.get(parentFolder);
+      descriptor = new Descriptor(relativeURI, description, descriptor);
+      descriptors.put(relativeURI, descriptor);
+      return descriptor;
+    }
+
+    public static class Descriptor
+    {
+      private URI uri;
+
+      private final String description;
+
+      private final Descriptor parent;
+
+      private final List<Descriptor> children = new ArrayList<>();
+
+      public Descriptor(URI uri, String description, Descriptor parent)
+      {
+        this.uri = uri;
+        this.description = description;
+        this.parent = parent;
+        if (parent != null)
+        {
+          parent.children.add(this);
+        }
+      }
+
+      public String getDescription()
+      {
+        return description;
+      }
+
+      public Descriptor getParent()
+      {
+        return parent;
+      }
+
+      public List<Descriptor> getChildren()
+      {
+        return children;
+      }
+
+      public String getName()
+      {
+        String name = uri.hasTrailingPathSeparator() ? uri.trimSegments(1).lastSegment() : uri.lastSegment();
+        return name == null ? "jre-gen" : name;
+      }
+
+      public String getLink()
+      {
+        if (uri.hasTrailingPathSeparator() || uri.segmentCount() == 0)
+        {
+          return BUILD_ARTIFACTS + uri;
+        }
+        else
+        {
+          String name = uri.lastSegment();
+          if (name.startsWith("."))
+          {
+            return null;
+          }
+          else
+          {
+            return BUILD_ARTIFACTS + uri + "/*view*/";
+          }
+        }
+      }
+
+      public void sort()
+      {
+        Collections.sort(children, new Comparator<Descriptor>()
+          {
+            @Override
+            public int compare(Descriptor o1, Descriptor o2)
+            {
+              boolean hasTrailingPathSeparator1 = o1.uri.hasTrailingPathSeparator();
+              boolean hasTrailingPathSeparator2 = o2.uri.hasTrailingPathSeparator();
+              if (hasTrailingPathSeparator1 == hasTrailingPathSeparator2)
+              {
+                return o1.getName().compareTo(o2.getName());
+              }
+              else
+              {
+                // Folders come first.
+                return hasTrailingPathSeparator1 ? -1 : 1;
+              }
+            }
+          });
+
+        for (Descriptor child : children)
+        {
+          child.sort();
+        }
+      }
     }
   }
 
