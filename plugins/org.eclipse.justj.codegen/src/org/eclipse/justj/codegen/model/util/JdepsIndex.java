@@ -127,7 +127,6 @@ public class JdepsIndex
       if (parent != null)
       {
         indices.put(relativePath, new URI("https://download.eclipse.org/" + parent.toString().replace('\\', '/')));
-        System.err.println("###" + indices);
       }
     }
   }
