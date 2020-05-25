@@ -26,6 +26,7 @@ SPDX-License-Identifier: EPL-2.0
     <tycho-version>1.7.0</tycho-version>
     <jarsigner-version>1.1.7</jarsigner-version>
     <os-jvm-flags/>
+    <org.eclipse.justj.eclipse.repository>http://download.eclipse.org/releases/2020-06</org.eclipse.justj.eclipse.repository>
   </properties>
 
   <pluginRepositories>
@@ -46,8 +47,8 @@ SPDX-License-Identifier: EPL-2.0
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>eclipse-2020-06</id>
-      <url>http://download.eclipse.org/releases/2020-06</url>
+      <id>eclipse-repository</id>
+      <url>${org.eclipse.justj.eclipse.repository}</url>
       <layout>p2</layout>
     </repository>
   </repositories>
