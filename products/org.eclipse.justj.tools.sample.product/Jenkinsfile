@@ -97,6 +97,7 @@ pipeline {
           sshagent(['projects-storage.eclipse.org-bot-ssh']) {
             sh '''
               ssh genie.justj@projects-storage.eclipse.org "
+              rm -rf $JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/*
               mkdir -p $JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
               "
               scp *.zip *.tar.gz genie.justj@projects-storage.eclipse.org:$JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
