@@ -1,0 +1,137 @@
+pipeline {
+  agent { label 'migration' }
+
+   options {
+    buildDiscarder(logRotator(numToKeepStr: '10'))
+    disableConcurrentBuilds()
+    skipDefaultCheckout true
+  }
+
+  tools {
+    maven 'apache-maven-latest'
+    jdk 'oracle-jdk8-latest'
+  }
+
+  environment {
+    JUSTJ_PUBLISH_LOCATION = 'sample-products'
+    JUSTJ_BUILD_TIME_STAMP = sh(returnStdout: true, script: 'date +%Y%m%d%H%M').trim()
+    JUSTJ_URL = 'https://download.eclipse.org/justj'
+    JUSTJ_STORAGE_LOCATION = '/home/data/httpd/download.eclipse.org/justj'
+  }
+
+  parameters {
+    string(
+      name: 'JRE_REPOSITORY',
+      defaultValue: 'http://download.eclipse.org/justj/sandbox/jres/14/updates/nightly/latest',
+      description: '''
+        Choose the URL of the JRE p2 repository to use.
+        '''
+    )
+
+    string(
+      name: 'ECLIPSE_REPOSITORY',
+      defaultValue: 'http://download.eclipse.org/releases/2020-06',
+      description: '''
+        Choose the URL of the release train repository to use.
+        '''
+    )
+
+    booleanParam(
+      name: 'PROMOTE',
+      defaultValue: false,
+      description: 'Whether to promote the build to the download server.'
+    )
+  }
+
+  stages {
+    stage('Display Parameters') {
+      steps {
+        echo "JRE_REPOSITORY=${params.JRE_REPOSITORY}"
+        echo "ECLIPSE_REPOSITORY=${params.ECLIPSE_REPOSITORY}"
+        echo "PROMOTE=${params.PROMOTE}"
+        script {
+          env.PROMOTE = params.PROMOTE
+          env.ECLIPSE_REPOSITORY = params.ECLIPSE_REPOSITORY
+          env.JRE_REPOSITORY = params.JRE_REPOSITORY
+        }
+      }
+    }
+
+    stage('Git Checkout') {
+      steps {
+        script {
+          def gitVariables = checkout(
+            poll: false,
+            scm: [
+              $class: 'GitSCM',
+              branches: [[name: '*/master']],
+              doGenerateSubmoduleConfigurations: false,
+              extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'justj.tools']],
+              submoduleCfg: [],
+              userRemoteConfigs: [[url: 'git://git.eclipse.org/gitroot/justj/justj.tools.git']]
+            ]
+          )
+
+          echo "$gitVariables"
+          env.GIT_COMMIT = gitVariables.GIT_COMMIT
+        }
+      }
+    }
+
+    stage('Build Sample Products') {
+      steps {
+        dir('justj.tools/products/org.eclipse.justj.tools.sample.product') {
+          sh '''
+            mvn  --no-transfer-progress -DPACK_AND_SIGN=true -Dorg.eclipse.justj.p2.manager.build.url=$JOB_URL -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
+            '''
+        }
+      }
+    }
+
+    stage('Promote Results') {
+      when {
+        environment name: 'PROMOTE', value: 'true'
+      }
+      steps {
+        dir('justj.tools/products/org.eclipse.justj.tools.sample.product/target/products') {
+          sshagent(['projects-storage.eclipse.org-bot-ssh']) {
+            sh '''
+              ssh genie.justj@projects-storage.eclipse.org "
+              mkdir -p $JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
+              "
+              scp *.zip *.tar.gz genie.justj@projects-storage.eclipse.org:$JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
+            '''
+          }
+        }
+      }
+    }
+
+    stage('Archive Results') {
+      steps {
+        dir('justj.tools/products/org.eclipse.justj.tools.sample.product/target/products') {
+          archiveArtifacts '*.zip,*.tar.gz'
+        }
+      }
+    }
+  }
+
+  post {
+    failure {
+      mail to: 'ed.merks@gmail.com',
+      subject: "[JustJ CI] Build Failure ${currentBuild.fullDisplayName}",
+      mimeType: 'text/html',
+      body: "Project: ${env.JOB_NAME}<br/>Build Number: ${env.BUILD_NUMBER}<br/>Build URL: ${env.BUILD_URL}<br/>Console: ${env.BUILD_URL}/console"
+    }
+
+    fixed {
+      mail to: 'ed.merks@gmail.com',
+      subject: "[JustJ CI] Back to normal ${currentBuild.fullDisplayName}",
+      mimeType: 'text/html',
+      body: "Project: ${env.JOB_NAME}<br/>Build Number: ${env.BUILD_NUMBER}<br/>Build URL: ${env.BUILD_URL}<br/>Console: ${env.BUILD_URL}/console"
+    }
+
+    cleanup {
+      deleteDir()
+    }
+  }
+}

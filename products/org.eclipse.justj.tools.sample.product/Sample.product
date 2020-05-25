@@ -24,15 +24,16 @@ Eclipse-Sample
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <splash
+      location="org.eclipse.platform" />
 
-
-   <launcher>
+   <launcher name="eclipse">
+      <linux icon="icons/icon.xpm"/>
+      <macosx icon="icons/Eclipse.icns"/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
