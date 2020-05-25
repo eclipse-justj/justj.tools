@@ -149,6 +149,7 @@ SPDX-License-Identifier: EPL-2.0
               <products>
                 <product>
                   <id>org.eclipse.justj.tools.sample.product</id>
+                  <rootFolder>eclipse-sample</rootFolder>
                   <rootFolders>
                     <macosx>Eclipse-Sample.app</macosx>
                   </rootFolders>
@@ -161,6 +162,13 @@ SPDX-License-Identifier: EPL-2.0
             <goals>
               <goal>archive-products</goal>
             </goals>
+            <configuration>
+              <formats>
+                <win32>zip</win32>
+                <linux>tar.gz</linux>
+                <macosx>tar.gz</macosx>
+              </formats>
+            </configuration>
           </execution>
         </executions>
       </plugin>
