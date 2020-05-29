@@ -100,7 +100,7 @@ pipeline {
               rm -rf $JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/*
               mkdir -p $JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
               "
-              scp *.zip *.tar.gz genie.justj@projects-storage.eclipse.org:$JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
+              scp *.zip *.tar.gz *.dmg genie.justj@projects-storage.eclipse.org:$JUSTJ_STORAGE_LOCATION/$JUSTJ_PUBLISH_LOCATION/$JUSTJ_BUILD_TIME_STAMP
             '''
           }
         }
@@ -110,7 +110,7 @@ pipeline {
     stage('Archive Results') {
       steps {
         dir('justj.tools/products/org.eclipse.justj.tools.sample.product/target/products') {
-          archiveArtifacts '*.zip,*.tar.gz'
+          archiveArtifacts '*.zip,*.tar.gz,*.dmg'
         }
       }
     }
