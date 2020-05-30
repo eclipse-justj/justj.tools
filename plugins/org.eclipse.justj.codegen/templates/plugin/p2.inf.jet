@@ -15,6 +15,7 @@ SPDX-License-Identifier: EPL-2.0
   String modelName = model.getName();
   String fullName = modelName + '.' + jvmName;%>
 <%@include file="../copyright.properties.jetinc"%>
+
 # Ensure that the applicable implementation fragment gets installed automatically.
 
 <%int count = 0;
@@ -22,12 +23,39 @@ SPDX-License-Identifier: EPL-2.0
     ++count;
     String os = variant.getOs();
     String arch = variant.getArch();%>
-
 requires.<%=count%>.namespace = org.eclipse.equinox.p2.iu
 requires.<%=count%>.name = <%=fullName%>.<%=os%>.<%=arch%>
 requires.<%=count%>.range = [$version$,$version$]
 requires.<%=count%>.filter = (&(osgi.os=<%=os%>)(osgi.arch=<%=arch%>)(!(<%=modelName%>.buildtime=true)))
+
 <%}%>
+# Exclude the synthetic a.jre IUs from the p2 repositories; Tycho gets confused by negative requirements so filter this to avoid it at build time.
+<%++count;%>
+requires.<%=count%>.namespace = org.eclipse.equinox.p2.iu
+requires.<%=count%>.name = a.jre
+requires.<%=count%>.min = 0
+requires.<%=count%>.max = 0
+requires.<%=count%>.filter = (!(<%=modelName%>.buildtime=true))
+
+# Exclude the synthetic a.jre.javase IUs from the p2 repositories; Tycho gets confused by negative requirements so filter this to avoid it at build time.
+<%++count;%>
+requires.<%=count%>.namespace = org.eclipse.equinox.p2.iu
+requires.<%=count%>.name = a.jre.javase
+requires.<%=count%>.min = 0
+requires.<%=count%>.max = 0
+requires.<%=count%>.filter = (!(<%=modelName%>.buildtime=true))
+
+# Declare a capability that can be used to ensure mutually exclusive installation of IUs that set the -vm option.
+provides.0.namespace = org.eclipse.justj
+provides.0.name = jre
+provides.0.version = $version$
+
+# Exclude all other providers of this capability; the site depends on all the feautres so exclude this requirement at build time.
+<%++count;%>
+requires.<%=count%>.matchExp = providedCapabilities.exists(x | x.name == 'jre' && x.namespace == 'org.eclipse.justj') && !providedCapabilities.exists(x | x.name == '<%=fullName%>' && x.namespace == 'org.eclipse.equinox.p2.iu')
+requires.<%=count%>.min = 0
+requires.<%=count%>.max = 0
+requires.<%=count%>.filter = (!(<%=modelName%>.buildtime=true))
 
 properties.0.name = org.eclipse.justj.model
 properties.0.value = <%=Generator.getModelXMLAsPropertyValue(jvm, NL)%>
