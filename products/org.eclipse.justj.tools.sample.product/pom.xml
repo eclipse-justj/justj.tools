@@ -175,7 +175,7 @@ SPDX-License-Identifier: EPL-2.0
                 <goals>
                   <goal>package-dmg</goal>
                 </goals>
-                <phase>package</phase>
+                <phase>integration-test</phase>
                 <configuration>
                   <source>${project.build.directory}/products/org.eclipse.justj.tools.sample.product-macosx.cocoa.x86_64.tar.gz</source>
                   <continueOnFail>false</continueOnFail>
@@ -226,6 +226,7 @@ SPDX-License-Identifier: EPL-2.0
           </execution>
           <execution>
             <id>archive-products</id>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>archive-products</goal>
             </goals>
