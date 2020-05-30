@@ -1,4 +1,9 @@
-<%@jet package="org.eclipse.justj.codegen.templates.fragment" class="Manifest" imports="java.util.Iterator java.util.Map.Entry java.util.Set org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%@jet
+  package="org.eclipse.justj.codegen.templates.fragment"
+  class="Manifest"
+  imports="org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator"
+  builder="StringBuilder builder = new StringBuilder()"
+  minimize="true"%>
 <%Variant variant = (Variant)argument;
   String os = variant.getOs();
   String arch = variant.getArch();
@@ -20,11 +25,3 @@ Fragment-Host: <%=hostName%>;bundle-version="<%=Generator.getVersionRange(versio
 Eclipse-BundleShape: dir
 Eclipse-PlatformFilter: (& (osgi.os=<%=os%>) (osgi.arch=<%=arch%>))
 Automatic-Module-Name: <%=fullName%>
-Provide-Capability: <%%>
-<%for (Iterator<Entry<String, Set<String>>> it = Generator.getEECapabilities(version).entrySet().iterator(); it.hasNext();) {
-    Entry<String, Set<String>> entry = it.next();%>
-  <%for (Iterator<String> it2 = entry.getValue().iterator(); it2.hasNext();) {
-      String eeVersion = it2.next();%>
- osgi.ee;osgi.ee="<%=entry.getKey()%>";version:Version="<%=eeVersion%>"<%if (it.hasNext() || it2.hasNext()) {%>,<%}%>
-  <%}%>
-<%}%>

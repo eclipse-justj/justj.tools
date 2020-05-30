@@ -14,7 +14,9 @@ SPDX-License-Identifier: EPL-2.0
   imports="java.util.* java.util.Iterator org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator"
   builder="StringBuilder builder = new StringBuilder()"
   minimize="true"%>
-<%Variant variant = (Variant)argument;%>
+<%Variant variant = (Variant)argument;
+  JVM jvm = variant.getJVM();
+  String version = jvm.getVersion();%>
 <%@include file="../copyright.properties.jetinc"%>
 
 <%Map<String, Set<String>> touchpoints = Generator.getTouchpoints(variant);
@@ -25,6 +27,26 @@ instructions.<%=phase%> = \
       String instruction = it.next();%>
   <%=instruction%>;<%if (it.hasNext()) {%>\<%}%>
   <%}%>
+
+<%}%>
+<%int propertyCount = 0;
+  for (Map.Entry<String, Set<String>> entry : Generator.getEECapabilities(version).entrySet()) {
+    String eeName = entry.getKey();
+    Set<String> versions = entry.getValue();
+    for (String eeVersion : versions) {
+      int capabilityNumber = propertyCount++;%>
+provides.<%=capabilityNumber%>.namespace = osgi.ee
+provides.<%=capabilityNumber%>.name = <%=eeName%>
+provides.<%=capabilityNumber%>.version = <%=eeVersion%>
+
+  <%}%>
+<%}%>
+<%Set<String> systemPackages = Generator.getSystemPackages(variant);
+  for (String systemPackage : systemPackages) {
+    int capabilityNumber = propertyCount++;%>
+provides.<%=capabilityNumber%>.namespace = java.package
+provides.<%=capabilityNumber%>.name = <%=systemPackage%>
+provides.<%=capabilityNumber%>.version = 0.0.0
 
 <%}%>
 properties.0.name = org.eclipse.justj.model

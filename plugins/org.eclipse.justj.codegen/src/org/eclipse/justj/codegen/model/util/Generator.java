@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +56,7 @@ import org.eclipse.justj.codegen.model.Touchable;
 import org.eclipse.justj.codegen.model.Touchpoint;
 import org.eclipse.justj.codegen.model.Variant;
 import org.eclipse.justj.codegen.model.util.Generator.Description.Descriptor;
+import org.osgi.framework.Constants;
 
 
 public class Generator
@@ -605,6 +607,28 @@ public class Generator
       }
     }
 
+    return result;
+  }
+
+  public static Set<String> getSystemPackages(Variant variant)
+  {
+    String systemPackages = ModelUtil.getAnnotation(variant, ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI, Constants.FRAMEWORK_SYSTEMPACKAGES);
+    if (systemPackages == null)
+    {
+      systemPackages = ModelUtil.getAnnotation(variant.getJVM(), ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI, Constants.FRAMEWORK_SYSTEMPACKAGES);
+    }
+
+    Set<String> result = new TreeSet<>();
+    if (systemPackages != null)
+    {
+      for (String systemPackage : systemPackages.split("\\s*,\\s*"))
+      {
+        if (!systemPackage.isEmpty())
+        {
+          result.add(systemPackage);
+        }
+      }
+    }
     return result;
   }
 
