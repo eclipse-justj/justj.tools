@@ -155,6 +155,9 @@ SPDX-License-Identifier: EPL-2.0
                 </goals>
                 <phase>package</phase>
                 <configuration>
+                  <fileNames>
+                    <fileName>Eclipse-Sample.app</fileName>
+                  </fileNames>
                   <timeoutMillis>300000</timeoutMillis> <!-- 5 min -->
                   <continueOnFail>false</continueOnFail>
                   <entitlements>${project.basedir}/sample.entitlement</entitlements>
