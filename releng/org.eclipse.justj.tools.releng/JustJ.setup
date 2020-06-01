@@ -24,6 +24,11 @@
       <value>https://www.eclipse.org/justj</value>
     </detail>
   </annotation>
+  <annotation
+      source="ConfigurationReference">
+    <reference
+        href="JustJ.setup#/"/>
+  </annotation>
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Xmx"
@@ -527,5 +532,5 @@
   <logicalProjectContainer
       xsi:type="setup:ProjectCatalog"
       href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']"/>
-  <description>JustJ provides tools and infrastructure for building JREs and for managing the website content</description>
+  <description>JustJ provides tools and infrastructure for building JREs and for managing website content</description>
 </setup:Project>
