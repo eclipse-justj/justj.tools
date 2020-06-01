@@ -64,7 +64,9 @@ public class JdepsIndex
         Path folder = Paths.get(args[1]);
         JdepsIndex jdepsIndex = new JdepsIndex(folder);
         String result = jdepsIndex.generate();
-        Files.write(folder.resolve("index.html"), Collections.singleton(result));
+        Path index = folder.resolve("index.html");
+        System.out.println("Generated index: " + index);
+        Files.write(index, Collections.singleton(result));
         Set<String> allModules = new TreeSet<String>();
         for (Set<String> modules : jdepsIndex.modules.values())
         {
@@ -103,7 +105,9 @@ public class JdepsIndex
 
         JdepsIndex jdepsIndex = new JdepsIndex(jdepsFolder, repoURI);
         String result = jdepsIndex.generate();
-        Files.write(folder.resolve("index.html"), Collections.singleton(result));
+        Path index = folder.resolve("index.html");
+        System.out.println("Generated index: " + index);
+        Files.write(index, Collections.singleton(result));
         Files.write(folder.resolve("justj.modules"), jdepsIndex.modulePlugins.keySet());
       }
     }
