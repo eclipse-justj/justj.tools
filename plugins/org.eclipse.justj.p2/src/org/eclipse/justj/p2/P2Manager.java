@@ -43,29 +43,7 @@ import org.eclipse.justj.p2.UpdateSiteGenerator.RepositoryAnalyzer;
 
 /**
  * <p>
- * This test class is more than just a test.
- * It is used to maintain, update, and manage the integrity of EMF's public update site:
- * <pre><a href="http://download.eclipse.org/modeling/emf/emf/builds/index.html">http://download.eclipse.org/modeling/emf/emf/builds/index.html</a></pre>
- * It can also be used locally to test the promotion process.
- * The physical file location that will be updated by these tests is rooted at at {@link UpdateSiteGenerator#getRetainedNightlyBuilds()}.
- * </p>
- * <p>
- * The base location on the local file system for testing local Tycho builds is specified as a system property, e.g.,
- * </p>
- * <pre>-Dpublish.download.root.folder=D:/develop/</pre>
- * The subfolder {@code modeling/emf/emf/builds} will be appended to produce the {@code BUILDS_ROOT_FOLDER} value, e.g.,
- * <pre>D:/develop/modeling/emf/emf/builds</pre>
- * <p>
- * EMF's public Tycho build is hosted at the following Jenkins site:
- * </p>
- * <pre><a href="https://ci.eclipse.org/emf/job/integration/">https://ci.eclipse.org/emf/job/integration/</a></pre>
- * <p>
- * This build job uses the following path on the build host {@code build.eclipse.org} for the value of {@code BUILDS_ROOT_FOLDER}:
- * </p>
- * <pre>/home/data/httpd/download.eclipse.org/modeling/emf/emf/builds</pre>
- * <p>
- * Because the tests produce side effects, it's important that they be performed in a deterministic order so the methods are named to produce the correct lexicographic ordering,
- * i.e., the order in which they appear in the source file.
+ * This is used to maintain, update, and manage the integrity of a public update site:
  */
 public class P2Manager
 {

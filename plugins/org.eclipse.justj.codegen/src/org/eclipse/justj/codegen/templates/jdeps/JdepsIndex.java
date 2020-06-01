@@ -21,7 +21,9 @@
 package org.eclipse.justj.codegen.templates.jdeps;
 
 
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +40,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 public class JdepsIndex
@@ -307,7 +311,32 @@ public class JdepsIndex
       {
         Path folder = Paths.get(arg0);
         URI repoURI = new URI(args[1]);
-        JdepsIndex jdepsIndex = new JdepsIndex(folder, repoURI);
+        Path jdepsFolder = folder;
+
+        // This is intended purely for local testing of the results produced by
+        // https://ci.eclipse.org/justj/job/build-jdeps/lastSuccessfulBuild/artifact/*zip*/archive.zip
+        if (args.length > 2)
+        {
+          URL url = new URL(args[2]);
+          String path = repoURI.getPath();
+          String relativePath = path.replaceAll("^/", "");
+          Path target = Files.createDirectories(folder.resolve(relativePath));
+          Path tempDirectory = Files.createTempDirectory("jdeps");
+
+          try (InputStream input = url.openStream(); ZipInputStream zipInputStream = new ZipInputStream(input))
+          {
+            for (ZipEntry zipEntry = zipInputStream.getNextEntry(); zipEntry != null; zipEntry = zipInputStream.getNextEntry())
+            {
+              String name = zipEntry.getName();
+              Files.copy(zipInputStream, tempDirectory.resolve(Paths.get(name).getFileName()));
+            }
+          }
+
+          folder = target;
+          jdepsFolder = tempDirectory;
+        }
+
+        JdepsIndex jdepsIndex = new JdepsIndex(jdepsFolder, repoURI);
         String result = jdepsIndex.generate();
         Files.write(folder.resolve("index.html"), Collections.singleton(result));
         Files.write(folder.resolve("justj.modules"), jdepsIndex.modulePlugins.keySet());
@@ -338,31 +367,6 @@ public class JdepsIndex
       Path justjModules = folder.resolve(path).getParent().resolve("justj.modules");
       Set<String> repoModules = new TreeSet<>(Files.readAllLines(justjModules));
       modules.put(path, repoModules);
-    }
-  }
-
-  public Set<String> getModules(Path path)
-  {
-    return modules.get(path);
-  }
-
-  protected void visit(Path root, Path path) throws Exception
-  {
-    if (Files.isDirectory(path))
-    {
-      for (Path child : Files.list(path).collect(Collectors.toList()))
-      {
-        visit(root, child);
-      }
-    }
-    else if (Files.isRegularFile(path) && path.endsWith("index.html"))
-    {
-      Path relativePath = root.relativize(path);
-      Path parent = relativePath.getParent();
-      if (parent != null)
-      {
-        indices.put(relativePath, new URI("https://download.eclipse.org/" + parent.toString().replace('\\', '/')));
-      }
     }
   }
 
@@ -441,6 +445,31 @@ public class JdepsIndex
             pluginModules.put(plugin, Collections.emptySet());
           }
         }
+      }
+    }
+  }
+
+  public Set<String> getModules(Path path)
+  {
+    return modules.get(path);
+  }
+
+  protected void visit(Path root, Path path) throws Exception
+  {
+    if (Files.isDirectory(path))
+    {
+      for (Path child : Files.list(path).collect(Collectors.toList()))
+      {
+        visit(root, child);
+      }
+    }
+    else if (Files.isRegularFile(path) && path.endsWith("index.html"))
+    {
+      Path relativePath = root.relativize(path);
+      Path parent = relativePath.getParent();
+      if (parent != null)
+      {
+        indices.put(relativePath, new URI("https://download.eclipse.org/" + parent.toString().replace('\\', '/')));
       }
     }
   }
