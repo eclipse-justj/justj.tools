@@ -9,6 +9,6 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${maven.build.command}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Djustj.tools.repo=${file_uri:${resource_loc:/org.eclipse.justj.tools.site}}/target/repository&#13;&#10;-Djustj.manifest.location=${resource_loc:/org.eclipse.justj.model/local-cache}/justj.manifest&#13;&#10;-Djustj.manifest.url=https://download.eclipse.org/justj/justj.manifest&#13;&#10;--offline&#13;&#10;clean&#13;&#10;verify"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Djustj.tools.repo=${file_uri:${resource_loc:/org.eclipse.justj.tools.site}}/target/repository&#13;&#10;-Djustj.manifest.location=${resource_loc:/org.eclipse.justj.model/local-cache}/justj.manifest&#13;&#10;-Djustj.manifest.url=https://download.eclipse.org/justj/justj.manifest&#13;&#10;clean&#13;&#10;verify"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${project_loc:/org.eclipse.justj.releng}/index"/>
 </launchConfiguration>
