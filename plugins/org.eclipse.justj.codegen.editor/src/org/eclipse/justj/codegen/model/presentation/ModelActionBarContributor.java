@@ -491,8 +491,8 @@ public class ModelActionBarContributor extends EditingDomainActionBarContributor
   {
     addGlobalActionsGen(menuManager);
     boolean hasSettings = menuManager.find("settings") != null;
-    menuManager.insertBefore(hasSettings ? "settings" : "edit", generateAction);
     menuManager.insertBefore(hasSettings ? "settings" : "edit", reconcileAction);
+    menuManager.insertBefore(hasSettings ? "settings" : "edit", generateAction);
     if (!hasSettings)
     {
       menuManager.insertBefore("edit", new Separator());
