@@ -89,7 +89,7 @@ public class AnnotationItemProvider extends ItemProviderAdapter
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
         getString("_UI_Annotation_source_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_Annotation_source_feature", "_UI_Annotation_type"),
+        getString("_UI_Annotation_source_description"),
         ModelPackage.Literals.ANNOTATION__SOURCE,
         true,
         false,

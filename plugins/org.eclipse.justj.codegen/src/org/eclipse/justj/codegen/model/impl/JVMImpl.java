@@ -41,8 +41,8 @@ import org.eclipse.justj.codegen.model.Variant;
  * <ul>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getTouchpoints <em>Touchpoints</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getLabel <em>Label</em>}</li>
+ *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getModel <em>Model</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.impl.JVMImpl#getAboutTextExtra <em>About Text Extra</em>}</li>
@@ -84,26 +84,6 @@ public class JVMImpl extends CopyrightableImpl implements JVM
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getVersion()
-   * @generated
-   * @ordered
-   */
-  protected static final String VERSION_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getVersion()
-   * @generated
-   * @ordered
-   */
-  protected String version = VERSION_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -122,6 +102,26 @@ public class JVMImpl extends CopyrightableImpl implements JVM
    * @ordered
    */
   protected String label = LABEL_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getVersion()
+   * @generated
+   * @ordered
+   */
+  protected static final String VERSION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getVersion()
+   * @generated
+   * @ordered
+   */
+  protected String version = VERSION_EDEFAULT;
 
   /**
    * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
@@ -493,10 +493,10 @@ public class JVMImpl extends CopyrightableImpl implements JVM
         return getTouchpoints();
       case ModelPackage.JVM__NAME:
         return getName();
-      case ModelPackage.JVM__VERSION:
-        return getVersion();
       case ModelPackage.JVM__LABEL:
         return getLabel();
+      case ModelPackage.JVM__VERSION:
+        return getVersion();
       case ModelPackage.JVM__DESCRIPTION:
         return getDescription();
       case ModelPackage.JVM__MODEL:
@@ -527,11 +527,11 @@ public class JVMImpl extends CopyrightableImpl implements JVM
       case ModelPackage.JVM__NAME:
         setName((String)newValue);
         return;
-      case ModelPackage.JVM__VERSION:
-        setVersion((String)newValue);
-        return;
       case ModelPackage.JVM__LABEL:
         setLabel((String)newValue);
+        return;
+      case ModelPackage.JVM__VERSION:
+        setVersion((String)newValue);
         return;
       case ModelPackage.JVM__DESCRIPTION:
         setDescription((String)newValue);
@@ -566,11 +566,11 @@ public class JVMImpl extends CopyrightableImpl implements JVM
       case ModelPackage.JVM__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ModelPackage.JVM__VERSION:
-        setVersion(VERSION_EDEFAULT);
-        return;
       case ModelPackage.JVM__LABEL:
         setLabel(LABEL_EDEFAULT);
+        return;
+      case ModelPackage.JVM__VERSION:
+        setVersion(VERSION_EDEFAULT);
         return;
       case ModelPackage.JVM__DESCRIPTION:
         setDescription(DESCRIPTION_EDEFAULT);
@@ -602,10 +602,10 @@ public class JVMImpl extends CopyrightableImpl implements JVM
         return touchpoints != null && !touchpoints.isEmpty();
       case ModelPackage.JVM__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ModelPackage.JVM__VERSION:
-        return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
       case ModelPackage.JVM__LABEL:
         return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
+      case ModelPackage.JVM__VERSION:
+        return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
       case ModelPackage.JVM__DESCRIPTION:
         return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
       case ModelPackage.JVM__MODEL:
@@ -676,10 +676,10 @@ public class JVMImpl extends CopyrightableImpl implements JVM
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", version: ");
-    result.append(version);
     result.append(", label: ");
     result.append(label);
+    result.append(", version: ");
+    result.append(version);
     result.append(", description: ");
     result.append(description);
     result.append(", aboutTextExtra: ");

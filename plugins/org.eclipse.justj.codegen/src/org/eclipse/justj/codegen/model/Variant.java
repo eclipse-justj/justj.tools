@@ -16,6 +16,10 @@ package org.eclipse.justj.codegen.model;
  * A representation of the model object '<em><b>Variant</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * An operating-system-specific, architecture-specific variant of a Java Virtual Machine.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -37,6 +41,9 @@ public interface Variant extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Os</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * An operating system key, e.g., win32, used in combination with the {@link #getArch() architecture} and the {@link JVM#getName() JVM name} to induce the name of each generated fragment as well as its filters.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Os</em>' attribute.
    * @see #setOs(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getVariant_Os()
@@ -59,6 +66,9 @@ public interface Variant extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Arch</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * An architecture key, e.g., x86_64, used in combination with the {@link #getOs() operating system key} and the {@link JVM#getName() JVM name} to induce the name of each generated fragment as well as its filters.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Arch</em>' attribute.
    * @see #setArch(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getVariant_Arch()
@@ -82,6 +92,9 @@ public interface Variant extends Copyrightable, Touchable
    * It is bidirectional and its opposite is '{@link org.eclipse.justj.codegen.model.JVM#getVariants <em>Variants</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The containing Java Virtual Machine whose attributes are used in combination with this variant's attributes.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>JVM</em>' container reference.
    * @see #setJVM(JVM)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getVariant_JVM()
@@ -106,6 +119,9 @@ public interface Variant extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Label</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The label suffix e.g., <em>Windows 64 bit</em>, used in combination with the {@link JVM#getLabel() JVM label} and the {@link Model#getLabel() model label} to induce the user-facing name of each generated fragment.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Label</em>' attribute.
    * @see #setLabel(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getVariant_Label()
@@ -128,6 +144,9 @@ public interface Variant extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Source</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The URL of a <code>*.tar.gz</code> containing the JRE that will be embedded in the generated fragment.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Source</em>' attribute.
    * @see #setSource(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getVariant_Source()

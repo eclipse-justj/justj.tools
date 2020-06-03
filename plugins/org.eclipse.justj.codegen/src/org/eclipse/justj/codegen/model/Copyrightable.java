@@ -20,6 +20,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Copyrightable</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * An object that holds annotations and copyright information.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -41,6 +45,9 @@ public interface Copyrightable extends EObject
    * The list contents are of type {@link org.eclipse.justj.codegen.model.Annotation}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The annotations of this model; this is primarily used to record  {@link org.eclipse.justj.codegen.model.util.ModelUtil#MODEL_PROPERTIES_ANNOTATION_URI Properties} annotations.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Annotations</em>' containment reference list.
    * @see org.eclipse.justj.codegen.model.ModelPackage#getCopyrightable_Annotations()
    * @model containment="true"
@@ -53,6 +60,9 @@ public interface Copyrightable extends EObject
    * Returns the value of the '<em><b>Copyright Holder</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The blurb about the copyright holder, e.g., Example.org and others, used in the {@link #getCopyrightText() copyright text} via references of the form <code>${copyrightHolder}</code>.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Copyright Holder</em>' attribute.
    * @see #setCopyrightHolder(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getCopyrightable_CopyrightHolder()
@@ -75,6 +85,9 @@ public interface Copyrightable extends EObject
    * Returns the value of the '<em><b>Copyright Year</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The copyright year e.g., 2019-2020, used in the {@link #getCopyrightText() copyright text} via references of the form <code>${copyrightYear}</code>.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Copyright Year</em>' attribute.
    * @see #setCopyrightYear(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getCopyrightable_CopyrightYear()
@@ -97,11 +110,13 @@ public interface Copyrightable extends EObject
    * Returns the value of the '<em><b>Copyright Text</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The copyright text, e.g., <em>Copyright (c) ${copyrightYear} ${copyrightHolder}...</em>, used as the copyright notice for all the generated artifacts; it's generally a multi-line value.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Copyright Text</em>' attribute.
    * @see #setCopyrightText(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getCopyrightable_CopyrightText()
-   * @model annotation="http://www.eclipse.org/emf/2002/GenModel propertyMultiLine='true'"
-   *        extendedMetaData="kind='element'"
+   * @model extendedMetaData="kind='element'"
    * @generated
    */
   String getCopyrightText();

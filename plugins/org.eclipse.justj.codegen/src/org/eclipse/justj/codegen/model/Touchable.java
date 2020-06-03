@@ -20,6 +20,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Touchable</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * An object that contains p2 touchpoints.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -38,6 +42,9 @@ public interface Touchable extends EObject
    * The list contents are of type {@link org.eclipse.justj.codegen.model.Touchpoint}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The p2 touchpoint instructions used in each generated <code>p2.inf</code>.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Touchpoints</em>' containment reference list.
    * @see org.eclipse.justj.codegen.model.ModelPackage#getTouchable_Touchpoints()
    * @model containment="true"

@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see org.eclipse.justj.codegen.model.ModelFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/GenModel copyrightText='Copyright (c) 2020 Eclipse contributors and others.\n\nThis program and the accompanying materials\nare made available under the terms of the Eclipse Public License 2.0\nwhich accompanies this distribution, and is available at\nhttps://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0'"
  * @generated
  */
 public interface ModelPackage extends EPackage
@@ -369,22 +368,22 @@ public interface ModelPackage extends EPackage
   int JVM__NAME = COPYRIGHTABLE_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Version</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int JVM__VERSION = COPYRIGHTABLE_FEATURE_COUNT + 2;
-
-  /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int JVM__LABEL = COPYRIGHTABLE_FEATURE_COUNT + 3;
+  int JVM__LABEL = COPYRIGHTABLE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Version</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int JVM__VERSION = COPYRIGHTABLE_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -1162,7 +1161,6 @@ public interface ModelPackage extends EPackage
    * @see java.util.Map.Entry
    * @model keyDataType="org.eclipse.emf.ecore.EString"
    *        valueDataType="org.eclipse.emf.ecore.EString"
-   *        valueAnnotation="http://www.eclipse.org/emf/2002/GenModel propertyMultiLine='true'"
    *        valueExtendedMetaData="kind='element'"
    * @generated
    */

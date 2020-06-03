@@ -59,11 +59,10 @@ public class JVMItemProvider extends CopyrightableItemProvider
       super.getPropertyDescriptors(object);
 
       addNamePropertyDescriptor(object);
-      addVersionPropertyDescriptor(object);
       addLabelPropertyDescriptor(object);
+      addVersionPropertyDescriptor(object);
       addDescriptionPropertyDescriptor(object);
       addAboutTextExtraPropertyDescriptor(object);
-      addVariantsPropertyDescriptor(object);
     }
     return itemPropertyDescriptors;
   }
@@ -81,7 +80,7 @@ public class JVMItemProvider extends CopyrightableItemProvider
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
         getString("_UI_JVM_name_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_JVM_name_feature", "_UI_JVM_type"),
+        getString("_UI_JVM_name_description"),
         ModelPackage.Literals.JVM__NAME,
         true,
         false,
@@ -104,7 +103,7 @@ public class JVMItemProvider extends CopyrightableItemProvider
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
         getString("_UI_JVM_version_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_JVM_version_feature", "_UI_JVM_type"),
+        getString("_UI_JVM_version_description"),
         ModelPackage.Literals.JVM__VERSION,
         true,
         false,
@@ -127,7 +126,7 @@ public class JVMItemProvider extends CopyrightableItemProvider
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
         getString("_UI_JVM_label_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_JVM_label_feature", "_UI_JVM_type"),
+        getString("_UI_JVM_label_description"),
         ModelPackage.Literals.JVM__LABEL,
         true,
         false,
@@ -150,35 +149,12 @@ public class JVMItemProvider extends CopyrightableItemProvider
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
         getString("_UI_JVM_description_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_JVM_description_feature", "_UI_JVM_type"),
+        getString("_UI_JVM_description_description"),
         ModelPackage.Literals.JVM__DESCRIPTION,
         true,
         true,
         false,
         ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-        null,
-        null));
-  }
-
-  /**
-   * This adds a property descriptor for the Variants feature.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected void addVariantsPropertyDescriptor(Object object)
-  {
-    itemPropertyDescriptors.add(
-      createItemPropertyDescriptor(
-        ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-        getResourceLocator(),
-        getString("_UI_JVM_variants_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_JVM_variants_feature", "_UI_JVM_type"),
-        ModelPackage.Literals.JVM__VARIANTS,
-        true,
-        false,
-        true,
-        null,
         null,
         null));
   }
@@ -196,7 +172,7 @@ public class JVMItemProvider extends CopyrightableItemProvider
         ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
         getResourceLocator(),
         getString("_UI_JVM_aboutTextExtra_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_JVM_aboutTextExtra_feature", "_UI_JVM_type"),
+        getString("_UI_JVM_aboutTextExtra_description"),
         ModelPackage.Literals.JVM__ABOUT_TEXT_EXTRA,
         true,
         true,
@@ -294,8 +270,8 @@ public class JVMItemProvider extends CopyrightableItemProvider
     switch (notification.getFeatureID(JVM.class))
     {
       case ModelPackage.JVM__NAME:
-      case ModelPackage.JVM__VERSION:
       case ModelPackage.JVM__LABEL:
+      case ModelPackage.JVM__VERSION:
       case ModelPackage.JVM__DESCRIPTION:
       case ModelPackage.JVM__ABOUT_TEXT_EXTRA:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

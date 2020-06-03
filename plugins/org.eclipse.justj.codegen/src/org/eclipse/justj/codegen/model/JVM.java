@@ -19,13 +19,17 @@ import org.eclipse.emf.common.util.EList;
  * A representation of the model object '<em><b>JVM</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * A Java Virtual Machine description.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.justj.codegen.model.JVM#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getLabel <em>Label</em>}</li>
+ *   <li>{@link org.eclipse.justj.codegen.model.JVM#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getModel <em>Model</em>}</li>
  *   <li>{@link org.eclipse.justj.codegen.model.JVM#getAboutTextExtra <em>About Text Extra</em>}</li>
@@ -42,6 +46,9 @@ public interface JVM extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The symbolic name component, e.g., openjdk.jre, used in combination with the {@link Model#getName() model name} to induce the symbolic names of each generated feature, plugin, and fragment.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #setName(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Name()
@@ -64,6 +71,9 @@ public interface JVM extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Version</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The three-part Java version, e.g., 11.0.7, used to induce the version each generated feature, plugin, and fragment.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Version</em>' attribute.
    * @see #setVersion(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Version()
@@ -86,6 +96,9 @@ public interface JVM extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Label</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The label component, e.g., OpenJDK JRE, used in combination with the {@link Model#getLabel() model label} to induce the user-facing names of each generated feature, plugin, and fragment.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Label</em>' attribute.
    * @see #setLabel(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Label()
@@ -108,11 +121,13 @@ public interface JVM extends Copyrightable, Touchable
    * Returns the value of the '<em><b>Description</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The description, e.g., <em>Provides the complete set of modules of the JDK</em>, used to induce the description of each generated feature.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Description</em>' attribute.
    * @see #setDescription(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Description()
-   * @model annotation="http://www.eclipse.org/emf/2002/GenModel propertyMultiLine='true'"
-   *        extendedMetaData="kind='element'"
+   * @model extendedMetaData="kind='element'"
    * @generated
    */
   String getDescription();
@@ -133,6 +148,9 @@ public interface JVM extends Copyrightable, Touchable
    * It is bidirectional and its opposite is '{@link org.eclipse.justj.codegen.model.Variant#getJVM <em>JVM</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The operating-system-specific, architecture-specific variants of this Java Virtual Machine.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Variants</em>' containment reference list.
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Variants()
    * @see org.eclipse.justj.codegen.model.Variant#getJVM
@@ -147,6 +165,9 @@ public interface JVM extends Copyrightable, Touchable
    * It is bidirectional and its opposite is '{@link org.eclipse.justj.codegen.model.Model#getJVMs <em>JV Ms</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The containing model whose attributes are used in combination with this Java Virtual Machine's attributes.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Model</em>' container reference.
    * @see #setModel(Model)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_Model()
@@ -170,11 +191,13 @@ public interface JVM extends Copyrightable, Touchable
    * Returns the value of the '<em><b>About Text Extra</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The additional text, e.g., <em>Visit http://www.example.org/</em>, used in the generated about.properties of each generated plugin.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>About Text Extra</em>' attribute.
    * @see #setAboutTextExtra(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getJVM_AboutTextExtra()
-   * @model annotation="http://www.eclipse.org/emf/2002/GenModel propertyMultiLine='true'"
-   *        extendedMetaData="kind='element'"
+   * @model extendedMetaData="kind='element'"
    * @generated
    */
   String getAboutTextExtra();

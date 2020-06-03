@@ -20,6 +20,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Touchpoint</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * A description of a list of p2 touchpoint instructions used in each generated <code>p2.inf</code>.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -39,6 +43,9 @@ public interface Touchpoint extends EObject
    * The literals are from the enumeration {@link org.eclipse.justj.codegen.model.Phase}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The p2 phase of these touchpoint instruction used in each generated <code>p2.inf</code>.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Phase</em>' attribute.
    * @see org.eclipse.justj.codegen.model.Phase
    * @see #setPhase(Phase)
@@ -64,6 +71,9 @@ public interface Touchpoint extends EObject
    * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The literal text of each touchpoint instruction, e.g., <em>org.eclipse.equinox.p2.touchpoint.eclipse.setJvm(jvm:${artifact.location}/jre/bin)</em>, used in each generated <code>p2.inf</code>.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Instructions</em>' attribute list.
    * @see org.eclipse.justj.codegen.model.ModelPackage#getTouchpoint_Instructions()
    * @model unique="false" required="true"

@@ -20,6 +20,10 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>Annotation</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * An annotation identified by its source, typically {@link org.eclipse.justj.codegen.model.util.ModelUtil#MODEL_PROPERTIES_ANNOTATION_URI Properties}, containing key-value pair details.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * </p>
@@ -38,6 +42,9 @@ public interface Annotation extends EObject
    * Returns the value of the '<em><b>Source</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The source identifier, e.g., https://www.eclipse.org/Annotation, typically {@link org.eclipse.justj.codegen.model.util.ModelUtil#MODEL_PROPERTIES_ANNOTATION_URI Properties} identifying the meaning of the key-value pair details.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Source</em>' attribute.
    * @see #setSource(String)
    * @see org.eclipse.justj.codegen.model.ModelPackage#getAnnotation_Source()
@@ -62,6 +69,9 @@ public interface Annotation extends EObject
    * and the value is of type {@link java.lang.String},
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * <!-- begin-model-doc -->
+   * The arbitrary key-value pairs of the annotation.
+   * <!-- end-model-doc -->
    * @return the value of the '<em>Details</em>' map.
    * @see org.eclipse.justj.codegen.model.ModelPackage#getAnnotation_Details()
    * @model mapType="org.eclipse.justj.codegen.model.Detail&lt;org.eclipse.emf.ecore.EString, org.eclipse.emf.ecore.EString&gt;"

@@ -23,6 +23,9 @@ import org.eclipse.emf.common.util.Enumerator;
  * A representation of the literals of the enumeration '<em><b>Phase</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
+ * <!-- begin-model-doc -->
+ * A p2 touchpoint instruction phase.
+ * <!-- end-model-doc -->
  * @see org.eclipse.justj.codegen.model.ModelPackage#getPhase()
  * @model
  * @generated

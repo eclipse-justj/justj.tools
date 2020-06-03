@@ -5,9 +5,9 @@
     modelName="Model" modelPluginClass="org.eclipse.justj.codegen.model.ModelPlugin"
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
     testsDirectory="" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
-    suppressGenModelAnnotations="false" copyrightFields="false" operationReflection="true"
-    decoration="Live" cleanup="true" autoResizeProperties="true" findAction="true"
-    expandAllAction="true" collapseAllAction="true" revertAction="true">
+    copyrightFields="false" operationReflection="true" decoration="Live" cleanup="true"
+    autoResizeProperties="true" findAction="true" expandAllAction="true" collapseAllAction="true"
+    revertAction="true">
   <foreignModel>Model.ecore</foreignModel>
   <genPackages prefix="Model" basePackage="org.eclipse.justj.codegen" resource="XML"
       disposableProviderFactory="true" multipleEditorPages="false" contentTypeIdentifier="org.eclipse.justj.codegen"
@@ -17,53 +17,86 @@
       <genEnumLiterals ecoreEnumLiteral="Model.ecore#//Phase/Uninstall"/>
     </genEnums>
     <genClasses ecoreClass="Model.ecore#//Model">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/label"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/provider"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/providerImageName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/providerImageData"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/aboutURL"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/source"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/localCache"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Model/jVMs"/>
+      <genFeatures createChild="false" propertyDescription="The symbolic name prefix, e.g., org.example, used to induce the symbolic names of each generated feature, plugin, and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
+      <genFeatures createChild="false" propertyDescription="The label prefix, e.g., My Project, used to induce the user-facing names of each generated feature, plugin, and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/label"/>
+      <genFeatures createChild="false" propertyDescription="The provider label e.g., Example.org My Project, used to induce the the user-facing provider name of each generated feature, plugin, and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/provider"/>
+      <genFeatures createChild="false" propertyDescription="The branding image name, e.g., MyProject.png, used in combination with the provider image data to generate the branding image of each plugin"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/providerImageName"/>
+      <genFeatures createChild="false" propertyDescription="The base64 encoded representation of the branding image used in combination with the provider image name to generate the branding image of each plugin"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/providerImageData"/>
+      <genFeatures createChild="false" propertyDescription="The URL to a resource used to populate the contents of the generated about.html of each plugin and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/aboutURL"/>
+      <genFeatures createChild="false" propertyDescription="The absolute or relative URL of the file system location where the generator will generate results"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/target"/>
+      <genFeatures createChild="false" propertyDescription="The URL of a justj.manifest used to reconcile the model against a set of externally-provided JREs"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/source"/>
+      <genFeatures createChild="false" propertyDescription="The absolute or relative URL of the file system location where the reconciler and generator will cache externally-provided JREs"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Model/localCache"/>
+      <genFeatures property="None" children="true" createChild="true" propertyDescription="The list of this model's Java Virtual Machines"
+          ecoreFeature="ecore:EReference Model.ecore#//Model/jVMs"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//JVM">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/version"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/label"/>
-      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/description"/>
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Model.ecore#//JVM/model"/>
-      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/aboutTextExtra"/>
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//JVM/variants"/>
+      <genFeatures createChild="false" propertyDescription="The symbolic name component, e.g., openjdk.jre, used in combination with the model name to induce the symbolic names of each generated feature, plugin, and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//JVM/name"/>
+      <genFeatures createChild="false" propertyDescription="The label component, e.g., OpenJDK JRE, used in combination with the model label to induce the user-facing names of each generated feature, plugin, and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//JVM/label"/>
+      <genFeatures createChild="false" propertyDescription="The three-part Java version, e.g., 11.0.7, used to induce the version each generated feature, plugin, and fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//JVM/version"/>
+      <genFeatures createChild="false" propertyDescription="The description, e.g., Provides the complete set of modules of the JDK, used to induce the description of each generated feature"
+          propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/description"/>
+      <genFeatures property="None" notify="false" createChild="false" propertyDescription="The containing model whose attributes are used in combination with this Java Virtual Machine's attributes"
+          ecoreFeature="ecore:EReference Model.ecore#//JVM/model"/>
+      <genFeatures createChild="false" propertyDescription="The additional text, e.g., Visit http://www.example.org/, used in the generated about.properties of each generated plugin; it generally starts with a blank line"
+          propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//JVM/aboutTextExtra"/>
+      <genFeatures property="None" children="true" createChild="true" propertyDescription="The operating-system-specific, architecture-specific variants of this Java Virtual Machine"
+          propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//JVM/variants"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//Variant">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/os"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/arch"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/label"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Variant/source"/>
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Model.ecore#//Variant/jVM"/>
+      <genFeatures createChild="false" propertyDescription="An operating system key, e.g., win32, used in combination with the architecture and the JVM name to induce the name of each generated fragment as well as its filters"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Variant/os"/>
+      <genFeatures createChild="false" propertyDescription="An architecture key, e.g., x86_64, used in combination with the operating system key and the JVM name to induce the name of each generated fragment as well as its filters"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Variant/arch"/>
+      <genFeatures createChild="false" propertyDescription="The label suffix e.g., Windows 64 bit, used in combination with the JVM label and the model label to induce the user-facing name of each generated fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Variant/label"/>
+      <genFeatures createChild="false" propertyDescription="The URL of a *.tar.gz containing the JRE that will be embedded in the generated fragment"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Variant/source"/>
+      <genFeatures property="None" notify="false" createChild="false" propertyDescription="The containing Java Virtual Machine whose attributes are used in combination with this variant's attributes"
+          ecoreFeature="ecore:EReference Model.ecore#//Variant/jVM"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Model.ecore#//Copyrightable">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Copyrightable/annotations"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightHolder"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightYear"/>
-      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightText"/>
+      <genFeatures property="None" children="true" createChild="true" propertyDescription="The annotations of this model; this is primarily used to for https://www.eclipse.org/justj/Properties annotations"
+          ecoreFeature="ecore:EReference Model.ecore#//Copyrightable/annotations"/>
+      <genFeatures createChild="false" propertyDescription="The blurb about the copyright holder, e.g., Example.org and others, used in the copyright text via references of the form ${copyrightHolder}"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightHolder"/>
+      <genFeatures createChild="false" propertyDescription="The copyright year e.g., 2019-2020, used in the copyright text via references of the form ${copyrightYear}"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightYear"/>
+      <genFeatures createChild="false" propertyDescription="The copyright text, e.g., Copyright (c) ${copyrightYear} ${copyrightHolder}..., used as the copyright notice for all the generated artifacts; it's generally a multi-line value"
+          propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Copyrightable/copyrightText"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//Touchpoint">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Touchpoint/phase"/>
-      <genFeatures children="true" createChild="true" ecoreFeature="ecore:EAttribute Model.ecore#//Touchpoint/instructions"/>
+      <genFeatures createChild="false" propertyDescription="The p2 phase of the touchpoint instruction used in each generated p2.inf"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Touchpoint/phase"/>
+      <genFeatures children="true" createChild="true" propertyDescription="The literal text of each touchpoint instruction, e.g., org.eclipse.equinox.p2.touchpoint.eclipse.setJvm(jvm:${artifact.location}/jre/bin), used in each generated p2.inf"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Touchpoint/instructions"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Model.ecore#//Touchable">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Touchable/touchpoints"/>
+      <genFeatures property="None" children="true" createChild="true" propertyDescription="The p2 touchpoint instructions used in each generated p2.inf"
+          ecoreFeature="ecore:EReference Model.ecore#//Touchable/touchpoints"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//Annotation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Annotation/source"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Model.ecore#//Annotation/details"/>
+      <genFeatures createChild="false" propertyDescription="The source identifier, e.g., https://www.eclipse.org/Annotation, typically https://www.eclipse.org/justj/Properties identifying the meaning of the key-value pair details"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Annotation/source"/>
+      <genFeatures property="None" children="true" createChild="true" propertyDescription="The arbitrary key-value pairs of the annotation"
+          ecoreFeature="ecore:EReference Model.ecore#//Annotation/details"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//Detail">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Detail/key"/>
-      <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Detail/value"/>
+      <genFeatures createChild="false" propertyDescription="The arbitrary detail key"
+          ecoreFeature="ecore:EAttribute Model.ecore#//Detail/key"/>
+      <genFeatures createChild="false" propertyDescription="The arbitrary detail value"
+          propertyMultiLine="true" ecoreFeature="ecore:EAttribute Model.ecore#//Detail/value"/>
     </genClasses>
   </genPackages>
   <codeStyle>UnnecessaryDeprecatedMethod</codeStyle>

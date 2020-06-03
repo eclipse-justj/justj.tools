@@ -322,7 +322,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   @Override
   public EAttribute getJVM_Version()
   {
-    return (EAttribute)jvmEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)jvmEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -333,7 +333,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   @Override
   public EAttribute getJVM_Label()
   {
-    return (EAttribute)jvmEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)jvmEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -681,8 +681,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     jvmEClass = createEClass(JVM);
     createEAttribute(jvmEClass, JVM__NAME);
-    createEAttribute(jvmEClass, JVM__VERSION);
     createEAttribute(jvmEClass, JVM__LABEL);
+    createEAttribute(jvmEClass, JVM__VERSION);
     createEAttribute(jvmEClass, JVM__DESCRIPTION);
     createEReference(jvmEClass, JVM__MODEL);
     createEAttribute(jvmEClass, JVM__ABOUT_TEXT_EXTRA);
@@ -945,9 +945,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
       !IS_DERIVED,
       IS_ORDERED);
     initEAttribute(
-      getJVM_Version(),
+      getJVM_Label(),
       ecorePackage.getEString(),
-      "version",
+      "label",
       null,
       1,
       1,
@@ -961,9 +961,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
       !IS_DERIVED,
       IS_ORDERED);
     initEAttribute(
-      getJVM_Label(),
+      getJVM_Version(),
       ecorePackage.getEString(),
-      "label",
+      "version",
       null,
       1,
       1,
@@ -1330,31 +1330,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createResource(eNS_URI);
 
     // Create annotations
-    // http://www.eclipse.org/emf/2002/GenModel
-    createGenModelAnnotations();
     // http:///org/eclipse/emf/ecore/util/ExtendedMetaData
     createExtendedMetaDataAnnotations();
-  }
-
-  /**
-   * Initializes the annotations for <b>http://www.eclipse.org/emf/2002/GenModel</b>.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected void createGenModelAnnotations()
-  {
-    String source = "http://www.eclipse.org/emf/2002/GenModel";
-    addAnnotation(
-      this,
-      source,
-      new String []{
-        "copyrightText",
-        "Copyright (c) 2020 Eclipse contributors and others.\n\nThis program and the accompanying materials\nare made available under the terms of the Eclipse Public License 2.0\nwhich accompanies this distribution, and is available at\nhttps://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0" });
-    addAnnotation(getJVM_Description(), source, new String []{ "propertyMultiLine", "true" });
-    addAnnotation(getJVM_AboutTextExtra(), source, new String []{ "propertyMultiLine", "true" });
-    addAnnotation(getCopyrightable_CopyrightText(), source, new String []{ "propertyMultiLine", "true" });
-    addAnnotation(getDetail_Value(), source, new String []{ "propertyMultiLine", "true" });
   }
 
   /**

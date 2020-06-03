@@ -5,26 +5,77 @@
     <details key="copyrightText" value="Copyright (c) 2020 Eclipse contributors and others.&#xA;&#xA;This program and the accompanying materials&#xA;are made available under the terms of the Eclipse Public License 2.0&#xA;which accompanies this distribution, and is available at&#xA;https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Model" eSuperTypes="#//Copyrightable #//Touchable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The root model description of JustJ's generator infrastructure."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The symbolic name prefix, e.g., org.example, used to induce the symbolic names of each generated feature, plugin, and fragment."/>
+        <details key="propertyDescription" value="The symbolic name prefix, e.g., org.example, used to induce the symbolic names of each generated feature, plugin, and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The label prefix, e.g., My Project, used to induce the user-facing names of each generated feature, plugin, and fragment."/>
+        <details key="propertyDescription" value="The label prefix, e.g., My Project, used to induce the user-facing names of each generated feature, plugin, and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The provider label e.g., Example.org My Project, used to induce the the user-facing provider name of each generated feature, plugin, and fragment."/>
+        <details key="propertyDescription" value="The provider label e.g., Example.org My Project, used to induce the the user-facing provider name of each generated feature, plugin, and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="providerImageName" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The branding image name, e.g., MyProject.png, used in combination with the {@link #getProviderImageData() provider image data} to generate the branding image of each plugin."/>
+        <details key="propertyDescription" value="The branding image name, e.g., MyProject.png, used in combination with the provider image data to generate the branding image of each plugin"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="providerImageData" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Base64Binary">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The base64 encoded representation of the branding image used in combination with the {@link #getProviderImageName() provider image name} to generate the branding image of each plugin."/>
+        <details key="propertyDescription" value="The base64 encoded representation of the branding image used in combination with the provider image name to generate the branding image of each plugin"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aboutURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="https://www.eclipse.org/legal/epl/epl-2.0/about.html"/>
+        defaultValueLiteral="https://www.eclipse.org/legal/epl/epl-2.0/about.html">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The URL to a resource used to populate the contents of the generated about.html of each plugin and fragment."/>
+        <details key="propertyDescription" value="The URL to a resource used to populate the contents of the generated about.html of each plugin and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="target" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="localCache" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The absolute or relative URL of the file system location where the generator will generate results."/>
+        <details key="propertyDescription" value="The absolute or relative URL of the file system location where the generator will generate results"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The URL of a justj.manifest used to reconcile the model against a set of externally-provided JREs."/>
+        <details key="propertyDescription" value="The URL of a justj.manifest used to reconcile the model against a set of externally-provided JREs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="localCache" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The absolute or relative URL of the file system location where the reconciler and generator will cache externally-provided JREs."/>
+        <details key="propertyDescription" value="The absolute or relative URL of the file system location where the reconciler and generator will cache externally-provided JREs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jVMs" lowerBound="1" upperBound="-1"
         eType="#//JVM" containment="true" resolveProxies="false" eOpposite="#//JVM/model">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The list of this model's Java Virtual Machines."/>
+        <details key="propertyDescription" value="The list of this model's Java Virtual Machines"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="jvm"/>
         <details key="kind" value="element"/>
@@ -32,12 +83,32 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="JVM" eSuperTypes="#//Copyrightable #//Touchable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Java Virtual Machine description."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The symbolic name component, e.g., openjdk.jre, used in combination with the {@link Model#getName() model name} to induce the symbolic names of each generated feature, plugin, and fragment."/>
+        <details key="propertyDescription" value="The symbolic name component, e.g., openjdk.jre, used in combination with the model name to induce the symbolic names of each generated feature, plugin, and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The label component, e.g., OpenJDK JRE, used in combination with the {@link Model#getLabel() model label} to induce the user-facing names of each generated feature, plugin, and fragment."/>
+        <details key="propertyDescription" value="The label component, e.g., OpenJDK JRE, used in combination with the model label to induce the user-facing names of each generated feature, plugin, and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The three-part Java version, e.g., 11.0.7, used to induce the version each generated feature, plugin, and fragment."/>
+        <details key="propertyDescription" value="The three-part Java version, e.g., 11.0.7, used to induce the version each generated feature, plugin, and fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The description, e.g., &lt;em>Provides the complete set of modules of the JDK&lt;/em>, used to induce the description of each generated feature."/>
+        <details key="propertyDescription" value="The description, e.g., Provides the complete set of modules of the JDK, used to induce the description of each generated feature"/>
         <details key="propertyMultiLine" value="true"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -45,9 +116,16 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//Model"
-        transient="true" resolveProxies="false" eOpposite="#//Model/jVMs"/>
+        transient="true" resolveProxies="false" eOpposite="#//Model/jVMs">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The containing model whose attributes are used in combination with this Java Virtual Machine's attributes."/>
+        <details key="propertyDescription" value="The containing model whose attributes are used in combination with this Java Virtual Machine's attributes"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aboutTextExtra" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The additional text, e.g., &lt;em>Visit http://www.example.org/&lt;/em>, used in the generated about.properties of each generated plugin."/>
+        <details key="propertyDescription" value="The additional text, e.g., Visit http://www.example.org/, used in the generated about.properties of each generated plugin; it generally starts with a blank line"/>
         <details key="propertyMultiLine" value="true"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -57,6 +135,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="variants" lowerBound="1"
         upperBound="-1" eType="#//Variant" containment="true" resolveProxies="false"
         eOpposite="#//Variant/jVM">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The operating-system-specific, architecture-specific variants of this Java Virtual Machine."/>
+        <details key="propertyDescription" value="The operating-system-specific, architecture-specific variants of this Java Virtual Machine"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="variant"/>
         <details key="kind" value="element"/>
@@ -64,12 +146,39 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Variant" eSuperTypes="#//Copyrightable #//Touchable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="os" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arch" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An operating-system-specific, architecture-specific variant of a Java Virtual Machine."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="os" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An operating system key, e.g., win32, used in combination with the {@link #getArch() architecture} and the {@link JVM#getName() JVM name} to induce the name of each generated fragment as well as its filters."/>
+        <details key="propertyDescription" value="An operating system key, e.g., win32, used in combination with the architecture and the JVM name to induce the name of each generated fragment as well as its filters"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arch" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An architecture key, e.g., x86_64, used in combination with the {@link #getOs() operating system key} and the {@link JVM#getName() JVM name} to induce the name of each generated fragment as well as its filters."/>
+        <details key="propertyDescription" value="An architecture key, e.g., x86_64, used in combination with the operating system key and the JVM name to induce the name of each generated fragment as well as its filters"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The label suffix e.g., &lt;em>Windows 64 bit&lt;/em>, used in combination with the {@link JVM#getLabel() JVM label} and the {@link Model#getLabel() model label} to induce the user-facing name of each generated fragment."/>
+        <details key="propertyDescription" value="The label suffix e.g., Windows 64 bit, used in combination with the JVM label and the model label to induce the user-facing name of each generated fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The URL of a &lt;code>*.tar.gz&lt;/code> containing the JRE that will be embedded in the generated fragment."/>
+        <details key="propertyDescription" value="The URL of a *.tar.gz containing the JRE that will be embedded in the generated fragment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jVM" eType="#//JVM" transient="true"
         resolveProxies="false" eOpposite="#//JVM/variants">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The containing Java Virtual Machine whose attributes are used in combination with this variant's attributes."/>
+        <details key="propertyDescription" value="The containing Java Virtual Machine whose attributes are used in combination with this variant's attributes"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="jvm"/>
         <details key="kind" value="element"/>
@@ -77,17 +186,36 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Copyrightable" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An object that holds annotations and copyright information."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="annotations" upperBound="-1"
         eType="#//Annotation" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The annotations of this model; this is primarily used to record  {@link org.eclipse.justj.codegen.model.util.ModelUtil#MODEL_PROPERTIES_ANNOTATION_URI Properties} annotations."/>
+        <details key="propertyDescription" value="The annotations of this model; this is primarily used to for https://www.eclipse.org/justj/Properties annotations"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="annotation"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="copyrightHolder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="copyrightYear" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="copyrightHolder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The blurb about the copyright holder, e.g., Example.org and others, used in the {@link #getCopyrightText() copyright text} via references of the form &lt;code>${copyrightHolder}&lt;/code>."/>
+        <details key="propertyDescription" value="The blurb about the copyright holder, e.g., Example.org and others, used in the copyright text via references of the form ${copyrightHolder}"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="copyrightYear" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The copyright year e.g., 2019-2020, used in the {@link #getCopyrightText() copyright text} via references of the form &lt;code>${copyrightYear}&lt;/code>."/>
+        <details key="propertyDescription" value="The copyright year e.g., 2019-2020, used in the copyright text via references of the form ${copyrightYear}"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="copyrightText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The copyright text, e.g., &lt;em>Copyright (c) ${copyrightYear} ${copyrightHolder}...&lt;/em>, used as the copyright notice for all the generated artifacts; it's generally a multi-line value."/>
+        <details key="propertyDescription" value="The copyright text, e.g., Copyright (c) ${copyrightYear} ${copyrightHolder}..., used as the copyright notice for all the generated artifacts; it's generally a multi-line value"/>
         <details key="propertyMultiLine" value="true"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -96,9 +224,21 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Touchpoint">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="phase" eType="#//Phase"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A description of a list of p2 touchpoint instructions used in each generated &lt;code>p2.inf&lt;/code>."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="phase" eType="#//Phase">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The p2 phase of these touchpoint instruction used in each generated &lt;code>p2.inf&lt;/code>."/>
+        <details key="propertyDescription" value="The p2 phase of the touchpoint instruction used in each generated p2.inf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instructions" unique="false"
         lowerBound="1" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The literal text of each touchpoint instruction, e.g., &lt;em>org.eclipse.equinox.p2.touchpoint.eclipse.setJvm(jvm:${artifact.location}/jre/bin)&lt;/em>, used in each generated &lt;code>p2.inf&lt;/code>."/>
+        <details key="propertyDescription" value="The literal text of each touchpoint instruction, e.g., org.eclipse.equinox.p2.touchpoint.eclipse.setJvm(jvm:${artifact.location}/jre/bin), used in each generated p2.inf"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="instruction"/>
@@ -106,17 +246,40 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="Phase">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A p2 touchpoint instruction phase."/>
+    </eAnnotations>
     <eLiterals name="Install" literal="install"/>
     <eLiterals name="Uninstall" value="1" literal="uninstall"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Touchable" abstract="true" interface="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An object that contains p2 touchpoints."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="touchpoints" upperBound="-1"
-        eType="#//Touchpoint" containment="true"/>
+        eType="#//Touchpoint" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The p2 touchpoint instructions used in each generated &lt;code>p2.inf&lt;/code>."/>
+        <details key="propertyDescription" value="The p2 touchpoint instructions used in each generated p2.inf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Annotation">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An annotation identified by its source, typically {@link org.eclipse.justj.codegen.model.util.ModelUtil#MODEL_PROPERTIES_ANNOTATION_URI Properties}, containing key-value pair details."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The source identifier, e.g., https://www.eclipse.org/Annotation, typically {@link org.eclipse.justj.codegen.model.util.ModelUtil#MODEL_PROPERTIES_ANNOTATION_URI Properties} identifying the meaning of the key-value pair details."/>
+        <details key="propertyDescription" value="The source identifier, e.g., https://www.eclipse.org/Annotation, typically https://www.eclipse.org/justj/Properties identifying the meaning of the key-value pair details"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="details" upperBound="-1"
         eType="#//Detail" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The arbitrary key-value pairs of the annotation."/>
+        <details key="propertyDescription" value="The arbitrary key-value pairs of the annotation"/>
+      </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="detail"/>
         <details key="kind" value="element"/>
@@ -124,9 +287,17 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Detail" instanceClassName="java.util.Map$Entry">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An arbitrary key-value pair used in a annotation's {@link Annotation#getDetails() details}."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="propertyDescription" value="The arbitrary detail key"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="propertyDescription" value="The arbitrary detail value"/>
         <details key="propertyMultiLine" value="true"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
