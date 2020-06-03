@@ -449,6 +449,7 @@ public class P2Manager
       String bodyImage = getArgument("-body-image", args, null);
       String targetURL = getArgument("-target-url", args, null);
       String versionIU = getArgument("-version-iu", args, null);
+      String commit = getArgument("-commit", args, null);
 
       Assert.isTrue(!Paths.get(relativeTargetFolder).isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
 
@@ -582,6 +583,7 @@ public class P2Manager
         targetURL,
         retainedNightlyBuilds,
         versionIU,
+        commit,
         breadcrumbs,
         favicon,
         titleImage,

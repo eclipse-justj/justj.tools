@@ -94,6 +94,7 @@ SPDX-License-Identifier: EPL-2.0
                 -timestamp ${build.timestamp}
                 -type ${build.type}
                 -version-iu org.eclipse.justj.tools
+                -commit https://git.eclipse.org/c/justj/justj.tools.git/commit/?id=${git.commit}
                 -breadcrumb "JustJ https://www.eclipse.org/justj/?page=download"
                 -favicon https://www.eclipse.org/justj/justj_favicon.ico
                 -title-image https://www.eclipse.org/justj/justj_title.svg

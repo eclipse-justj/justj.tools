@@ -11,7 +11,6 @@
 package org.eclipse.justj.p2;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +42,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.eclipse.core.runtime.Assert;
@@ -178,6 +175,11 @@ public class UpdateSiteGenerator
   private String versionIU;
 
   /**
+   * The URL of the git commit that triggered this build of the repository to be promoted.
+   */
+  private String commit;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
@@ -187,6 +189,7 @@ public class UpdateSiteGenerator
    * @param targetURL the URL at which the site will live once promoted.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIU a prefix for the IUs that will be used to determine the overall version.
+   * @param commit
    * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
    * @param favicon the URL of the site's favicon.
    * @param titleImage the URL of the site's title image.
@@ -202,6 +205,7 @@ public class UpdateSiteGenerator
     String targetURL,
     int retainedNightlyBuilds,
     String versionIU,
+    String commit,
     Map<String, String> breadcrumbs,
     String favicon,
     String titleImage,
@@ -212,6 +216,7 @@ public class UpdateSiteGenerator
     this.buildURL = buildURL;
     this.targetURL = targetURL;
     this.versionIU = versionIU;
+    this.commit = commit;
     this.breadcrumbs = breadcrumbs;
     this.favicon = favicon;
     this.titleImage = titleImage;
@@ -294,6 +299,15 @@ public class UpdateSiteGenerator
   public String getTargetURL()
   {
     return targetURL;
+  }
+
+  /**
+   * Returns the URL of the git commit that triggered this build of the repository to be promoted.
+   * @return the URL of the git commit that triggered this build of the repository to be promoted.
+   */
+  public String getCommit()
+  {
+    return commit;
   }
 
   /**
@@ -391,6 +405,11 @@ public class UpdateSiteGenerator
           {
             String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType);
             destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
+
+            if (commit != null)
+            {
+              destinationMetadataRepository.setProperty("commit", commit);
+            }
 
             if (destinationArtifactRepository instanceof AbstractArtifactRepository)
             {
@@ -1126,26 +1145,6 @@ public class UpdateSiteGenerator
   public static class RepositoryAnalyzer extends AbstractApplication
   {
     /**
-     * The pattern for finding the commit ID in a branding plugin's {@code about.mappings}.
-     */
-    private static final Pattern COMMIT_ID_PATTERN = Pattern.compile("^1=(.*)$", Pattern.MULTILINE);
-
-    /**
-     * The pattern for a well-formed Git commit ID.
-     */
-    private static final Pattern VALID_COMMIT_ID_PATTERN = Pattern.compile("^([0-9a-fA-F]+)$");
-
-    /**
-     * The pattern for finding the commit ID in a branding plugin's {@code about.mappings}.
-     */
-    private static final Pattern BUILD_ID_PATTERN = Pattern.compile("^0=(.*)$", Pattern.MULTILINE);
-
-    /**
-     * The pattern for a well-formed build ID.
-     */
-    private static final Pattern VALID_BUILD_ID_PATTERN = Pattern.compile("^[MNRS]?(\\d{12})$");
-
-    /**
      * The pattern for finding a child location in a {@code compositeContent.xml}.
      */
     private static final Pattern CHILD_LOCATION_PATTERN = Pattern.compile("<child location='([^']*)'");
@@ -1512,9 +1511,12 @@ public class UpdateSiteGenerator
     public Map<String, String> getCommits()
     {
       Map<String, String> result = new LinkedHashMap<String, String>();
-      getIDs(result, "org.eclipse.emf", COMMIT_ID_PATTERN, VALID_COMMIT_ID_PATTERN, "http://git.eclipse.org/c/emf/org.eclipse.emf.git/commit/?id=");
-      getIDs(result, "org.eclipse.xsd", COMMIT_ID_PATTERN, VALID_COMMIT_ID_PATTERN, "http://git.eclipse.org/c/xsd/org.eclipse.xsd.git/commit/?id=");
-      getDate();
+      String commit = getMetadataRepository().getProperty("commit");
+      if (commit != null)
+      {
+        org.eclipse.emf.common.util.URI uri = org.eclipse.emf.common.util.URI.createURI(commit);
+        result.put(uri.segment(uri.segmentCount() - 3), commit);
+      }
       return result;
     }
 
@@ -1524,105 +1526,21 @@ public class UpdateSiteGenerator
      */
     public String getDate()
     {
-      Map<String, String> result = new LinkedHashMap<String, String>();
-      getIDs(result, "org.eclipse.emf", BUILD_ID_PATTERN, VALID_BUILD_ID_PATTERN, "");
-      if (!result.isEmpty())
+      String timestamp = getMetadataRepository().getProperty(IRepository.PROP_TIMESTAMP);
+      if (timestamp != null)
       {
-        String value = result.values().iterator().next();
         try
         {
-          Date date = new SimpleDateFormat("yyyyMMddHHmm").parse(value);
+          Date date = new Date(Long.parseLong(timestamp));
           return new SimpleDateFormat("yyyy'-'MM'-'dd' at 'HH':'mm ").format(date);
         }
-        catch (ParseException e)
+        catch (NumberFormatException e)
         {
           // Ignore.
         }
       }
 
       return null;
-    }
-
-    /**
-     * Populates the IDs with the information from {@code about.mappings} for the branding plugin with the give UI ID.
-     * @param ids the IDs to populate.
-     * @param iuID the ID of a branding plugin.
-     * @param idPattern the pattern for finding the ID in the {@code about.mappings}
-     * @param validIDPattern the pattern for validating and extracting the ID.
-     * @param prefix the prefix that will be prepended to the ID.
-     */
-    private void getIDs(Map<String, String> ids, String iuID, Pattern idPattern, Pattern validIDPattern, String prefix)
-    {
-      IMetadataRepository metadataRepository = getCompositeMetadataRepository();
-      IArtifactRepository artifactRepository = getCompositeArtifactRepository();
-      IQueryResult<IInstallableUnit> ius = metadataRepository.query(QueryUtil.createIUQuery(iuID), new NullProgressMonitor());
-      for (Iterator<IInstallableUnit> i = ius.iterator(); i.hasNext();)
-      {
-        IInstallableUnit iu = i.next();
-        Collection<IArtifactKey> artifacts = iu.getArtifacts();
-        for (IArtifactKey artifactKey : artifacts)
-        {
-          IArtifactDescriptor[] artifactDescriptors = artifactRepository.getArtifactDescriptors(artifactKey);
-          for (IArtifactDescriptor artifactDescriptor : artifactDescriptors)
-          {
-            ByteArrayOutputStream artifact = new ByteArrayOutputStream();
-            artifactRepository.getArtifact(artifactDescriptor, artifact, new NullProgressMonitor());
-            ZipInputStream zipInputStream = null;
-            try
-            {
-              zipInputStream = new ZipInputStream(new ByteArrayInputStream(artifact.toByteArray()));
-              for (ZipEntry entry = zipInputStream.getNextEntry(); entry != null; entry = zipInputStream.getNextEntry())
-              {
-                String name = entry.getName();
-                if ("about.mappings".equals(name))
-                {
-                  ByteArrayOutputStream content = new ByteArrayOutputStream();
-                  byte[] bytes = new byte [1024];
-                  for (int length = zipInputStream.read(bytes); length != -1; length = zipInputStream.read(bytes))
-                  {
-                    content.write(bytes, 0, length);
-                  }
-
-                  content.close();
-                  String value = new String(content.toByteArray(), "UTF-8");
-                  for (Matcher matcher = idPattern.matcher(value); matcher.find();)
-                  {
-                    String id = matcher.group(1);
-                    Matcher idMatcher = validIDPattern.matcher(id);
-                    if (idMatcher.matches())
-                    {
-                      ids.put(iuID.substring(iuID.lastIndexOf('.') + 1).toUpperCase(), prefix + idMatcher.group(1));
-                    }
-                    break;
-                  }
-                  break;
-                }
-              }
-            }
-            catch (IOException exception)
-            {
-              // Ignore.
-            }
-            finally
-            {
-              if (zipInputStream != null)
-              {
-                try
-                {
-                  zipInputStream.close();
-                }
-                catch (IOException e)
-                {
-                  // Ignore.
-                }
-              }
-            }
-            break;
-          }
-        }
-
-        break;
-      }
     }
 
     /**
