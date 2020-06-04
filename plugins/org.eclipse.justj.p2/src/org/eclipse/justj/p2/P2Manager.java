@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.Assert;
@@ -473,18 +474,27 @@ public class P2Manager
 
       if (remote != null)
       {
-        String[] remoteComponents = remote.split(":");
+        String[] remoteComponents = remote.split(":", 2);
         if (remoteComponents.length != 2)
         {
           throw new IllegalArgumentException("The remote '" + remote + "' must be of the form <user-id>@<host>:<absolute-path-on-host>");
         }
 
         host = remoteComponents[0];
-        hostPath = remoteComponents[1];
+        String tentativeHostPath = remoteComponents[1];
 
-        if (!host.contains("@") || !hostPath.startsWith("/"))
+        if ("localhost".equals(host))
+        {
+          Path path = ProcessLauncher.getNormalizedAbsolutePath(Paths.get(tentativeHostPath).toAbsolutePath());
+          hostPath = toShellPath(path);
+        }
+        else if (!host.contains("@") || !tentativeHostPath.startsWith("/"))
         {
           throw new IllegalArgumentException("The remote '" + remote + "' must be of the form <user-id>@<host>:<absolute-path-on-host>");
+        }
+        else
+        {
+          hostPath = tentativeHostPath;
         }
       }
       else
@@ -493,12 +503,18 @@ public class P2Manager
         hostPath = null;
       }
 
+      String hostPrefix = host == null ? null : "localhost".equals(host) ? "" : host + ":";
+
       if (host != null)
       {
         // Create the target folder on the remote host.
         // It's okay if that already exists.
         {
-          ProcessLauncher processLauncher = new ProcessLauncher(verbose, "ssh", host, "mkdir", "-p", hostPath + "/" + relativeTargetFolder);
+          ProcessLauncher processLauncher = new ProcessLauncher(
+            verbose,
+            "localhost".equals(host) ? "bash" : "ssh",
+            "localhost".equals(host) ? "-c" : host,
+            "mkdir -p " + hostPath + "/" + relativeTargetFolder);
 
           processLauncher.execute();
           if (verbose)
@@ -551,7 +567,7 @@ public class P2Manager
             "*/.blobstore",
             "--exclude",
             "*.html",
-            host + ":" + hostPath + "/" + relativeTargetFolder + "/",
+            hostPrefix + hostPath + "/" + relativeTargetFolder + "/",
             toShellPath(normalizedAbsolutePath));
 
           processLauncher.execute();
@@ -604,7 +620,7 @@ public class P2Manager
                 verbose,
                 "rsync",
                 "-avsh",
-                host + ":" + hostPath + "/" + toShellPath(relativeTargetFolder) + "/",
+                hostPrefix + hostPath + "/" + toShellPath(relativeTargetFolder) + "/",
                 toShellPath(normalizedAbsolutePath));
 
               processLauncher.execute();
@@ -657,7 +673,7 @@ public class P2Manager
             "rsync",
             "-avsh",
             toShellPath(normalizedAbsolutePath) + "/",
-            host + ":" + hostPath + "/" + relativeTargetFolder + "/");
+            hostPrefix + hostPath + "/" + relativeTargetFolder + "/");
 
           processLauncher.execute();
           if (verbose)
@@ -685,9 +701,9 @@ public class P2Manager
           // Use ssh to do all this processing on the remote server.
           ProcessLauncher processLauncher = new ProcessLauncher(
             verbose,
-            "ssh",
-            host, //
-            "for i in $(find " + hostPath + " -name DELETED); do\n" + //
+            "localhost".equals(host) ? "bash" : "ssh",
+            "localhost".equals(host) ? "-c" : host, //
+            "for i in $(find " + hostPath + "/" + relativeTargetFolder + " -name DELETED); do\n" + //
               "  echo rm -rf $(dirname $i)\n" + //
               "  rm -rf $(dirname $i)\n" + //
               "done");
@@ -861,9 +877,10 @@ public class P2Manager
         String fullPath = path;
         if (absoluteExecutablePath == null && File.separatorChar == '\\')
         {
-          // We'll assume that on Windows, Git is installed and that we cna use it.
+          // We'll assume that on Windows, Git is installed and that we can use it.
           String extraPath = System.getProperty("org.eclipse.justj.extra.path", "C:\\Program Files\\Git\\usr\\bin");
-          fullPath += File.pathSeparator + extraPath;
+          fullPath = extraPath + File.pathSeparator + fullPath;
+          path = fullPath;
           absoluteExecutablePath = search(executableArg, extraPath);
         }
 
@@ -875,8 +892,7 @@ public class P2Manager
 
       // This is needed on Windows just in case the executable wasn't really on the path.
       //
-      String augmentedPath = path + File.pathSeparator + absoluteExecutablePath.getParent();
-      environment.put("PATH", augmentedPath);
+      environment.put("PATH", path);
 
       // Change the build to use the absolute path.
       builder.command().set(0, absoluteExecutablePath.toString());
@@ -894,19 +910,79 @@ public class P2Manager
       stdin.close();
 
       InputStream stderr = process.getErrorStream();
-      err = lines(stderr);
+      AtomicReference<IOException> stderrException = new AtomicReference<>();
+      Thread stderrThread = new Thread("stderr-reader")
+        {
+          @Override
+          public void run()
+          {
+            try
+            {
+              err = lines(stderr);
+            }
+            catch (IOException exception)
+            {
+              stderrException.set(exception);
+            }
+            finally
+            {
+              if (err == null)
+              {
+                err = Collections.emptyList();
+              }
+            }
+          }
+        };
+      stderrThread.start();
+
       InputStream stdout = process.getInputStream();
-      out = lines(stdout);
+      AtomicReference<IOException> stdoutException = new AtomicReference<>();
+      Thread stdoutThread = new Thread("stdout-reader")
+        {
+          @Override
+          public void run()
+          {
+            try
+            {
+              out = lines(stdout);
+            }
+            catch (IOException exception)
+            {
+              stdoutException.set(exception);
+            }
+            finally
+            {
+              if (out == null)
+              {
+                out = Collections.emptyList();
+              }
+            }
+          }
+        };
+      stdoutThread.start();
 
       try
       {
         process.waitFor(2, TimeUnit.MINUTES);
+        stderrThread.join(1000 * 60);
+        stdoutThread.join(1000 * 60);
       }
       catch (InterruptedException exception)
       {
         System.err.println("Interrupted");
         fullDump();
         Thread.currentThread().interrupt();
+        return;
+      }
+
+      if (stderrException.get() != null)
+      {
+        throw stderrException.get();
+      }
+
+      if (stdoutException.get() != null)
+      {
+        throw stdoutException.get();
       }
     }
 
