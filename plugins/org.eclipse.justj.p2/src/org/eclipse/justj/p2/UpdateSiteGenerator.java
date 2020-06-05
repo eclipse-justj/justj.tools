@@ -18,9 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -180,12 +183,18 @@ public class UpdateSiteGenerator
   private String commit;
 
   /**
+   * This is the relative patch from the {@link #projectRoot} at which to generate a "super" index.
+   */
+  private Path relativeSuperTargetFolder;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
    * @param buildURL the URL of the site that produces these builds.
    * @param projectRoot the root location of the site.
    * @param relativeTargetFolder the relative location below the root at which to target the generation.
+   * @param relativeSuperTargetFolder the relative location below the root and above the {@code relativeTargetFolder} at which to generate a super index.
    * @param targetURL the URL at which the site will live once promoted.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIU a prefix for the IUs that will be used to determine the overall version.
@@ -202,6 +211,7 @@ public class UpdateSiteGenerator
     String buildURL,
     Path projectRoot,
     Path relativeTargetFolder,
+    Path relativeSuperTargetFolder,
     String targetURL,
     int retainedNightlyBuilds,
     String versionIU,
@@ -214,6 +224,7 @@ public class UpdateSiteGenerator
   {
     this.projectLabel = projectLabel;
     this.buildURL = buildURL;
+    this.relativeSuperTargetFolder = relativeSuperTargetFolder;
     this.targetURL = targetURL;
     this.versionIU = versionIU;
     this.commit = commit;
@@ -223,6 +234,12 @@ public class UpdateSiteGenerator
     this.bodyImage = bodyImage;
     this.verbose = verbose;
     Assert.isTrue(!relativeTargetFolder.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
+    if (relativeSuperTargetFolder != null)
+    {
+      Assert.isTrue(
+        relativeTargetFolder.startsWith(relativeSuperTargetFolder),
+        "The relative super target folder '" + relativeSuperTargetFolder + "' must be parent of the target folder '" + relativeTargetFolder + "'");
+    }
 
     this.projectRoot = getCanonicalPath(projectRoot);
     this.retainedNightlyBuilds = retainedNightlyBuilds;
@@ -535,7 +552,7 @@ public class UpdateSiteGenerator
    */
   private String getLabel(String buildType)
   {
-    return Character.toUpperCase(buildType.charAt(0)) + buildType.substring(1);
+    return "super".equals(buildType) ? "All Releases" : Character.toUpperCase(buildType.charAt(0)) + buildType.substring(1);
   }
 
   /**
@@ -593,7 +610,7 @@ public class UpdateSiteGenerator
    */
   public Path getCompositeUpdateSiteDestination(String buildType, boolean latest) throws IOException
   {
-    Path destinationBuildsTypeFolder = updateSiteRoot.resolve(buildType);
+    Path destinationBuildsTypeFolder = "super".equals(buildType) ? projectRoot.resolve(relativeSuperTargetFolder) : updateSiteRoot.resolve(buildType);
     if (latest)
     {
       destinationBuildsTypeFolder = destinationBuildsTypeFolder.resolve("latest");
@@ -802,6 +819,65 @@ public class UpdateSiteGenerator
   }
 
   /**
+   * Generates a "super" index.html for all the releases within the {{@link #getProjectRoot() project root}.
+   *
+   * @throws Exception
+   */
+  public void generateSuperIndex() throws Exception
+  {
+    if (relativeSuperTargetFolder != null)
+    {
+      Path superUpdateSiteRoot = projectRoot.resolve(relativeSuperTargetFolder);
+      Map<Version, Path> releases = new TreeMap<Version, Path>(Collections.reverseOrder());
+      Files.walkFileTree(superUpdateSiteRoot, new SimpleFileVisitor<Path>()
+        {
+          private final Path latestRelease = Paths.get("release/latest");
+
+          @Override
+          public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
+          {
+            if (dir.endsWith(latestRelease))
+            {
+              RepositoryAnalyzer repositoryAnalyzer = getRepositoryAnalyzer(Collections.singletonList(dir));
+              List<Path> children = repositoryAnalyzer.getChildren();
+              // There should be just one....
+              for (Path child : children)
+              {
+                Path fileName = child.getFileName();
+                Version releaseVersion = Version.create(fileName.toString());
+                releases.put(releaseVersion, child);
+              }
+            }
+            return super.preVisitDirectory(dir, attrs);
+          }
+        });
+
+      if (!releases.isEmpty())
+      {
+        Path compositePath = getCompositeUpdateSiteDestination("super", false);
+        if (verbose)
+        {
+          System.out.println("Composing all releases update site " + compositePath);
+        }
+        P2Manager.cleanupComposite(compositePath);
+        ArrayList<Path> children = new ArrayList<>(releases.values());
+        composeUpdateSites(children, "super", false);
+
+        Path latestCompositePath = getCompositeUpdateSiteDestination("super", true);
+        if (verbose)
+        {
+          System.out.println("Composing latest release update site " + latestCompositePath);
+        }
+        P2Manager.cleanupComposite(latestCompositePath);
+        composeUpdateSites(Collections.singletonList(children.get(0)), "super", true);
+
+        UpdateSiteIndexGenerator updateSiteIndexGenerator = new UpdateSiteIndexGenerator(compositePath, this);
+        generateIndex(updateSiteIndexGenerator);
+      }
+    }
+  }
+
+  /**
    * Generates the index.html for the target repository, as well as recursively for the children.
    * @param updateSiteIndexGenerator the update site index generator used to generate the sites.
    * @throws Exception
@@ -841,7 +917,6 @@ public class UpdateSiteGenerator
     for (UpdateSiteIndexGenerator child : updateSiteIndexGenerator.getChildren())
     {
       generateIndex(child);
-
     }
   }
 

@@ -60,7 +60,7 @@ public class P2Manager
 
   /**
    * Whether to delete folders or simply mark them as deleted.
-   * @see #delete
+   * @see #delete(Path)
    */
   protected boolean delete;
 
@@ -372,11 +372,21 @@ public class P2Manager
   }
 
   /**
+   * Generates the super index of all the releases in the sub-folders.
+   *
+   * @throws Exception
+   */
+  public void generateSuperUpdateSiteIndex() throws Exception
+  {
+    updateSiteGenerator.generateSuperIndex();
+  }
+
+  /**
    * Removes the metadata for a composite, otherwise p2 tries to load it and at this point these files are not valid.
    *
    * @param target the repository composite folder to clean.
    */
-  private static void cleanupComposite(Path target) throws IOException
+  static void cleanupComposite(Path target) throws IOException
   {
     for (String file : new String []{ "compositeContent.jar", "compositeContent.xml", "compositeArtifacts.jar", "compositeArtifacts.xml" })
     {
@@ -385,7 +395,7 @@ public class P2Manager
   }
 
   /**
-   * Deletes a folder and all of its children.
+   * Deletes a folder and all of its children, or just mark the folder as deleted.
    *
    * @param folder the folder to delete.
    * @throws IOException
@@ -451,8 +461,19 @@ public class P2Manager
       String targetURL = getArgument("-target-url", args, null);
       String versionIU = getArgument("-version-iu", args, null);
       String commit = getArgument("-commit", args, null);
+      String superTargetFolder = getArgument("-super", args, null);
 
-      Assert.isTrue(!Paths.get(relativeTargetFolder).isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
+      Path relativeTargetFolderPath = Paths.get(relativeTargetFolder);
+      Assert.isTrue(!relativeTargetFolderPath.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
+
+      Path relativeSuperTargetFolderPath = superTargetFolder == null ? null : Paths.get(superTargetFolder);
+      if (relativeSuperTargetFolderPath != null)
+      {
+        Assert.isTrue(!relativeSuperTargetFolderPath.isAbsolute(), "The relative super target folder '" + superTargetFolder + "' must be relative");
+        Assert.isTrue(
+          relativeTargetFolderPath.startsWith(relativeSuperTargetFolderPath),
+          "The relative super target folder '" + superTargetFolder + "' must be parent of the target folder '" + relativeTargetFolder + "'");
+      }
 
       Map<String, String> breadcrumbs = new LinkedHashMap<>();
       for (String breadcrumb = getArgument("-breadcrumb", args, null); breadcrumb != null; breadcrumb = getArgument("-breadcrumb", args, null))
@@ -470,7 +491,8 @@ public class P2Manager
 
       String host;
       String hostPath;
-      Path absoluteTargetPath = Paths.get(projectRoot).toAbsolutePath().resolve(relativeTargetFolder);
+      Path absoluteTargetPath = Paths.get(projectRoot).toAbsolutePath().resolve(relativeTargetFolderPath);
+      Path absoluteSuperTargetPath = relativeSuperTargetFolderPath == null ? null : Paths.get(projectRoot).toAbsolutePath().resolve(relativeSuperTargetFolderPath);
 
       if (remote != null)
       {
@@ -550,7 +572,7 @@ public class P2Manager
 
           // Use rsync to transfer the remote folder to the local folder.
           // Exclude the large content, i.e., we really only need the metadata of the repositories.
-          Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(absoluteTargetPath);
+          Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(absoluteSuperTargetPath == null ? absoluteTargetPath : absoluteSuperTargetPath);
           ProcessLauncher processLauncher = new ProcessLauncher(
             verbose,
             "rsync",
@@ -567,7 +589,9 @@ public class P2Manager
             "*/.blobstore",
             "--exclude",
             "*.html",
-            hostPrefix + hostPath + "/" + relativeTargetFolder + "/",
+            "--exclude",
+            "*/downloads",
+            hostPrefix + hostPath + "/" + (superTargetFolder == null ? relativeTargetFolder : superTargetFolder) + "/",
             toShellPath(normalizedAbsolutePath));
 
           processLauncher.execute();
@@ -595,7 +619,8 @@ public class P2Manager
         projectLabel,
         buildURL,
         Paths.get(projectRoot),
-        Paths.get(relativeTargetFolder),
+        relativeTargetFolderPath,
+        relativeSuperTargetFolderPath,
         targetURL,
         retainedNightlyBuilds,
         versionIU,
@@ -661,19 +686,20 @@ public class P2Manager
       p2Manager.cleanMilestoneComposite();
       p2Manager.generateDownloads();
       p2Manager.generateUpdateSiteIndex();
+      p2Manager.generateSuperUpdateSiteIndex();
 
       if (host != null)
       {
-        // Transfer the remote host contents to the local target.
+        // Transfer the local target contents to the remote host content.
         {
           // Use rsync to transfer the local folder to the remote folder, excluding nothing.
-          Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(absoluteTargetPath);
+          Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(absoluteSuperTargetPath == null ? absoluteTargetPath : absoluteSuperTargetPath);
           ProcessLauncher processLauncher = new ProcessLauncher(
             verbose,
             "rsync",
             "-avsh",
             toShellPath(normalizedAbsolutePath) + "/",
-            hostPrefix + hostPath + "/" + relativeTargetFolder + "/");
+            hostPrefix + hostPath + "/" + (superTargetFolder == null ? relativeTargetFolder : superTargetFolder) + "/");
 
           processLauncher.execute();
           if (verbose)
@@ -778,7 +804,7 @@ public class P2Manager
   }
 
   /**
-   * Deletes a file or recursive end entire folder.
+   * Deletes a file or recursively an entire folder.
    * @param folder the file or directory.
    * @throws IOException
    */
@@ -882,6 +908,12 @@ public class P2Manager
           fullPath = extraPath + File.pathSeparator + fullPath;
           path = fullPath;
           absoluteExecutablePath = search(executableArg, extraPath);
+
+          // This is needed on Windows for base just in case the executable wasn't really on the path.
+          // And then we put it in for both case variants because a debug launch worked but a run launch did not.  Go figure.
+          //
+          environment.put("PATH", path);
+          environment.put("Path", path);
         }
 
         if (absoluteExecutablePath == null)
@@ -889,10 +921,6 @@ public class P2Manager
           throw new IllegalArgumentException("Executable '" + executableArg + "' not found after searching the following PATH: " + fullPath);
         }
       }
-
-      // This is needed on Windows just in case the executable wasn't really on the path.
-      //
-      environment.put("PATH", path);
 
       // Change the build to use the absolute path.
       builder.command().set(0, absoluteExecutablePath.toString());

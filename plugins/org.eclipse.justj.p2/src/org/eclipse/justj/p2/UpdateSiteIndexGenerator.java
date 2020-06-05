@@ -123,6 +123,12 @@ public class UpdateSiteIndexGenerator
           folders.add(childFolder);
         }
       }
+
+      // This is used for generating a super index.
+      if (folders.isEmpty())
+      {
+        folders.add(folder);
+      }
     }
     else
     {
@@ -222,7 +228,8 @@ public class UpdateSiteIndexGenerator
         return buildType;
       }
     }
-    throw new IllegalStateException("The folder '" + folder + "' is not a build-type folder");
+
+    return "super";
   }
 
   /**
@@ -539,6 +546,11 @@ public class UpdateSiteIndexGenerator
   public String getLabel()
   {
     String name = getFolderName();
+    int versionQualifierIndex = name.indexOf(".v");
+    if (versionQualifierIndex != -1)
+    {
+      name = name.substring(0, versionQualifierIndex) + "<span style='font-size: 80%'>" + name.substring(versionQualifierIndex) + "</span>";
+    }
     return Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
 

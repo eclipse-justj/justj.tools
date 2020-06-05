@@ -279,7 +279,7 @@ SPDX-License-Identifier: EPL-2.0
              This simple update site will be retained <b>only</b> until the first successful milestone build of the next <%=parent.getProjectLabel()%> release.
            </p>
       <%}%>
-    <%} else {%>
+    <%} else if ("release".equals(buildType)) {%>
       <%if (isLatest) {%>
            <p>
              This composite update site references the most recent release of <%=parent.getProjectLabel()%>.
@@ -292,6 +292,21 @@ SPDX-License-Identifier: EPL-2.0
       <%} else {%>
            <p>
              This simple update site will be retained <b>permanently</b>.
+           </p>
+      <%}%>
+    <%} else {%>
+      <%if (isLatest) {%>
+           <p>
+             This composite update site references the most recent release of <%=parent.getProjectLabel()%>.
+           </p>
+      <%} else if (repositoryChildren != null) {%>
+           <p>
+             This composite update site references <%=parent.getRepositoryChildren().size()%> releases.
+             These sites will be retained <b>permanently</b>.
+           </p>
+      <%} else {%>
+           <p>
+             This type of repo should not exist.
            </p>
       <%}%>
     <%}%>
