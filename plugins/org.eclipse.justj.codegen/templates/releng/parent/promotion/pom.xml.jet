@@ -36,6 +36,7 @@ SPDX-License-Identifier: EPL-2.0
     <justj.tools.repo>https://download.eclipse.org/justj/tools/updates/nightly/latest</justj.tools.repo>
     <org.eclipse.storage.user>genie.justj</org.eclipse.storage.user>
     <org.eclipse.justj.p2.manager.args>-remote ${org.eclipse.storage.user}@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/justj</org.eclipse.justj.p2.manager.args>
+    <org.eclipse.justj.p2.manager.extra.args></org.eclipse.justj.p2.manager.extra.args>
     <org.eclipse.justj.p2.manager.relative>sandbox-test/jres/updates</org.eclipse.justj.p2.manager.relative>
     <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
     <org.eclipse.justj.p2.manager.build.url>http://www.example.com/</org.eclipse.justj.p2.manager.build.url>
@@ -103,6 +104,7 @@ SPDX-License-Identifier: EPL-2.0
                 -favicon https://www.eclipse.org/justj/justj_favicon.ico
                 -title-image https://www.eclipse.org/justj/justj_title.svg
                 -body-image https://www.eclipse.org/justj/justj_incubation.svg
+                ${org.eclipse.justj.p2.manager.extra.args}
               </appArgLine>
             </configuration>
           </execution>
