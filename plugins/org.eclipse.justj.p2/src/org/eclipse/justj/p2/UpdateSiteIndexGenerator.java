@@ -711,7 +711,7 @@ public class UpdateSiteIndexGenerator
         }
       }
 
-      if ("super".equals(getBuildType()))
+      if ("super".equals(getBuildType()) && children.size() == 1 && children.get(0).endsWith("latest"))
       {
         children.addAll(repositoryAnalyzer.getChildren());
       }
