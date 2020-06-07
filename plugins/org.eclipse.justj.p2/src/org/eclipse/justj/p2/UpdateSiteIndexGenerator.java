@@ -710,6 +710,11 @@ public class UpdateSiteIndexGenerator
           children.add(child);
         }
       }
+
+      if ("super".equals(getBuildType()))
+      {
+        children.addAll(repositoryAnalyzer.getChildren());
+      }
     }
     catch (IOException exception)
     {
