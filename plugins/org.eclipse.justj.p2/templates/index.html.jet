@@ -29,7 +29,7 @@ SPDX-License-Identifier: EPL-2.0
 </head>
 
   <body id="body_solstice">
-<%if (parent.getChildren().isEmpty()) {%>
+<%if (parent.getChildren().isEmpty() || !parent.getSuperCompositeChildren().isEmpty()) {%>
     <style>
 .toggle {
   display: none;
@@ -299,11 +299,18 @@ SPDX-License-Identifier: EPL-2.0
            <p>
              This composite update site references the most recent release of <%=parent.getProjectLabel()%>.
            </p>
-      <%} else if (repositoryChildren != null) {%>
-           <p>
-             This composite update site references <%=parent.getRepositoryChildren().size()%> releases.
-             These sites will be retained <b>permanently</b>.
-           </p>
+      <%} else if (repositoryChildren != null) {
+          int mainID = ++toggleCounter;%>
+           <div>
+             This composite update site references <%=parent.getRepositoryChildren().size()%> releases from the following locations:
+           <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
+           <label for="toggle-id-<%=mainID%>" class="toggle-label" style="font-size: 100%;"><%=toggleExpand%><%=toggleCollapse%></label>
+           <ul class="toggle-content" style="margin-top: 2px; white-space: normal; list-style-type: none;">
+        <%for (UpdateSiteIndexGenerator child : parent.getSuperCompositeChildren()) {%>
+             <li><a href="<%=child.getSiteURL()%>/index.html"><%=child.getLabel()%></a></li>
+        <%}%>
+           </ul>
+           </div>
       <%} else {%>
            <p>
              This type of repo should not exist.

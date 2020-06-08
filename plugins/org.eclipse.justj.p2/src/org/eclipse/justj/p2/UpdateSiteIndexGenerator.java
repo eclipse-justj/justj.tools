@@ -17,6 +17,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -546,12 +547,19 @@ public class UpdateSiteIndexGenerator
   public String getLabel()
   {
     String name = getFolderName();
-    int versionQualifierIndex = name.indexOf(".v");
-    if (versionQualifierIndex != -1)
+    if ("jres".equals(name))
     {
-      name = name.substring(0, versionQualifierIndex) + "<span style='font-size: 80%'>" + name.substring(versionQualifierIndex) + "</span>";
+      return "JREs";
     }
-    return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    else
+    {
+      int versionQualifierIndex = name.indexOf(".v");
+      if (versionQualifierIndex != -1)
+      {
+        name = name.substring(0, versionQualifierIndex) + "<span style='font-size: 80%'>" + name.substring(versionQualifierIndex) + "</span>";
+      }
+      return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    }
   }
 
   /**
@@ -729,6 +737,15 @@ public class UpdateSiteIndexGenerator
     }
 
     return result;
+  }
+
+  /**
+   * Return the children of a super composite.
+   * @return the children of a super composite.
+   */
+  public List<UpdateSiteIndexGenerator> getSuperCompositeChildren()
+  {
+    return Collections.emptyList();
   }
 
   /**

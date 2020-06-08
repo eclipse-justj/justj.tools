@@ -37,7 +37,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -829,15 +831,21 @@ public class UpdateSiteGenerator
     {
       Path superUpdateSiteRoot = projectRoot.resolve(relativeSuperTargetFolder);
       Map<Version, Path> releases = new TreeMap<Version, Path>(Collections.reverseOrder());
+      Set<Path> superCompositeChildren = new TreeSet<Path>();
       Files.walkFileTree(superUpdateSiteRoot, new SimpleFileVisitor<Path>()
         {
           private final Path latestRelease = Paths.get("release/latest");
+
+          private final Path latestMilestone = Paths.get("milestone/latest");
+
+          private final Path latestNightly = Paths.get("nightly/latest");
 
           @Override
           public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
           {
             if (dir.endsWith(latestRelease))
             {
+              superCompositeChildren.add(dir.getParent().getParent());
               RepositoryAnalyzer repositoryAnalyzer = getRepositoryAnalyzer(Collections.singletonList(dir));
               List<Path> children = repositoryAnalyzer.getChildren();
               // There should be just one....
@@ -848,30 +856,57 @@ public class UpdateSiteGenerator
                 releases.put(releaseVersion, child);
               }
             }
+            else if (dir.endsWith(latestMilestone) || dir.endsWith(latestNightly))
+            {
+              superCompositeChildren.add(dir.getParent().getParent());
+            }
             return super.preVisitDirectory(dir, attrs);
           }
         });
 
-      if (!releases.isEmpty())
+      if (!releases.isEmpty() || !superCompositeChildren.isEmpty())
       {
         Path compositePath = getCompositeUpdateSiteDestination("super", false);
         if (verbose)
         {
           System.out.println("Composing all releases update site " + compositePath);
         }
-        P2Manager.cleanupComposite(compositePath);
-        ArrayList<Path> children = new ArrayList<>(releases.values());
-        composeUpdateSites(children, "super", false);
 
-        Path latestCompositePath = getCompositeUpdateSiteDestination("super", true);
-        if (verbose)
+        if (!releases.isEmpty())
         {
-          System.out.println("Composing latest release update site " + latestCompositePath);
-        }
-        P2Manager.cleanupComposite(latestCompositePath);
-        composeUpdateSites(Collections.singletonList(children.get(0)), "super", true);
+          P2Manager.cleanupComposite(compositePath);
+          ArrayList<Path> children = new ArrayList<>(releases.values());
+          composeUpdateSites(children, "super", false);
 
-        UpdateSiteIndexGenerator updateSiteIndexGenerator = new UpdateSiteIndexGenerator(compositePath, this);
+          Path latestCompositePath = getCompositeUpdateSiteDestination("super", true);
+          if (verbose)
+          {
+            System.out.println("Composing latest release update site " + latestCompositePath);
+          }
+          P2Manager.cleanupComposite(latestCompositePath);
+          composeUpdateSites(Collections.singletonList(children.get(0)), "super", true);
+        }
+
+        UpdateSiteIndexGenerator updateSiteIndexGenerator = new UpdateSiteIndexGenerator(compositePath, this)
+          {
+            @Override
+            public List<UpdateSiteIndexGenerator> getSuperCompositeChildren()
+            {
+              List<UpdateSiteIndexGenerator> result = new ArrayList<UpdateSiteIndexGenerator>();
+              for (Path path : superCompositeChildren)
+              {
+                result.add(new UpdateSiteIndexGenerator(path, UpdateSiteGenerator.this, this)
+                  {
+                    @Override
+                    public String getLabel()
+                    {
+                      return superUpdateSiteRoot.relativize(path).toString().replace("\\", "/");
+                    }
+                  });
+              }
+              return result;
+            }
+          };
         generateIndex(updateSiteIndexGenerator);
       }
     }
