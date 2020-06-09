@@ -250,6 +250,7 @@ SPDX-License-Identifier: EPL-2.0
       String buildType = parent.getBuildType();
       boolean isLatest = parent.isLatest();
       Map<String, String> repositoryChildren = parent.getRepositoryChildren();
+      int repositoryChildrenSize = repositoryChildren == null ? 0 : repositoryChildren.size();
       if ("nightly".equals(buildType)) {%>
       <%if (isLatest) {%>
            <p>
@@ -257,7 +258,7 @@ SPDX-License-Identifier: EPL-2.0
            </p>
       <%} else if (repositoryChildren != null) {%>
            <p>
-             This composite update site references the <%=parent.getRepositoryChildren().size()%> most recent successful nightly builds.
+             This composite update site references the <%=repositoryChildrenSize%> most recent successful nightly build<%if (repositoryChildrenSize != 1) {%>s<%}%>.
            </p>
       <%} else {%>
            <p>
@@ -271,7 +272,7 @@ SPDX-License-Identifier: EPL-2.0
            </p>
       <%} else if (repositoryChildren != null) {%>
            <p>
-             This composite update site references <%=parent.getRepositoryChildren().size()%> successful milestone builds.
+             This composite update site references <%=repositoryChildrenSize%> successful milestone build<%if (repositoryChildrenSize != 1) {%>s<%}%>.
              These sites will be retained <b>only</b> until the first successful milestone build of the next <%=parent.getProjectLabel()%> release.
            </p>
       <%} else {%>
@@ -286,7 +287,7 @@ SPDX-License-Identifier: EPL-2.0
            </p>
       <%} else if (repositoryChildren != null) {%>
            <p>
-             This composite update site references <%=parent.getRepositoryChildren().size()%> releases.
+             This composite update site references <%=repositoryChildrenSize%> release<%if (repositoryChildrenSize != 1) {%>s<%}%>.
              These sites will be retained <b>permanently</b>.
            </p>
       <%} else {%>
@@ -302,7 +303,7 @@ SPDX-License-Identifier: EPL-2.0
       <%} else if (repositoryChildren != null) {
           int mainID = ++toggleCounter;%>
            <div>
-             This composite update site references <%=parent.getRepositoryChildren().size()%> releases from the following locations:
+             This composite update site references <%=repositoryChildrenSize%> releases from the following location<%if (repositoryChildrenSize != 1) {%>s<%}%>:
            <input type="checkbox" id="toggle-id-<%=mainID%>" class="toggle"/>
            <label for="toggle-id-<%=mainID%>" class="toggle-label" style="font-size: 100%;"><%=toggleExpand%><%=toggleCollapse%></label>
            <ul class="toggle-content" style="margin-top: 2px; white-space: normal; list-style-type: none;">
