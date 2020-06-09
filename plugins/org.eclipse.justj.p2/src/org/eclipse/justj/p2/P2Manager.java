@@ -362,7 +362,7 @@ public class P2Manager
   }
 
   /**
-   * Generates an index.html is each folder.
+   * Generates an {@code index.html} in each folder.
    *
    * @throws Exception
    */

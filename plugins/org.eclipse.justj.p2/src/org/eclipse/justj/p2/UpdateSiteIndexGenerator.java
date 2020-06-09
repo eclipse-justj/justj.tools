@@ -309,7 +309,7 @@ public class UpdateSiteIndexGenerator
 
     if (tailEntry != null)
     {
-      result.put(tailEntry.getValue(), tailEntry.getKey());
+      result.put(tailEntry.getValue() + "/index.html", tailEntry.getKey());
     }
 
     StringBuilder prefix = new StringBuilder();
@@ -320,7 +320,7 @@ public class UpdateSiteIndexGenerator
 
     String rootLabel = rootSiteURL.substring(rootSiteURL.lastIndexOf('/') + 1);
     rootLabel = Character.toUpperCase(rootLabel.charAt(0)) + rootLabel.substring(1);
-    result.put(prefix.length() == 0 ? "." : prefix.toString().substring(0, prefix.length() - 1), isRoot() ? rootLabel + "@" : rootLabel);
+    result.put(prefix + "index.html", rootLabel);
     for (UpdateSiteIndexGenerator child : root.getChildren())
     {
       child.visit(result, prefix.toString(), 0);
@@ -330,8 +330,8 @@ public class UpdateSiteIndexGenerator
     for (Map.Entry<String, String> entry : result.entrySet())
     {
       String url = entry.getKey();
-      URI resolvedURI = rootSiteURI.resolve(url);
-      if (resolvedURI.toString().equals(siteURL))
+      int lastSegment = url.lastIndexOf('/');
+      if ((lastSegment == -1 || rootSiteURI.resolve(url.substring(0, lastSegment)).toString().equals(siteURL)))
       {
         entry.setValue(entry.getValue() + "@");
       }
@@ -341,7 +341,7 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
-   * Used to composite the {@link #getNavigation() navigation} side bar.
+   * Used to compose the {@link #getNavigation() navigation} side bar.
    * @param navigation the map to populate.
    * @param prefix the prefix used to build relative URL.
    * @param depth the depth at which we're currently visiting.
@@ -358,7 +358,7 @@ public class UpdateSiteIndexGenerator
     String siteURL = getSiteURL();
     String rootSiteURL = getRoot().getSiteURL();
     siteURL = siteURL.substring(rootSiteURL.length() + 1);
-    siteURL = prefix + siteURL;
+    siteURL = prefix + siteURL + "/" + getIndexName();
 
     navigation.put(siteURL, label.toString());
     for (UpdateSiteIndexGenerator child : getChildren())
@@ -387,12 +387,21 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
+   * Returns the name of the index file.
+   * @return the name of the index file.
+   */
+  public String getIndexName()
+  {
+    return "index.html";
+  }
+
+  /**
    * The parent-relative URL for this folder's index.
    * @return the parent-relative URL for this folder's index.
    */
   public String getRelativeIndexURL()
   {
-    return folder.getFileName().resolve("index.html").toString();
+    return folder.getFileName().resolve(getIndexName()).toString();
   }
 
   /**
@@ -707,6 +716,7 @@ public class UpdateSiteIndexGenerator
   public List<UpdateSiteIndexGenerator> getChildren()
   {
     List<Path> children = new ArrayList<>();
+    List<Path> superChildren = new ArrayList<>();
     List<UpdateSiteIndexGenerator> result = new ArrayList<UpdateSiteIndexGenerator>();
     try
     {
@@ -721,7 +731,7 @@ public class UpdateSiteIndexGenerator
 
       if ("super".equals(getBuildType()) && children.size() == 1 && children.get(0).endsWith("latest"))
       {
-        children.addAll(repositoryAnalyzer.getChildren());
+        superChildren.addAll(repositoryAnalyzer.getChildren());
       }
     }
     catch (IOException exception)
@@ -734,6 +744,18 @@ public class UpdateSiteIndexGenerator
     for (Path child : children)
     {
       result.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this));
+    }
+
+    for (Path child : superChildren)
+    {
+      result.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this)
+        {
+          @Override
+          public String getIndexName()
+          {
+            return "index_super.html";
+          }
+        });
     }
 
     return result;

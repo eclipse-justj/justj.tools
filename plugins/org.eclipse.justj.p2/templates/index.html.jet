@@ -182,7 +182,7 @@ SPDX-License-Identifier: EPL-2.0
   <%if (!isTopLevel) {%>
             <tt class="orange">&#xbb;</tt>
   <%}%>
-            <a class="separator" href="<%=entry.getKey()%><%if (!entry.getKey().startsWith("http")) {%>/index.html<%}%>"><%=label%></a>
+            <a class="separator" href="<%=entry.getKey()%>"><%=label%></a>
   <%if (index != -1) {%>
             <div style="float: right;"><tt class="orange">&#xab;</tt></div>
   <%}%>

@@ -919,7 +919,7 @@ public class UpdateSiteGenerator
    */
   private void generateIndex(UpdateSiteIndexGenerator updateSiteIndexGenerator) throws Exception
   {
-    Path targetIndex = updateSiteIndexGenerator.getFolder().resolve("index.html");
+    Path targetIndex = updateSiteIndexGenerator.getFolder().resolve(updateSiteIndexGenerator.getIndexName());
     if (verbose)
     {
       System.out.println("Generating " + targetIndex);
