@@ -753,6 +753,39 @@ public class P2Manager
             return processLauncher.exitValue();
           }
         }
+
+        // Restore the timestamp of every simple repository folder based on the plugins folder.
+        // This is to ensure that the mirrors are not invalidated by changes to the generated index information.
+        {
+          // Use ssh to do all this processing on the remote server.
+          ProcessLauncher processLauncher = new ProcessLauncher(
+            verbose,
+            "localhost".equals(host) ? "bash" : "ssh",
+            "localhost".equals(host) ? "-c" : host, //
+            "for i in $(find " + hostPath + "/" + relativeTargetFolder + " -name plugins -a -type d); do\n" + //
+              "  echo touch -r $i $(dirname $i)\n" + //
+              "  touch -r $i $(dirname $i)\n" + //
+              "done");
+
+          processLauncher.execute();
+          if (verbose)
+          {
+            processLauncher.dump();
+          }
+
+          if (processLauncher.exitValue() != 0)
+          {
+            if (!verbose)
+            {
+              processLauncher.fullDump();
+            }
+            else
+            {
+              System.err.println("exitValue=" + processLauncher.exitValue());
+            }
+            return processLauncher.exitValue();
+          }
+        }
       }
 
       return 0;
