@@ -413,6 +413,8 @@ public class UpdateSiteIndexGenerator
     Path root = updateSiteGenerator.getUpdateSiteRoot();
     Path projectRoot = updateSiteGenerator.getProjectRoot();
 
+    Map<String, String> breadcumbs = new LinkedHashMap<String, String>(updateSiteGenerator.getBreadcrumbs());
+
     // Compute the labels in the right order continuing only as far as the project root.
     List<String> labels = new ArrayList<String>();
     for (Path file = folder; file.getParent() != null; file = file.getParent())
@@ -423,7 +425,13 @@ public class UpdateSiteIndexGenerator
       }
 
       String name = file.getFileName().toString();
-      labels.add(0, Character.toUpperCase(name.charAt(0)) + name.substring(1));
+      String titleName = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+      while (breadcumbs.containsKey(titleName) || labels.contains(titleName))
+      {
+        // Make the label unique with zero-width whitespace.
+        titleName += "&#8203;";
+      }
+      labels.add(0, titleName);
     }
 
     // Compute the up-links in the reverse order.
@@ -445,6 +453,10 @@ public class UpdateSiteIndexGenerator
           links.put(label, link.replace("index.html", ""));
         }
       }
+      else
+      {
+        links.put(label, null);
+      }
 
       if (link == null)
       {
@@ -456,8 +468,12 @@ public class UpdateSiteIndexGenerator
       }
     }
 
+    if (labels.size() > 1)
+    {
+      links.put(labels.get(labels.size() - 1), "/justj/www/download.eclipse.org.php?file=" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+    }
+
     // Build another map in the right order.
-    Map<String, String> breadcumbs = new LinkedHashMap<String, String>(updateSiteGenerator.getBreadcrumbs());
     for (String label : labels)
     {
       breadcumbs.put(label, links.get(label));
