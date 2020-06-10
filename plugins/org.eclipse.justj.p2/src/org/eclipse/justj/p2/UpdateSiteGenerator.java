@@ -890,6 +890,19 @@ public class UpdateSiteGenerator
         UpdateSiteIndexGenerator updateSiteIndexGenerator = new UpdateSiteIndexGenerator(compositePath, this)
           {
             @Override
+            public String getTitle()
+            {
+              try
+              {
+                return super.getTitle();
+              }
+              catch (RuntimeException exception)
+              {
+                return getProjectLabel() + " All Releases Composite";
+              }
+            }
+
+            @Override
             public List<UpdateSiteIndexGenerator> getSuperCompositeChildren()
             {
               List<UpdateSiteIndexGenerator> result = new ArrayList<UpdateSiteIndexGenerator>();
