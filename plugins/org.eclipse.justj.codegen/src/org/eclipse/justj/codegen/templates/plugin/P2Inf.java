@@ -28,7 +28,7 @@ public class P2Inf
   protected static final String _1 = "#";
   protected static final String _2 = "# Declare a capability that can be used to ensure mutually exclusive installation of IUs that set the -vm option.";
   protected static final String _3 = "# Ensure that the applicable implementation fragment gets installed automatically.";
-  protected static final String _4 = "# Exclude all other providers of this capability; the site depends on all the feautres so exclude this requirement at build time.";
+  protected static final String _4 = "# Exclude all other providers of this capability; the site depends on all the features so exclude this requirement at build time.";
   protected static final String _5 = "# Exclude the synthetic a.jre IUs from the p2 repositories; Tycho gets confused by negative requirements so filter this to avoid it at build time.";
   protected static final String _6 = "# Exclude the synthetic a.jre.javase IUs from the p2 repositories; Tycho gets confused by negative requirements so filter this to avoid it at build time.";
   protected static final String _7 = "' && x.namespace == 'org.eclipse.equinox.p2.iu')";

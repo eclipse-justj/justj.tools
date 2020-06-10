@@ -50,7 +50,7 @@ provides.0.namespace = org.eclipse.justj
 provides.0.name = jre
 provides.0.version = $version$
 
-# Exclude all other providers of this capability; the site depends on all the feautres so exclude this requirement at build time.
+# Exclude all other providers of this capability; the site depends on all the features so exclude this requirement at build time.
 <%++count;%>
 requires.<%=count%>.matchExp = providedCapabilities.exists(x | x.name == 'jre' && x.namespace == 'org.eclipse.justj') && !providedCapabilities.exists(x | x.name == '<%=fullName%>' && x.namespace == 'org.eclipse.equinox.p2.iu')
 requires.<%=count%>.min = 0
