@@ -872,12 +872,12 @@ public class UpdateSiteGenerator
           System.out.println("Composing all releases update site " + compositePath);
         }
 
+        P2Manager.cleanupComposite(compositePath);
+        ArrayList<Path> children = new ArrayList<>(releases.values());
+        composeUpdateSites(children, "super", false);
+
         if (!releases.isEmpty())
         {
-          P2Manager.cleanupComposite(compositePath);
-          ArrayList<Path> children = new ArrayList<>(releases.values());
-          composeUpdateSites(children, "super", false);
-
           Path latestCompositePath = getCompositeUpdateSiteDestination("super", true);
           if (verbose)
           {
@@ -892,14 +892,8 @@ public class UpdateSiteGenerator
             @Override
             public String getTitle()
             {
-              try
-              {
-                return super.getTitle();
-              }
-              catch (RuntimeException exception)
-              {
-                return getProjectLabel() + " All Releases Composite";
-              }
+              String title = super.getTitle();
+              return releases.isEmpty() ? title + " <b style='color: FireBrick; font-size: 80%'>empty</b>" : title;
             }
 
             @Override

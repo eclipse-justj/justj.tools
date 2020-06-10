@@ -390,7 +390,7 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_67);
     stringBuffer.append(parent.getProjectLabel());
     stringBuffer.append(TEXT_58);
-    } else if (repositoryChildren != null) {
+    } else if (repositoryChildren != null || !parent.getSuperCompositeChildren().isEmpty()) {
           int mainID = ++toggleCounter;
     stringBuffer.append(TEXT_71);
     stringBuffer.append(repositoryChildrenSize);

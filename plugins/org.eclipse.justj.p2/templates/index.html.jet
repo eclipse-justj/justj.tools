@@ -300,7 +300,7 @@ SPDX-License-Identifier: EPL-2.0
            <p>
              This composite update site references the most recent release of <%=parent.getProjectLabel()%>.
            </p>
-      <%} else if (repositoryChildren != null) {
+      <%} else if (repositoryChildren != null || !parent.getSuperCompositeChildren().isEmpty()) {
           int mainID = ++toggleCounter;%>
            <div>
              This composite update site references <%=repositoryChildrenSize%> releases from the following location<%if (repositoryChildrenSize != 1) {%>s<%}%>:

@@ -319,7 +319,7 @@ public class UpdateSiteIndexGenerator
     }
 
     String rootLabel = rootSiteURL.substring(rootSiteURL.lastIndexOf('/') + 1);
-    rootLabel = Character.toUpperCase(rootLabel.charAt(0)) + rootLabel.substring(1);
+    rootLabel = rootLabel.equals("jres") ? "JREs" : Character.toUpperCase(rootLabel.charAt(0)) + rootLabel.substring(1);
     result.put(prefix + "index.html", rootLabel);
     for (UpdateSiteIndexGenerator child : root.getChildren())
     {
