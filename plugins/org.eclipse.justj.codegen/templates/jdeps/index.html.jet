@@ -185,9 +185,9 @@ label:target {
           <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/>.modules</a>
         </h2>
         <p>
-          The plugins of the following repositories have been analyzed for module dependencies using jdeps.
-          A summary of the overall modules dependencies of each repository are displayed in detail below.
-          Each repository item is a link to the report for that repository and each module item is a link to that corresponding item in the corresponding repository report.
+          The plugins of the following repositories or products have been analyzed for module dependencies using jdeps.
+          A summary of the overall modules dependencies of each repository or product are displayed in detail below.
+          Each repository or product item is a link to the report for that repository or product and each module item is a link to that corresponding item in the corresponding repository or product report.
         </p>
   <%for (Map.Entry<Path, URI> entry : indices.entrySet()) {
       Path index = entry.getKey();
@@ -214,7 +214,7 @@ label:target {
           <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/>.modules</a>
         </h2>
         <p>
-      The plugins of this repository have been analyzed for module dependencies using jdeps.
+      The plugins of this repository or product have been analyzed for module dependencies using jdeps.
       The plugin dependencies of each module and the module dependencies of each plugin are summarized below.
         </p>
         <p>
