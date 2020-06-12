@@ -121,8 +121,7 @@
         <requirement
             name="*"/>
         <sourceLocator
-            rootFolder="${git.clone.justj.location}"
-            locateNestedProjects="true"/>
+            rootFolder="${git.clone.justj.location}"/>
       </targlet>
     </setupTask>
     <setupTask
@@ -1028,8 +1027,7 @@
         <requirement
             name="*"/>
         <sourceLocator
-            rootFolder="${git.clone.www.eclipse.org.justj.location}"
-            locateNestedProjects="true"/>
+            rootFolder="${git.clone.www.eclipse.org.justj.location}"/>
       </targlet>
     </setupTask>
     <setupTask
