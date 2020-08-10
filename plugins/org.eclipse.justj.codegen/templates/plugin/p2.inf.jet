@@ -8,13 +8,53 @@ https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
 --%>
-<%@jet package="org.eclipse.justj.codegen.templates.plugin" class="P2Inf" imports="org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
+<%@jet package="org.eclipse.justj.codegen.templates.plugin" class="P2Inf" imports="java.util.* org.eclipse.justj.codegen.model.* org.eclipse.justj.codegen.model.util.Generator" builder="StringBuilder builder = new StringBuilder()" minimize="true"%>
 <%JVM jvm = (JVM)argument;
   String jvmName = jvm.getName();
   Model model = jvm.getModel();
   String modelName = model.getName();
+  String version = jvm.getVersion();
+  String minorlessVersion = version.replaceAll("\\.[0-9]$", ".0");
   String fullName = modelName + '.' + jvmName;%>
 <%@include file="../copyright.properties.jetinc"%>
+
+# Define an a.jre unit that can be used as a profile ID in a Tycho build.
+
+units.0.id = a.jre.<%=fullName%>
+units.0.version = <%=minorlessVersion%>
+
+units.0.provides.0.namespace = org.eclipse.equinox.p2.iu
+units.0.provides.0.name = a.jre.<%=fullName%>
+units.0.provides.0.version = <%=minorlessVersion%>
+
+<%int propertyCount = 1;
+  for (Map.Entry<String, Set<String>> entry : Generator.getEECapabilities(version).entrySet()) {
+    String eeName = entry.getKey();
+    Set<String> versions = entry.getValue();
+    for (String eeVersion : versions) {
+      int capabilityNumber = propertyCount++;%>
+units.0.provides.<%=capabilityNumber%>.namespace = osgi.ee
+units.0.provides.<%=capabilityNumber%>.name = <%=eeName%>
+units.0.provides.<%=capabilityNumber%>.version = <%=eeVersion%>
+
+  <%}%>
+<%}%>
+<%Set<String> systemPackages = Generator.getSystemPackages(jvm);
+  for (String systemPackage : systemPackages) {
+    int capabilityNumber = propertyCount++;%>
+units.0.provides.<%=capabilityNumber%>.namespace = java.package
+units.0.provides.<%=capabilityNumber%>.name = <%=systemPackage%>
+units.0.provides.<%=capabilityNumber%>.version = 0.0.0
+
+<%}%>
+# Ensure that the a.jre IU is published to the update site.
+
+requires.0.namespace = org.eclipse.equinox.p2.iu
+requires.0.name = a.jre.<%=fullName%>
+requires.0.range = [<%=minorlessVersion%>,<%=minorlessVersion%>]
+requires.0.filter = (<%=modelName%>.assembletime=true)
+requires.0.greedy = true
+requires.0.optional = true
 
 # Ensure that the applicable implementation fragment gets installed automatically.
 

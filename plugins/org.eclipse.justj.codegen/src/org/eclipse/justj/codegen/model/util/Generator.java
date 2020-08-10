@@ -610,6 +610,16 @@ public class Generator
     return result;
   }
 
+  public static Set<String> getSystemPackages(JVM jvm)
+  {
+    Set<String> result = new TreeSet<>();
+    for (Variant variant : jvm.getVariants())
+    {
+      result.addAll(getSystemPackages(variant));
+    }
+    return result;
+  }
+
   public static Set<String> getSystemPackages(Variant variant)
   {
     String systemPackages = ModelUtil.getAnnotation(variant, ModelUtil.MODEL_PROPERTIES_ANNOTATION_URI, Constants.FRAMEWORK_SYSTEMPACKAGES);
