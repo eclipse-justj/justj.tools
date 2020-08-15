@@ -95,7 +95,7 @@ public class POMXML
   protected static final String _69 = "<org.eclipse.justj.p2.manager.args>-remote ${org.eclipse.storage.user}@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/justj</org.eclipse.justj.p2.manager.args>";
   protected static final String _70 = "<org.eclipse.justj.p2.manager.build.url>http://www.example.com/</org.eclipse.justj.p2.manager.build.url>";
   protected static final String _71 = "<org.eclipse.justj.p2.manager.extra.args></org.eclipse.justj.p2.manager.extra.args>";
-  protected static final String _72 = "<org.eclipse.justj.p2.manager.relative>sandbox-test/jres/updates</org.eclipse.justj.p2.manager.relative>";
+  protected static final String _72 = "<org.eclipse.justj.p2.manager.relative>jres-test/updates</org.eclipse.justj.p2.manager.relative>";
   protected static final String _73 = "<org.eclipse.storage.user>genie.justj</org.eclipse.storage.user>";
   protected static final String _74 = "<packaging>pom</packaging>";
   protected static final String _75 = "<parent>";

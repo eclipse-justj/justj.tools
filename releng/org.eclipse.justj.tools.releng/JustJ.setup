@@ -64,7 +64,7 @@
   <setupTask
       xsi:type="setup:StringSubstitutionTask"
       name="maven.build.java.home"
-      value="${jre.location-1.8}">
+      value="${jre.location-11}">
     <description>The location used to specify JAVA_HOME in the External Tools Configurations.</description>
   </setupTask>
   <setupTask
@@ -894,9 +894,8 @@
     </setupTask>
     <setupTask
         xsi:type="jdt:JRETask"
-        version="JavaSE-1.8"
-        location="${jre.location-1.8}"
-        name="JRE for JavaSE-1.8">
+        version="JavaSE-11"
+        location="${jre.location-11}">
       <description>Define the JRE needed to compile and run the Java projects of ${scope.project.label}</description>
     </setupTask>
     <setupTask
