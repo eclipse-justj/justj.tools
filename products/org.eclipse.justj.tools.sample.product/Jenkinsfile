@@ -22,7 +22,7 @@ pipeline {
   parameters {
     string(
       name: 'JRE_REPOSITORY',
-      defaultValue: 'http://download.eclipse.org/justj/sandbox/jres/14/updates/nightly/latest',
+      defaultValue: 'http://download.eclipse.org/justj/jres/14/updates/nightly/latest',
       description: '''
         Choose the URL of the JRE p2 repository to use.
         '''

@@ -123,8 +123,6 @@ SPDX-License-Identifier: EPL-2.0
             <configuration>
               <target>
               </target>
-
-              <!--executionEnvironmentDefault>JavaSE-${javaVersion}</executionEnvironmentDefault-->
               <includePackedArtifacts>true</includePackedArtifacts>
               <environments>
                 <environment>
@@ -151,9 +149,6 @@ SPDX-License-Identifier: EPL-2.0
                     <versionRange>0.0.0</versionRange>
                   </requirement>
                 </extraRequirements>
-                <profileProperties>
-                  <org.eclipse.justj.buildtime>true</org.eclipse.justj.buildtime>
-                </profileProperties>
               </dependency-resolution>
             </configuration>
           </plugin>

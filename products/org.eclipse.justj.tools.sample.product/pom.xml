@@ -28,7 +28,7 @@ SPDX-License-Identifier: EPL-2.0
   <packaging>eclipse-repository</packaging>
 
   <properties>
-    <org.eclipse.justj.jre.repository>http://download.eclipse.org/justj/sandbox/jres/14/updates/nightly/latest</org.eclipse.justj.jre.repository>
+    <org.eclipse.justj.jre.repository>http://download.eclipse.org/justj/jres/14/updates/nightly/latest</org.eclipse.justj.jre.repository>
   </properties>
 
   <repositories>
@@ -202,6 +202,14 @@ SPDX-License-Identifier: EPL-2.0
          </configuration>
       </plugin>
       <plugin>
+         <groupId>org.eclipse.tycho</groupId>
+         <artifactId>target-platform-configuration</artifactId>
+         <version>${tycho-version}</version>
+         <configuration>
+            <executionEnvironmentDefault>org.eclipse.justj.openjdk.hotspot.jre.full-14</executionEnvironmentDefault>
+         </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>
         <version>${tycho-version}</version>
@@ -219,6 +227,8 @@ SPDX-License-Identifier: EPL-2.0
                   <rootFolder>eclipse-sample</rootFolder>
                   <rootFolders>
                     <macosx>Eclipse-Sample.app</macosx>
+                     <linux>eclipse-sample</linux>
+                     <win32>eclipse-sample</win32>
                   </rootFolders>
                 </product>
               </products>
