@@ -103,7 +103,7 @@ SPDX-License-Identifier: EPL-2.0
                 -breadcrumb "JustJ https://www.eclipse.org/justj/?page=download"
                 -favicon https://www.eclipse.org/justj/justj_favicon.ico
                 -title-image https://www.eclipse.org/justj/justj_title.svg
-                -body-image https://www.eclipse.org/justj/justj_incubation.svg
+                -body-image https://www.eclipse.org/justj/justj.svg
                 ${org.eclipse.justj.p2.manager.extra.args}
               </appArgLine>
             </configuration>

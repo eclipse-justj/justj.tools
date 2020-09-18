@@ -28,7 +28,7 @@ public class POMXML
   protected static final String _2 = "${org.eclipse.justj.p2.manager.extra.args}";
   protected static final String _3 = "-->";
   protected static final String _4 = "-application org.eclipse.justj.p2.manager";
-  protected static final String _5 = "-body-image https://www.eclipse.org/justj/justj_incubation.svg";
+  protected static final String _5 = "-body-image https://www.eclipse.org/justj/justj.svg";
   protected static final String _6 = "-breadcrumb \"JustJ https://www.eclipse.org/justj/?page=download\"";
   protected static final String _7 = "-build-url ${org.eclipse.justj.p2.manager.build.url}";
   protected static final String _8 = "-commit https://git.eclipse.org/c/justj/justj.git/commit/?id=${git.commit}";
