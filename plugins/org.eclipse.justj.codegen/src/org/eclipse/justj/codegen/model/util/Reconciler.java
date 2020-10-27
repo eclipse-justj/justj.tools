@@ -515,12 +515,17 @@ public class Reconciler
       {
         case "x86_64":
         {
-          label += " 64 bit";
+          label += " x86 64 bit";
+          break;
+        }
+        case "aarch64":
+        {
+          label += " aarch 64 bit";
           break;
         }
         default:
         {
-          label = " " + arch;
+          label += " " + arch;
           break;
         }
       }
