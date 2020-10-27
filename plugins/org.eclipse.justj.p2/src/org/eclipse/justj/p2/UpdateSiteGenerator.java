@@ -1476,10 +1476,17 @@ public class UpdateSiteGenerator
 
               if (requiredCapability.getMin() == 0)
               {
-                line += " optional";
-                if (requiredCapability.isGreedy())
+                if (requiredCapability.getMax() == 0)
                 {
-                  line += " greedy";
+                  line += " max=0";
+                }
+                else
+                {
+                  line += " optional";
+                  if (requiredCapability.isGreedy())
+                  {
+                    line += " greedy";
+                  }
                 }
               }
 
@@ -1604,12 +1611,20 @@ public class UpdateSiteGenerator
 
                 if (requiredCapability.getMin() == 0)
                 {
-                  line += " optional";
-                  if (requiredCapability.isGreedy())
+                  if (requiredCapability.getMax() == 0)
                   {
-                    line += " greedy";
+                    line += " max=0";
+                  }
+                  else
+                  {
+                    line += " optional";
+                    if (requiredCapability.isGreedy())
+                    {
+                      line += " greedy";
+                    }
                   }
                 }
+
                 line += "</span>";
 
                 lines.add(line);
