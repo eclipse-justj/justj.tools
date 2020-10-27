@@ -1,3 +1,6 @@
+// When the parameters change, this should be increased so that the build does nothing other than update the parameters used for the next build.
+def pipelineVersion = '1'
+
 pipeline {
   agent { label 'migration' }
 
@@ -21,26 +24,41 @@ pipeline {
 
   parameters {
     string(
+      name: 'PIPELINE_VERSION',
+      defaultValue: "${pipelineVersion}",
+      description: """${pretty(
+        '''
+        If the parameter definitions have changed, this version will be out-dated.
+        The script will run but will do nothing other than updating the parameter definitions of the job as a side-effect.
+        '''
+      )}""")
+
+    string(
       name: 'JRE_REPOSITORY',
-      defaultValue: 'http://download.eclipse.org/justj/jres/14/updates/nightly/latest',
-      description: '''
+      defaultValue: 'http://download.eclipse.org/justj/jres/15/updates/milestone/latest',
+      description: """${pretty(
+        '''
         Choose the URL of the JRE p2 repository to use.
         '''
-    )
+      )}""")
 
     string(
       name: 'ECLIPSE_REPOSITORY',
-      defaultValue: 'http://download.eclipse.org/releases/2020-06',
-      description: '''
+      defaultValue: 'http://download.eclipse.org/releases/2020-12',
+      description: """${pretty(
+        '''
         Choose the URL of the release train repository to use.
         '''
-    )
+      )}""")
 
     booleanParam(
       name: 'PROMOTE',
       defaultValue: false,
-      description: 'Whether to promote the build to the download server.'
-    )
+      description: """${pretty(
+        '''
+        Whether to promote the build to the download server.
+        '''
+      )}""")
   }
 
   stages {
@@ -49,15 +67,21 @@ pipeline {
         echo "JRE_REPOSITORY=${params.JRE_REPOSITORY}"
         echo "ECLIPSE_REPOSITORY=${params.ECLIPSE_REPOSITORY}"
         echo "PROMOTE=${params.PROMOTE}"
+        echo "PIPELINE_VERSION=${params.PIPELINE_VERSION}"
         script {
           env.PROMOTE = params.PROMOTE
           env.ECLIPSE_REPOSITORY = params.ECLIPSE_REPOSITORY
           env.JRE_REPOSITORY = params.JRE_REPOSITORY
+          env.PIPELINE_VERSION = params.PIPELINE_VERSION
         }
       }
     }
 
     stage('Git Checkout') {
+      when {
+        environment name: 'PIPELINE_VERSION', value: pipelineVersion
+      }
+
       steps {
         script {
           def gitVariables = checkout(
@@ -79,6 +103,10 @@ pipeline {
     }
 
     stage('Build Sample Products') {
+      when {
+        environment name: 'PIPELINE_VERSION', value: pipelineVersion
+      }
+
       steps {
         dir('justj.tools/products/org.eclipse.justj.tools.sample.product') {
           sh '''
@@ -90,6 +118,7 @@ pipeline {
 
     stage('Promote Results') {
       when {
+        environment name: 'PIPELINE_VERSION', value: pipelineVersion
         environment name: 'PROMOTE', value: 'true'
       }
       steps {
@@ -108,6 +137,10 @@ pipeline {
     }
 
     stage('Archive Results') {
+      when {
+        environment name: 'PIPELINE_VERSION', value: pipelineVersion
+      }
+
       steps {
         dir('justj.tools/products/org.eclipse.justj.tools.sample.product/target/products') {
           archiveArtifacts '*.zip,*.tar.gz,*.dmg'
@@ -135,4 +168,8 @@ pipeline {
       deleteDir()
     }
   }
+}
+
+def pretty(string) {
+  return string.replaceAll("^\r?\n", "").replaceAll("\r?\n\$", "").replace("\r", "").stripIndent()
 }
