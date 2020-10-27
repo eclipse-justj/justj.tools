@@ -110,7 +110,7 @@ pipeline {
       steps {
         dir('justj.tools/products/org.eclipse.justj.tools.sample.product') {
           sh '''
-            mvn  --no-transfer-progress -Dorg.eclipse.justj.eclipse.repository=$EClIPSE_REPOSITORY -Dorg.eclipse.justj.jre.repository=$JRE_REPOSITORY -DPACK_AND_SIGN=true -Dorg.eclipse.justj.p2.manager.build.url=$JOB_URL -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
+            mvn  --no-transfer-progress -Dorg.eclipse.justj.eclipse.repository=$ECLIPSE_REPOSITORY -Dorg.eclipse.justj.jre.repository=$JRE_REPOSITORY -DPACK_AND_SIGN=true -Dorg.eclipse.justj.p2.manager.build.url=$JOB_URL -Dgit.commit=$GIT_COMMIT -Dbuild.id=$BUILD_NUMBER clean verify
             '''
         }
       }
