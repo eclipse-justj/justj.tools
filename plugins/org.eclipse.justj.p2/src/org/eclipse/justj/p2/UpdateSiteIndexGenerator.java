@@ -401,7 +401,7 @@ public class UpdateSiteIndexGenerator
    */
   public String getRelativeIndexURL()
   {
-    return folder.getFileName().resolve(getIndexName()).toString();
+    return folder.getFileName().resolve(getIndexName()).toString().replace('\\', '/');
   }
 
   /**
@@ -762,6 +762,7 @@ public class UpdateSiteIndexGenerator
       result.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this));
     }
 
+    Path parentFolder = folder;
     for (Path child : superChildren)
     {
       result.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this)
@@ -770,6 +771,13 @@ public class UpdateSiteIndexGenerator
           public String getIndexName()
           {
             return "index_super.html";
+          }
+
+          @Override
+          public String getRelativeIndexURL()
+          {
+            Path relativePath = parentFolder.relativize(child);
+            return relativePath.resolve(getIndexName()).toString().replace('\\', '/');
           }
         });
     }
