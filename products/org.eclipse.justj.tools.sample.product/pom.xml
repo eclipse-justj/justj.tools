@@ -161,7 +161,7 @@ SPDX-License-Identifier: EPL-2.0
                   <timeoutMillis>300000</timeoutMillis> <!-- 5 min -->
                   <continueOnFail>false</continueOnFail>
                   <entitlements>${project.basedir}/sample.entitlement</entitlements>
-                  <signerUrl>http://172.30.206.146:8282/macosx-signing-service/1.3.0-SNAPSHOT</signerUrl>
+                  <signerUrl>https://cbi.eclipse.org/macos/codesign/sign</signerUrl>
                 </configuration>
               </execution>
             </executions>
