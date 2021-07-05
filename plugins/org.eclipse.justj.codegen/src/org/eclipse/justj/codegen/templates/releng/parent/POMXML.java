@@ -106,7 +106,7 @@ public class POMXML
   protected static final String _80 = "<include>about.mappings</include>";
   protected static final String _81 = "<includePackedArtifacts>true</includePackedArtifacts>";
   protected static final String _82 = "<includes>";
-  protected static final String _83 = "<jarsigner-version>1.1.7</jarsigner-version>";
+  protected static final String _83 = "<jarsigner-version>1.3.1</jarsigner-version>";
   protected static final String _84 = "<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>";
   protected static final String _85 = "<jgit.ignore>pom.xml</jgit.ignore>";
   protected static final String _86 = "<layout>p2</layout>";
