@@ -904,7 +904,7 @@
       <requirement
           name="org.eclipse.emf.sdk.feature.group"/>
       <repository
-          url="http://download.eclipse.org/modeling/emf/emf/builds/milestone/latest"/>
+          url="https://download.eclipse.org/modeling/emf/emf/builds/milestone/latest"/>
       <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>
     </setupTask>
     <setupTask
@@ -913,7 +913,7 @@
         storageURI="scope://Installation"
         label="JustJ Tools Repository">
       <choice
-          value="http://download.eclipse.org/justj/tools/updates/nightly/latest"
+          value="https://download.eclipse.org/justj/tools/updates/nightly/latest"
           label="JustJ Nightly Build Tools Repository"/>
       <choice
           value="${git.clone.justj.tools.location|uri}/releng/org.eclipse.justj.tools.site/target/repository"
@@ -964,9 +964,9 @@
             rootFolder="${git.clone.justj.tools.location}"/>
         <repositoryList>
           <repository
-              url="http://download.eclipse.org/modeling/emf/emf/builds/nightly/latest"/>
+              url="https://download.eclipse.org/modeling/emf/emf/builds/nightly/latest"/>
           <repository
-              url="http://download.eclipse.org/tools/orbit/downloads/latest-R"/>
+              url="https://download.eclipse.org/tools/orbit/downloads/latest-R"/>
         </repositoryList>
       </targlet>
     </setupTask>

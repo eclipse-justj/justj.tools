@@ -28,7 +28,7 @@ SPDX-License-Identifier: EPL-2.0
   <packaging>eclipse-repository</packaging>
 
   <properties>
-    <org.eclipse.justj.jre.repository>http://download.eclipse.org/justj/jres/14/updates/nightly/latest</org.eclipse.justj.jre.repository>
+    <org.eclipse.justj.jre.repository>https://download.eclipse.org/justj/jres/17/updates/nightly/latest</org.eclipse.justj.jre.repository>
   </properties>
 
   <repositories>
@@ -172,12 +172,26 @@ SPDX-License-Identifier: EPL-2.0
             <version>${jarsigner-version}</version>
             <executions>
               <execution>
+                <id>dmg-package-sample-x86_64</id>
                 <goals>
                   <goal>package-dmg</goal>
                 </goals>
                 <phase>integration-test</phase>
                 <configuration>
                   <source>${project.build.directory}/products/org.eclipse.justj.tools.sample.product-macosx.cocoa.x86_64.tar.gz</source>
+                  <continueOnFail>false</continueOnFail>
+                  <timeoutMillis>600000</timeoutMillis> <!-- 10 min -->
+                  <sign>true</sign>
+                </configuration>
+              </execution>
+              <execution>
+                <id>dmg-package-sample-aarch64</id>
+                <goals>
+                  <goal>package-dmg</goal>
+                </goals>
+                <phase>integration-test</phase>
+                <configuration>
+                  <source>${project.build.directory}/products/org.eclipse.justj.tools.sample.product-macosx.cocoa.aarch64.tar.gz</source>
                   <continueOnFail>false</continueOnFail>
                   <timeoutMillis>600000</timeoutMillis> <!-- 10 min -->
                   <sign>true</sign>
@@ -206,7 +220,7 @@ SPDX-License-Identifier: EPL-2.0
          <artifactId>target-platform-configuration</artifactId>
          <version>${tycho-version}</version>
          <configuration>
-            <executionEnvironmentDefault>org.eclipse.justj.openjdk.hotspot.jre.full-14</executionEnvironmentDefault>
+            <executionEnvironmentDefault>org.eclipse.justj.openjdk.hotspot.jre.full-17</executionEnvironmentDefault>
          </configuration>
       </plugin>
       <plugin>

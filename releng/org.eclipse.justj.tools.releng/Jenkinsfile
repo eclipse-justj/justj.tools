@@ -56,7 +56,7 @@ pipeline {
               doGenerateSubmoduleConfigurations: false,
               extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'justj.tools']],
               submoduleCfg: [],
-              userRemoteConfigs: [[url: 'git://git.eclipse.org/gitroot/justj/justj.tools.git']]
+              userRemoteConfigs: [[url: 'https://git.eclipse.org/r/justj/justj.tools.git']]
             ]
           )
 

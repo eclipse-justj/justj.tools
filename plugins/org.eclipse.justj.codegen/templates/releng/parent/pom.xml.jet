@@ -46,7 +46,7 @@ SPDX-License-Identifier: EPL-2.0
   <repositories>
     <repository>
       <id>license-feature</id>
-      <url>http://download.eclipse.org/cbi/updates/license/</url>
+      <url>https://download.eclipse.org/cbi/updates/license/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -129,6 +129,11 @@ SPDX-License-Identifier: EPL-2.0
                   <os>macosx</os>
                   <ws>cocoa</ws>
                   <arch>x86_64</arch>
+                </environment>
+                <environment>
+                  <os>macosx</os>
+                  <ws>cocoa</ws>
+                  <arch>aarch64</arch>
                 </environment>
                 <environment>
                   <os>linux</os>

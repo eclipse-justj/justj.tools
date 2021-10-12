@@ -35,7 +35,7 @@ pipeline {
 
     string(
       name: 'JRE_REPOSITORY',
-      defaultValue: 'http://download.eclipse.org/justj/jres/15/updates/milestone/latest',
+      defaultValue: 'https://download.eclipse.org/justj/jres/17/updates/milestone/latest',
       description: """${pretty(
         '''
         Choose the URL of the JRE p2 repository to use.
@@ -44,7 +44,7 @@ pipeline {
 
     string(
       name: 'ECLIPSE_REPOSITORY',
-      defaultValue: 'http://download.eclipse.org/releases/2020-12',
+      defaultValue: 'https://download.eclipse.org/releases/2021-09',
       description: """${pretty(
         '''
         Choose the URL of the release train repository to use.
