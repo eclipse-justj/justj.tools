@@ -14,7 +14,7 @@ SPDX-License-Identifier: EPL-2.0
   Model model = jvm.getModel();
   String modelName = model.getName();
   String version = jvm.getVersion();
-  String minorlessVersion = version.replaceAll("\\.[0-9]$", ".0");
+  String minorlessVersion = version.replaceAll("\\.[0-9]+\\.[0-9]+$", ".0.0");
   String fullName = modelName + '.' + jvmName;%>
 <%@include file="../copyright.properties.jetinc"%>
 

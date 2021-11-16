@@ -110,7 +110,7 @@ public class P2Inf
   Model model = jvm.getModel();
   String modelName = model.getName();
   String version = jvm.getVersion();
-  String minorlessVersion = version.replaceAll("\\.[0-9]$", ".0");
+  String minorlessVersion = version.replaceAll("\\.[0-9]+\\.[0-9]+$", ".0.0");
   String fullName = modelName + '.' + jvmName;
     builder.append(_50);
     builder.append(org.eclipse.justj.codegen.model.util.Generator.getCopyright(argument, "# ", NL));
