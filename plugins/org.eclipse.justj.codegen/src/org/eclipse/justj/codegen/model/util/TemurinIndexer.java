@@ -24,13 +24,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.osgi.framework.Version;
-
 
 public class TemurinIndexer
 {
 
-  static final Pattern TAG_NAME = Pattern.compile("\"name\"\\s*:\\s*\"(jdk-([0-9.]+)\\+([0-9]+))\"");
+  static final Pattern TAG_NAME = Pattern.compile("\"name\"\\s*:\\s*\"(jdk-([0-9]+)(?:\\.([0-9]+))(?:\\.([0-9]+))(?:\\.([0-9]+))?\\+([0-9]+))\"");
 
   static final Pattern JDK_URL1 = Pattern.compile(
     "href=\"/adoptium/temurin([0-9]+)-binaries/releases/download/jdk-([0-9]+)%2B35/OpenJDK([0-9]+)-jdk_([^_]+)_([^_]+)_hotspot_([0-9.]+)\\.(tar.gz|zip)\"");
@@ -48,12 +46,24 @@ public class TemurinIndexer
       try (InputStream input = url.openStream())
       {
         List<String> lines = new BufferedReader(new InputStreamReader(input)).lines().collect(Collectors.toList());
-        Map<Version, String> versionTags = new TreeMap<>(Comparator.reverseOrder());
+        Map<Long, String> versionTags = new TreeMap<>(Comparator.reverseOrder());
         for (String line : lines)
         {
           for (Matcher matcher = TAG_NAME.matcher(line); matcher.find();)
           {
-            versionTags.put(Version.parseVersion(Version.parseVersion(matcher.group(2)).toString() + "." + matcher.group(3)), matcher.group(1));
+            long version = Integer.parseInt(matcher.group(2));
+            version = 1000L * version + Integer.parseInt(matcher.group(3));
+            version = 100L * version + Integer.parseInt(matcher.group(4));
+            if (matcher.group(5) != null)
+            {
+              version = 100L * version + Integer.parseInt(matcher.group(5));
+            }
+            else
+            {
+              version = 100L * version;
+            }
+            version = 100L * version + Integer.parseInt(matcher.group(6));
+            versionTags.put(version, matcher.group(1));
           }
         }
 
