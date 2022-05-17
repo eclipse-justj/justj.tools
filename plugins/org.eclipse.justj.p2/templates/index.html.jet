@@ -8,7 +8,7 @@ https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
 --%>
-<%@jet package="org.eclipse.justj.p2" class="UpdateSiteIndex" imports="java.io.* java.util.* org.eclipse.justj.codegen.model.util.Indexer.Property"%>
+<%@jet package="org.eclipse.justj.p2" class="UpdateSiteIndex" imports="java.io.* java.util.* org.eclipse.emf.common.util.URI org.eclipse.justj.codegen.model.util.Indexer.Property"%>
 <%UpdateSiteIndexGenerator parent = (UpdateSiteIndexGenerator)argument;
   List<UpdateSiteIndexGenerator> children = parent.getChildren();
   String title = parent.getTitle();
@@ -384,6 +384,25 @@ SPDX-License-Identifier: EPL-2.0
     <%}%>
            </ul>
   <%}%>
+  <%-[Products]-%>
+  <%{
+      List<String> products = parent.getProducts();
+      if (!products.isEmpty()) {%>
+           <h3><%=parent.getProjectLabel()%> Products</h3>
+           <p>
+             This update site provides access to the packaged products listed below.
+           </p>
+           <ul style="list-style-type: none; padding-left: 1em;">
+      <%for (String product : products) {%>
+           <li>
+             <a href="<%=parent.getProductDownloadURI(product)%>"><%=URI.decode(product)%></a>
+             <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; padding: 0.2em;" href="<%=product%>.sha512" target="_blank" title="Download <%=product%>.sha512">sha512</a>
+           </li>
+      <%}%>
+           </ul>
+    <%}
+    }%>
+  <%-[Bundles]-%>
   <%Map<String, List<String>> bundles = parent.getBundles();
     if (!bundles.isEmpty()) {%>
            <h3><%=parent.getProjectLabel()%> Bundles</h3>
@@ -465,7 +484,7 @@ SPDX-License-Identifier: EPL-2.0
 <%}%>
 
         </div>
-
+<%-[Archive]-%>
 <%if (parent.hasArchive()) {
     String archiveName = new File(parent.getArchive()).getName();
     String sha256Name = new File(parent.getDigest("SHA-256")).getName();
@@ -489,8 +508,8 @@ SPDX-License-Identifier: EPL-2.0
       <%for (Map.Entry<String, String> entry : commits.entrySet()) {
           String label = entry.getKey();
           String url = entry.getValue();
-          String gitRepoURL = url.substring(0, url.indexOf("commit")) + "log/";
-          String id = url.substring(url.indexOf('=') + 1);%>
+          String gitRepoURL = parent.getCommitsURL(url);
+          String id = parent.getCommitID(url);%>
             <p>
               <button title="Copy Commit ID <%=id%> to Clipboard" class="orange" style="font-size: 150%; background-color: transparent; border: none; padding: 0px 0px;" onclick="copyToClipboard('#<%=label.toLowerCase()%>_commit_id')">&#x270e;</button>
               <a style="font-size: 100%;" href="<%=gitRepoURL%>" target="<%=label.toLowerCase()%>_git"><%=label%></a>

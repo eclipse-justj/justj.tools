@@ -634,7 +634,7 @@ public class UpdateSiteIndexGenerator
   {
     if (sdks == null)
     {
-      sdks = repositoryAnalyzer.getSDKs();
+      sdks = repositoryAnalyzer.getSDKs(updateSiteGenerator.getIUFilterPattern());
     }
     return sdks;
   }
@@ -669,7 +669,7 @@ public class UpdateSiteIndexGenerator
   {
     if (features == null)
     {
-      features = repositoryAnalyzer.getFeatures();
+      features = repositoryAnalyzer.getFeatures(updateSiteGenerator.getIUFilterPattern());
     }
     return features;
   }
@@ -685,10 +685,29 @@ public class UpdateSiteIndexGenerator
       bundleSizes = new TreeMap<>();
       bundleDetails = new TreeMap<>();
       AtomicReference<Resource> resourceReference = new AtomicReference<>();
-      bundles = repositoryAnalyzer.getBundles(bundleSizes, bundleDetails, repositoryAnalyzer.buildAdditionalDetails(resourceReference));
+      bundles = repositoryAnalyzer.getBundles(bundleSizes, bundleDetails, repositoryAnalyzer.buildAdditionalDetails(resourceReference), updateSiteGenerator.getIUFilterPattern());
       resource = resourceReference.get();
     }
     return bundles;
+  }
+
+  /**
+   * Returns the products of this site.
+   * @return the products of this site.
+   */
+  public List<String> getProducts()
+  {
+    return repositoryAnalyzer.getProducts();
+  }
+
+  /**
+   * Returns the URL for downloading the given product.
+   * @param product the product for which a download URL is needed.
+   * @return the URL for downloading the given product.
+   */
+  public String getProductDownloadURI(String product)
+  {
+    return updateSiteGenerator.getDownloadURL(folder.resolve(org.eclipse.emf.common.util.URI.decode(product)));
   }
 
   public String getBundleSize(String bundle)
@@ -801,6 +820,40 @@ public class UpdateSiteIndexGenerator
   public Map<String, String> getCommits()
   {
     return repositoryAnalyzer.getCommits();
+  }
+
+  /**
+   * Extracts the URL for listings all the repository's commits.
+   * @param url the base URL for a single commit.
+   * @return the URL for listings all the repository's commits.
+   */
+  public String getCommitsURL(String url)
+  {
+    if (url.contains("git.eclipse.org"))
+    {
+      return url.substring(0, url.indexOf("commit")) + "log/";
+    }
+    else
+    {
+      return url.substring(0, url.lastIndexOf("/")) + "s";
+    }
+  }
+
+  /**
+   * Extracts the commit ID.
+   * @param url the base URL for a single commit.
+   * @return the commit ID.
+   */
+  public String getCommitID(String url)
+  {
+    if (url.contains("git.eclipse.org"))
+    {
+      return url.substring(url.indexOf('=') + 1);
+    }
+    else
+    {
+      return url.substring(url.lastIndexOf('/') + 1);
+    }
   }
 
   /**

@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.app.IApplication;
@@ -122,12 +124,15 @@ public class P2Manager
     // Gather the existing simple repository children.
     List<Path> children = new ArrayList<>();
     Path promotedUpdateSiteParent = promotedUpdateSite.getParent();
-    List<Path> compositeChildren = Files.list(promotedUpdateSiteParent).collect(Collectors.toList());
-    for (Path child : compositeChildren)
+    try (Stream<Path> list = Files.list(promotedUpdateSiteParent))
     {
-      if (Files.isDirectory(child) && Files.isReadable(child.resolve("content.jar")))
+      List<Path> compositeChildren = list.collect(Collectors.toList());
+      for (Path child : compositeChildren)
       {
-        children.add(child.toRealPath());
+        if (Files.isDirectory(child) && Files.isReadable(child.resolve("content.jar")))
+        {
+          children.add(child.toRealPath());
+        }
       }
     }
 
@@ -171,19 +176,22 @@ public class P2Manager
     updateSiteGenerator.mirrorUpdateSite(source, target, "release");
 
     Path milestone = updateSiteGenerator.getCompositeUpdateSiteDestination("milestone", false);
-    for (Path child : Files.list(milestone).collect(Collectors.toList()))
+    try (Stream<Path> list = Files.list(milestone))
     {
-      String name = child.getFileName().toString();
-      if (!"latest".equals(name) && Files.isDirectory(child) && Files.isRegularFile(child.resolve("content.jar")) && !Files.isRegularFile(child.resolve("DELETED"))
-        && !Files.isRegularFile(child.resolve("STALE")))
+      for (Path child : list.collect(Collectors.toList()))
       {
-        Files.createFile(child.resolve("STALE"));
+        String name = child.getFileName().toString();
+        if (!"latest".equals(name) && Files.isDirectory(child) && Files.isRegularFile(child.resolve("content.jar")) && !Files.isRegularFile(child.resolve("DELETED"))
+          && !Files.isRegularFile(child.resolve("STALE")))
+        {
+          Files.createFile(child.resolve("STALE"));
+        }
       }
     }
   }
 
   /**
-   * This call-out can is called right before this repository will be loaded.
+   * This call-out is called right before this repository will be loaded and can be used to transfer the contents from a remote location to a local location..
    * @param source the repository to be loaded
    * @throws IOException
    */
@@ -203,53 +211,56 @@ public class P2Manager
     {
       System.out.println("Recompose composites: " + targetRoot);
     }
-    for (Path child : Files.list(targetRoot).collect(Collectors.toList()))
+    try (Stream<Path> list = Files.list(targetRoot))
     {
-      String buildType = child.getFileName().toString();
-      if (UpdateSiteGenerator.BUILD_TYPES.contains(buildType) && Files.isDirectory(child))
+      for (Path child : list.collect(Collectors.toList()))
       {
-        if (verbose)
+        String buildType = child.getFileName().toString();
+        if (UpdateSiteGenerator.BUILD_TYPES.contains(buildType) && Files.isDirectory(child))
         {
-          System.out.println("Recompose: " + child);
-        }
-        List<Path> children = new ArrayList<>();
-        for (Path grandChild : Files.list(child).collect(Collectors.toList()))
-        {
-          String name = grandChild.getFileName().toString();
-          if (!"latest".equals(name) && Files.isDirectory(grandChild) && Files.isRegularFile(grandChild.resolve("content.jar"))
-            && !Files.isRegularFile(grandChild.resolve("DELETED")))
+          if (verbose)
           {
-            children.add(grandChild.toRealPath());
-            if (verbose)
+            System.out.println("Recompose: " + child);
+          }
+          List<Path> children = new ArrayList<>();
+          for (Path grandChild : Files.list(child).collect(Collectors.toList()))
+          {
+            String name = grandChild.getFileName().toString();
+            if (!"latest".equals(name) && Files.isDirectory(grandChild) && Files.isRegularFile(grandChild.resolve("content.jar"))
+              && !Files.isRegularFile(grandChild.resolve("DELETED")))
             {
-              System.out.println("  <- " + name);
+              children.add(grandChild.toRealPath());
+              if (verbose)
+              {
+                System.out.println("  <- " + name);
+              }
             }
           }
-        }
 
-        UpdateSiteGenerator.sort(children);
+          UpdateSiteGenerator.sort(children);
 
-        Path compositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, false);
-        if (verbose)
-        {
-          System.out.println("Composing update site " + compositePath);
-        }
-        cleanupComposite(compositePath);
-        updateSiteGenerator.composeUpdateSites(children, buildType, false);
+          Path compositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, false);
+          if (verbose)
+          {
+            System.out.println("Composing update site " + compositePath);
+          }
+          cleanupComposite(compositePath);
+          updateSiteGenerator.composeUpdateSites(children, buildType, false);
 
-        List<Path> latestUpdateSite = new ArrayList<>();
-        if (!children.isEmpty())
-        {
-          latestUpdateSite.add(children.get(0));
-        }
+          List<Path> latestUpdateSite = new ArrayList<>();
+          if (!children.isEmpty())
+          {
+            latestUpdateSite.add(children.get(0));
+          }
 
-        Path latestCompositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, true);
-        if (verbose)
-        {
-          System.out.println("Composing update site " + latestCompositePath);
+          Path latestCompositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, true);
+          if (verbose)
+          {
+            System.out.println("Composing update site " + latestCompositePath);
+          }
+          cleanupComposite(latestCompositePath);
+          updateSiteGenerator.composeUpdateSites(latestUpdateSite, buildType, true);
         }
-        cleanupComposite(latestCompositePath);
-        updateSiteGenerator.composeUpdateSites(latestUpdateSite, buildType, true);
       }
     }
   }
@@ -453,6 +464,7 @@ public class P2Manager
       String relativeTargetFolder = getArgument("-relative", args, null);
       String remote = getArgument("-remote", args, null);
       String sourceRepository = getArgument("-promote", args, null);
+      String productsFolder = getArgument("-promote-products", args, null);
       String buildTimestamp = getArgument("-timestamp", args, null);
       String buildType = getArgument("-type", args, null);
       String favicon = getArgument("-favicon", args, "https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/favicon.ico");
@@ -460,6 +472,7 @@ public class P2Manager
       String bodyImage = getArgument("-body-image", args, null);
       String targetURL = getArgument("-target-url", args, null);
       String versionIU = getArgument("-version-iu", args, null);
+      String iuFilterPattern = getArgument("-iu-filter-pattern", args, null);
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
 
@@ -580,6 +593,8 @@ public class P2Manager
             "--exclude",
             "*.zip",
             "--exclude",
+            "*.tar.gz",
+            "--exclude",
             "*/features",
             "--exclude",
             "*/plugins",
@@ -615,15 +630,27 @@ public class P2Manager
         }
       }
 
+      List<Path> products = new ArrayList<>();
+      if (productsFolder != null)
+      {
+        Path productsPath = Paths.get(productsFolder).toRealPath().normalize();
+        try (Stream<Path> list = Files.list(productsPath))
+        {
+          products.addAll(list.filter(it -> Files.isRegularFile(it) && !it.toString().endsWith(".sha512")).collect(Collectors.toList()));
+        }
+      }
+
       UpdateSiteGenerator updateSiteGenerator = new UpdateSiteGenerator(
         projectLabel,
         buildURL,
         Paths.get(projectRoot),
         relativeTargetFolderPath,
         relativeSuperTargetFolderPath,
+        products,
         targetURL,
         retainedNightlyBuilds,
         versionIU,
+        iuFilterPattern == null ? null : Pattern.compile(iuFilterPattern),
         commit,
         breadcrumbs,
         favicon,
@@ -672,7 +699,7 @@ public class P2Manager
       // Only do a promote of a build when we're not doing a release build.
       if (buildType != null && !"release".equals(buildType) && buildTimestamp != null && sourceRepository != null)
       {
-        p2Manager.promoteUpdateSite(buildType, buildTimestamp, Paths.get(sourceRepository).toRealPath());
+        p2Manager.promoteUpdateSite(buildType, buildTimestamp, Paths.get(sourceRepository).toRealPath().normalize());
       }
 
       // Promote the latest milestone build when doing a release build.
@@ -875,7 +902,7 @@ public class P2Manager
   }
 
   /**
-   * Converts a path to a path that can be used in sh/bash comments.
+   * Converts a path to a path that can be used in sh/bash commands.
    * @param path the path.
    * @return a path that can be used in sh/bash comments.
    */

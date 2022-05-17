@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -69,6 +70,7 @@ import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.p2.metadata.IRequirement;
+import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.query.IQueryResult;
@@ -190,6 +192,16 @@ public class UpdateSiteGenerator
   private Path relativeSuperTargetFolder;
 
   /**
+   * A list of paths for products to be maintained within the update site.
+   */
+  private List<Path> products;
+
+  /**
+   * A pattern that must match an IU in order for its details to be reported.
+   */
+  private Pattern iuFilterPattern;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
@@ -197,9 +209,11 @@ public class UpdateSiteGenerator
    * @param projectRoot the root location of the site.
    * @param relativeTargetFolder the relative location below the root at which to target the generation.
    * @param relativeSuperTargetFolder the relative location below the root and above the {@code relativeTargetFolder} at which to generate a super index.
+   * @param products the list of products to be maintained within the update site.
    * @param targetURL the URL at which the site will live once promoted.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIU a prefix for the IUs that will be used to determine the overall version.
+   * @param iuFilterPattern a pattern that must match an IU in order for its details to be reported.
    * @param commit
    * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
    * @param favicon the URL of the site's favicon.
@@ -214,9 +228,11 @@ public class UpdateSiteGenerator
     Path projectRoot,
     Path relativeTargetFolder,
     Path relativeSuperTargetFolder,
+    List<Path> products,
     String targetURL,
     int retainedNightlyBuilds,
     String versionIU,
+    Pattern iuFilterPattern,
     String commit,
     Map<String, String> breadcrumbs,
     String favicon,
@@ -227,8 +243,10 @@ public class UpdateSiteGenerator
     this.projectLabel = projectLabel;
     this.buildURL = buildURL;
     this.relativeSuperTargetFolder = relativeSuperTargetFolder;
+    this.products = products;
     this.targetURL = targetURL;
     this.versionIU = versionIU;
+    this.iuFilterPattern = iuFilterPattern;
     this.commit = commit;
     this.breadcrumbs = breadcrumbs;
     this.favicon = favicon;
@@ -246,6 +264,15 @@ public class UpdateSiteGenerator
     this.projectRoot = getCanonicalPath(projectRoot);
     this.retainedNightlyBuilds = retainedNightlyBuilds;
     updateSiteRoot = projectRoot.resolve(relativeTargetFolder);
+  }
+
+  /**
+   * Return a pattern that must match an IU in order for its details to be reported.
+   * @return a pattern that must match an IU in order for its details to be reported.
+   */
+  public Pattern getIUFilterPattern()
+  {
+    return iuFilterPattern;
   }
 
   /**
@@ -422,12 +449,38 @@ public class UpdateSiteGenerator
         {
           if (destinationMetadataRepository instanceof AbstractMetadataRepository)
           {
-            String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType);
+            String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository, iuFilterPattern) + ' ' + getLabel(buildType);
             destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
 
             if (commit != null)
             {
               destinationMetadataRepository.setProperty("commit", commit);
+            }
+
+            if (!products.isEmpty())
+            {
+              destinationMetadataRepository.setProperty(
+                "products",
+                products.stream().map(it -> org.eclipse.emf.common.util.URI.createFileURI(it.toString()).lastSegment()).collect(Collectors.joining(" ")));
+
+              for (Path product : products)
+              {
+                try
+                {
+                  Path productTarget = destination.resolve(product.getFileName());
+                  if (verbose)
+                  {
+                    System.out.println("Mirroring product '" + product + "' to '" + productTarget);
+                  }
+
+                  Files.copy(product, productTarget);
+                  createDigest(product, "SHA-512");
+                }
+                catch (IOException e)
+                {
+                  throw new RuntimeException(e);
+                }
+              }
             }
 
             if (destinationArtifactRepository instanceof AbstractArtifactRepository)
@@ -563,23 +616,27 @@ public class UpdateSiteGenerator
    * If there is only one version then it will be followed by only that one version.
    * If there are none, then it's just 'Unknown'.
    * @param repository the repository.
+   * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
    * @return the computed name for the repository.
    */
-  private String getRepositoryVersion(IMetadataRepository repository)
+  private String getRepositoryVersion(IMetadataRepository repository, Pattern iuFilterPattern)
   {
     IQueryResult<IInstallableUnit> groups = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
     List<Version> versions = new ArrayList<Version>();
     for (Iterator<IInstallableUnit> i = groups.iterator(); i.hasNext();)
     {
       IInstallableUnit group = i.next();
-      Version iuVersion = group.getVersion();
-      if (iuVersion.isOSGiCompatible() && iuVersion instanceof BasicVersion)
+      if (iuFilterPattern == null || iuFilterPattern.matcher(group.getId()).matches())
       {
-        BasicVersion basicVersion = (BasicVersion)iuVersion;
-        Version unqualifiedVersion = BasicVersion.createOSGi(basicVersion.getMajor(), basicVersion.getMinor(), basicVersion.getMicro());
-        if (!versions.contains(unqualifiedVersion))
+        Version iuVersion = group.getVersion();
+        if (iuVersion.isOSGiCompatible() && iuVersion instanceof BasicVersion)
         {
-          versions.add((BasicVersion)unqualifiedVersion);
+          BasicVersion basicVersion = (BasicVersion)iuVersion;
+          Version unqualifiedVersion = BasicVersion.createOSGi(basicVersion.getMajor(), basicVersion.getMinor(), basicVersion.getMicro());
+          if (!versions.contains(unqualifiedVersion))
+          {
+            versions.add((BasicVersion)unqualifiedVersion);
+          }
         }
       }
     }
@@ -646,8 +703,36 @@ public class UpdateSiteGenerator
             // Compute an appropriate name for the repository after it has been populated.
             if (destinationMetadataRepository instanceof ICompositeRepository<?>)
             {
-              String repositoryName = projectLabel + " " + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType) + (latest ? " Latest" : " Composite");
+              String repositoryName = projectLabel + " " + getRepositoryVersion(destinationMetadataRepository, iuFilterPattern) + ' ' + getLabel(buildType)
+                + (latest ? " Latest" : " Composite");
               destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
+
+              if (latest && !products.isEmpty())
+              {
+                destinationMetadataRepository.setProperty(
+                  "products",
+                  products.stream().map(it -> org.eclipse.emf.common.util.URI.createFileURI(it.toString()).lastSegment()).collect(Collectors.joining(" ")));
+
+                for (Path product : products)
+                {
+                  try
+                  {
+                    Path productTarget = destination.resolve(product.getFileName());
+                    if (verbose)
+                    {
+                      System.out.println("Mirroring latest product '" + product + "' to '" + productTarget);
+                    }
+
+                    Files.copy(product, productTarget, StandardCopyOption.REPLACE_EXISTING);
+                    createDigest(product, "SHA-512");
+                  }
+                  catch (IOException e)
+                  {
+                    throw new RuntimeException(e);
+                  }
+                }
+              }
+
               save((ICompositeRepository<?>)destinationMetadataRepository);
 
               if (destinationArtifactRepository instanceof ICompositeRepository<?>)
@@ -1403,9 +1488,10 @@ public class UpdateSiteGenerator
 
     /**
      * Returns the sorted list of all the SDK features in the repository.
+     * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
      * @return the sorted list of all the SDK features in the repository.
      */
-    public List<String> getSDKs()
+    public List<String> getSDKs(Pattern iuFilterPattern)
     {
       List<String> result = new ArrayList<String>();
       List<String> resultAll = new ArrayList<String>();
@@ -1414,15 +1500,23 @@ public class UpdateSiteGenerator
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
       {
         IInstallableUnit iu = i.next();
-        String name = iu.getProperty(IInstallableUnit.PROP_NAME, null);
-        if (!resultAll.contains(name))
+        if (iuFilterPattern == null || iuFilterPattern.matcher(iu.getId()).matches())
         {
-          resultAll.add(name);
-        }
+          String name = iu.getProperty(IInstallableUnit.PROP_NAME, null);
+          if ("true".equals(iu.getProperty(InstallableUnitDescription.PROP_TYPE_PRODUCT)))
+          {
+            name = "Product " + name;
+          }
 
-        if (iu.getId().endsWith(".sdk.feature.group") && !result.contains(name))
-        {
-          result.add(name);
+          if (!resultAll.contains(name))
+          {
+            resultAll.add(name);
+          }
+
+          if (iu.getId().endsWith(".sdk.feature.group") && !result.contains(name))
+          {
+            result.add(name);
+          }
         }
       }
       if (result.isEmpty())
@@ -1439,9 +1533,10 @@ public class UpdateSiteGenerator
 
     /**
      * Returns a sorted map of all the features in the repository and their requirements.
+     * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
      * @return a sorted map of all the features in the repository and their requirements.
      */
-    public Map<String, List<String>> getFeatures()
+    public Map<String, List<String>> getFeatures(Pattern iuFilterPattern)
     {
       Map<String, List<String>> result = new TreeMap<>();
       IMetadataRepository repository = getCompositeMetadataRepository();
@@ -1449,15 +1544,24 @@ public class UpdateSiteGenerator
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
       {
         IInstallableUnit iu = i.next();
-        if (!iu.getId().endsWith(".source.feature.group"))
+        String id = iu.getId();
+        if (!id.endsWith(".source.feature.group") && (iuFilterPattern == null || iuFilterPattern.matcher(id).matches()))
         {
           String name = iu.getProperty(IInstallableUnit.PROP_NAME, null);
+          boolean isProduct = "true".equals(iu.getProperty(InstallableUnitDescription.PROP_TYPE_PRODUCT));
+          if (isProduct)
+          {
+            name = "Product " + name;
+          }
           name += " " + iu.getVersion();
           name = name.substring(0, name.lastIndexOf('.'));
 
           List<String> lines = new ArrayList<>();
           String description = iu.getProperty(IInstallableUnit.PROP_DESCRIPTION, null);
-          lines.add("<span style=\"white-space: normal; color: Navy;\">" + description + "</span>");
+          if (description != null)
+          {
+            lines.add("<span style=\"white-space: normal; color: Navy;\">" + description + "</span>");
+          }
 
           for (IRequirement requirement : iu.getRequirements())
           {
@@ -1465,34 +1569,36 @@ public class UpdateSiteGenerator
             {
               IRequiredCapability requiredCapability = (IRequiredCapability)requirement;
               String requirementName = requiredCapability.getName();
-              VersionRange range = requiredCapability.getRange();
-
-              String line = requirementName;
-              line += "<span style=\"color: DarkOliveGreen; font-size: 90%;\">";
-              if (!VersionRange.emptyRange.equals(range))
+              if (!requirementName.startsWith("tooling") && !requirementName.equals("JavaSE"))
               {
-                line += " " + range;
-              }
-
-              if (requiredCapability.getMin() == 0)
-              {
-                if (requiredCapability.getMax() == 0)
+                VersionRange range = requiredCapability.getRange();
+                String line = requirementName;
+                line += "<span style=\"color: DarkOliveGreen; font-size: 90%;\">";
+                if (!VersionRange.emptyRange.equals(range))
                 {
-                  line += " max=0";
+                  line += " " + range;
                 }
-                else
+
+                if (requiredCapability.getMin() == 0)
                 {
-                  line += " optional";
-                  if (requiredCapability.isGreedy())
+                  if (requiredCapability.getMax() == 0)
                   {
-                    line += " greedy";
+                    line += " max=0";
+                  }
+                  else
+                  {
+                    line += " optional";
+                    if (requiredCapability.isGreedy())
+                    {
+                      line += " greedy";
+                    }
                   }
                 }
+
+                line += "</span>";
+
+                lines.add(line);
               }
-
-              line += "</span>";
-
-              lines.add(line);
             }
           }
 
@@ -1507,12 +1613,14 @@ public class UpdateSiteGenerator
      * @param bundleSizes returns the computed sizes of the associated artifact.
      * @param bundleDetails returns the computed additional properties.
      * @param iuBundleDetails provides the computed additional properties.
+     * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
      * @return a map from bundle name to a list of information for that bundle for each bundle in the repository.
      */
     public Map<String, List<String>> getBundles(
       Map<String, Long> bundleSizes,
       Map<String, Map<String, String>> bundleDetails,
-      Map<IInstallableUnit, Map<String, String>> iuBundleDetails)
+      Map<IInstallableUnit, Map<String, String>> iuBundleDetails,
+      Pattern iuFilterPattern)
     {
       Map<String, List<String>> result = new TreeMap<String, List<String>>();
       IMetadataRepository repository = getCompositeMetadataRepository();
@@ -1522,7 +1630,7 @@ public class UpdateSiteGenerator
       {
         IInstallableUnit iu = i.next();
         String id = iu.getId();
-        if (!id.endsWith(".source"))
+        if (!id.endsWith(".source") && (iuFilterPattern == null || iuFilterPattern.matcher(id).matches()))
         {
           List<String> lines = new ArrayList<String>();
           for (IProvidedCapability providedCapability : iu.getProvidedCapabilities())
@@ -1637,6 +1745,16 @@ public class UpdateSiteGenerator
     }
 
     /**
+     * Returns the products of this site.
+     * return the products of this site.
+     */
+    public List<String> getProducts()
+    {
+      String products = getMetadataRepository().getProperty("products");
+      return products == null ? Collections.emptyList() : Arrays.asList(products.split(" "));
+    }
+
+    /**
      * Returns a map from project name to the URL for the commit ID URL in that project's branding plugin.
      * @return a map from project name to the URL for the commit ID URL in that project's branding plugin.
      */
@@ -1646,8 +1764,11 @@ public class UpdateSiteGenerator
       String commit = getMetadataRepository().getProperty("commit");
       if (commit != null)
       {
-        org.eclipse.emf.common.util.URI uri = org.eclipse.emf.common.util.URI.createURI(commit);
-        result.put(uri.segment(uri.segmentCount() - 3), commit);
+        for (String link : commit.split(" "))
+        {
+          org.eclipse.emf.common.util.URI uri = org.eclipse.emf.common.util.URI.createURI(link);
+          result.put(uri.segment(uri.segmentCount() - 3), commit);
+        }
       }
       return result;
     }
