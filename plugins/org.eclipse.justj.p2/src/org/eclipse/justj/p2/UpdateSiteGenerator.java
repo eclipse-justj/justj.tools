@@ -439,7 +439,7 @@ public class UpdateSiteGenerator
   {
     if (verbose)
     {
-      System.out.println("Mirroring '" + source + "' to '" + destination);
+      System.out.println("Mirroring '" + source + "' to '" + destination + "'");
     }
 
     MirrorApplication mirrorApplication = new MirrorApplication()
@@ -470,11 +470,15 @@ public class UpdateSiteGenerator
                   Path productTarget = destination.resolve(product.getFileName());
                   if (verbose)
                   {
-                    System.out.println("Mirroring product '" + product + "' to '" + productTarget);
+                    System.out.println("Mirroring product '" + product + "' to '" + productTarget + "'");
                   }
 
                   Files.copy(product, productTarget);
-                  createDigest(product, "SHA-512");
+                  Path digest = createDigest(productTarget, "SHA-512");
+                  if (verbose)
+                  {
+                    System.out.println("Created digest '" + digest + "'");
+                  }
                 }
                 catch (IOException e)
                 {
@@ -720,11 +724,15 @@ public class UpdateSiteGenerator
                     Path productTarget = destination.resolve(product.getFileName());
                     if (verbose)
                     {
-                      System.out.println("Mirroring latest product '" + product + "' to '" + productTarget);
+                      System.out.println("Mirroring latest product '" + product + "' to '" + productTarget + ".");
                     }
 
                     Files.copy(product, productTarget, StandardCopyOption.REPLACE_EXISTING);
-                    createDigest(product, "SHA-512");
+                    Path digest = createDigest(productTarget, "SHA-512");
+                    if (verbose)
+                    {
+                      System.out.println("Created digest '" + digest + "'");
+                    }
                   }
                   catch (IOException e)
                   {
