@@ -205,13 +205,16 @@ SPDX-License-Identifier: EPL-2.0
 <%if (!parent.isRoot()) {
     String mainID = "main-list";
     Map<String, String> repositories = parent.getRepositoryChildren();
+    String parentSiteURL = parent.getSiteURL();
+    String rawSiteURL = parentSiteURL.startsWith("https://download.eclipse.org/")
+      ? "https://download.eclipse.org/justj?file=" + parentSiteURL.substring("https://download.eclipse.org".length() + 1) : null;
     boolean hasTwisty = repositories != null && repositories.size() > 1;%>
           <p style="text-align: center;">
   <%if (hasTwisty) {%>
             <button id="<%=mainID%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=mainID%>');">&#x25B7;</button>
   <%}%>
             <button title="Copy to Clipboard" class="orange" style="font-size: 150%; background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#p1')">&#x270e;</button>
-            <span id="p1" style="font-size: 125%"><%=parent.getSiteURL()%></span>
+            <span id="p1" style="font-size: 125%"><%if (rawSiteURL != null) {%><a href="<%=rawSiteURL%>" target="_blank"><%=parentSiteURL%></a><%} else {%><%=parentSiteURL%><%}%></span>
             <span <%if (hasTwisty) {%>style="display: none;" <%}%>id="<%=mainID%>">
   <%if (repositories != null) {
       int count = 0;

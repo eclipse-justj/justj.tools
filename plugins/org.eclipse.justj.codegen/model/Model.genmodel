@@ -4,7 +4,7 @@
     modelDirectory="/org.eclipse.justj.codegen/src" creationIcons="false" modelPluginID="org.eclipse.justj.codegen"
     modelName="Model" modelPluginClass="org.eclipse.justj.codegen.model.ModelPlugin"
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
-    testsDirectory="" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    testsDirectory="" importerID="org.eclipse.emf.importer.ecore" complianceLevel="11.0"
     copyrightFields="false" operationReflection="true" decoration="Live" cleanup="true"
     autoResizeProperties="true" findAction="true" expandAllAction="true" collapseAllAction="true"
     revertAction="true">

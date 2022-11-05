@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -476,6 +477,17 @@ public class P2Manager
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
 
+      Map<String, String> nameMappings = new HashMap<>();
+      nameMappings.put("jres", "JREs");
+      for (String mapping = getArgument("-mapping", args, null); mapping != null; mapping = getArgument("-mapping", args, null))
+      {
+        String[] parts = mapping.split("->");
+        if (parts.length == 2)
+        {
+          nameMappings.put(parts[0], parts[1]);
+        }
+      }
+
       Path relativeTargetFolderPath = Paths.get(relativeTargetFolder);
       Assert.isTrue(!relativeTargetFolderPath.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
 
@@ -656,6 +668,7 @@ public class P2Manager
         favicon,
         titleImage,
         bodyImage,
+        nameMappings,
         verbose);
 
       P2Manager p2Manager = new P2Manager(updateSiteGenerator, verbose, host == null)

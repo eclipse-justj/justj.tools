@@ -319,7 +319,7 @@ public class UpdateSiteIndexGenerator
     }
 
     String rootLabel = rootSiteURL.substring(rootSiteURL.lastIndexOf('/') + 1);
-    rootLabel = rootLabel.equals("jres") ? "JREs" : Character.toUpperCase(rootLabel.charAt(0)) + rootLabel.substring(1);
+    rootLabel = updateSiteGenerator.getFolderLabel(rootLabel);
     result.put(prefix + "index.html", rootLabel);
     for (UpdateSiteIndexGenerator child : root.getChildren())
     {
@@ -425,7 +425,7 @@ public class UpdateSiteIndexGenerator
       }
 
       String name = file.getFileName().toString();
-      String titleName = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+      String titleName = updateSiteGenerator.getFolderLabel(name);
       while (breadcumbs.containsKey(titleName) || labels.contains(titleName))
       {
         // Make the label unique with zero-width whitespace.

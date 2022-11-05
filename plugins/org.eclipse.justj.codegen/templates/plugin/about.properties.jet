@@ -20,7 +20,6 @@ providerName = Eclipse <%=modelLabel%>
 featureName = <%=modelLabel%> <%=jvmLabel%>
 description = Contains the plug-ins and fragments for the <%=jvmLabel%>
 copyright = <%=Generator.getCopyright(argument, "", "\\n\\" + NL)%>\n
-featureName = <%=modelLabel%> <%=jvmLabel%>
 featureText = <%=modelLabel%> <%=jvmLabel%>\n\
 \n\
 Version: {featureVersion}\n\

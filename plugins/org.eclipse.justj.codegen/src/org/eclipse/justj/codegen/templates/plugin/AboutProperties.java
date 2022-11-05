@@ -42,9 +42,8 @@ public class AboutProperties
   protected final String _15 = NL + _10;
   protected final String _16 = NL + _9;
   protected final String _17 = NL + _8;
-  protected final String _18 = _6 + NL + _10;
-  protected final String _19 = NL + _11;
-  protected final String _20 = _7 + NL + _7 + NL + _5 + NL + _4 + NL + _3 + NL + _7;
+  protected final String _18 = _6 + NL + _11;
+  protected final String _19 = _7 + NL + _7 + NL + _5 + NL + _4 + NL + _3 + NL + _7;
 
   public String generate(Object argument)
   {
@@ -71,10 +70,6 @@ public class AboutProperties
     builder.append(_1);
     builder.append(jvmLabel);
     builder.append(_19);
-    builder.append(modelLabel);
-    builder.append(_1);
-    builder.append(jvmLabel);
-    builder.append(_20);
     builder.append(NL);
     builder.append(Generator.getCopyright(argument, "", "\\n\\" + NL));
     builder.append(_7);

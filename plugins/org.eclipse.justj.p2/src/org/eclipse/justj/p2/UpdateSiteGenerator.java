@@ -202,6 +202,11 @@ public class UpdateSiteGenerator
   private Pattern iuFilterPattern;
 
   /**
+   * Mappings for specialized upper case conversion.
+   */
+  private Map<String, String> nameMappings;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
@@ -214,11 +219,12 @@ public class UpdateSiteGenerator
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIU a prefix for the IUs that will be used to determine the overall version.
    * @param iuFilterPattern a pattern that must match an IU in order for its details to be reported.
-   * @param commit
+   * @param commit the commit ID.
    * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
    * @param favicon the URL of the site's favicon.
    * @param titleImage the URL of the site's title image.
    * @param bodyImage the URL if the image used in the body.
+   * @param nameMappings mappings for specialized upper case conversion.
    * @param verbose whether to print logging information.
    * @throws IOException
    */
@@ -238,6 +244,7 @@ public class UpdateSiteGenerator
     String favicon,
     String titleImage,
     String bodyImage,
+    Map<String, String> nameMappings,
     boolean verbose) throws IOException
   {
     this.projectLabel = projectLabel;
@@ -252,6 +259,7 @@ public class UpdateSiteGenerator
     this.favicon = favicon;
     this.titleImage = titleImage;
     this.bodyImage = bodyImage;
+    this.nameMappings = nameMappings;
     this.verbose = verbose;
     Assert.isTrue(!relativeTargetFolder.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
     if (relativeSuperTargetFolder != null)
@@ -601,6 +609,18 @@ public class UpdateSiteGenerator
     }
 
     return repositoryAnalyzer;
+  }
+
+  /**
+   * Returns the title case label for the folder/file name.
+   * @param name the name of a folder.
+   *
+   * @return the title case label for the give name.
+   */
+  public String getFolderLabel(String name)
+  {
+    String result = nameMappings.get(name);
+    return result != null ? result : Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
 
   /**
