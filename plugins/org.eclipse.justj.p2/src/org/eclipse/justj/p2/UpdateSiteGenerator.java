@@ -645,14 +645,19 @@ public class UpdateSiteGenerator
    */
   private String getRepositoryVersion(IMetadataRepository repository, Pattern iuFilterPattern)
   {
-    IQueryResult<IInstallableUnit> groups = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
     List<Version> versions = new ArrayList<Version>();
-    for (Iterator<IInstallableUnit> i = groups.iterator(); i.hasNext();)
+    IQueryResult<IInstallableUnit> ius = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
+    if (ius.isEmpty())
     {
-      IInstallableUnit group = i.next();
-      if (iuFilterPattern == null || iuFilterPattern.matcher(group.getId()).matches())
+      ius = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
+    }
+
+    for (Iterator<IInstallableUnit> i = ius.iterator(); i.hasNext();)
+    {
+      IInstallableUnit iu = i.next();
+      if (iuFilterPattern == null ? !"true".equals(iu.getProperty(QueryUtil.PROP_TYPE_CATEGORY)) : iuFilterPattern.matcher(iu.getId()).matches())
       {
-        Version iuVersion = group.getVersion();
+        Version iuVersion = iu.getVersion();
         if (iuVersion.isOSGiCompatible() && iuVersion instanceof BasicVersion)
         {
           BasicVersion basicVersion = (BasicVersion)iuVersion;
@@ -1669,7 +1674,7 @@ public class UpdateSiteGenerator
             {
               String iuName = iu.getProperty(IInstallableUnit.PROP_NAME, null);
               iuName += " " + iu.getVersion();
-              iuName = iuName.substring(0, iuName.lastIndexOf('.'));
+              iuName = iuName.replaceAll("( [0-9]+\\.[0-9]+\\.[0-9]+)\\.[^ ]+$", "$1");
               if (!result.containsKey(iuName))
               {
                 lines.add(0, "\u21D6 " + id + " <span style=\"color: DarkOliveGreen; font-size: 90%;\">" + iu.getVersion() + "</span>");

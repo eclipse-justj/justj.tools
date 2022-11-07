@@ -93,7 +93,8 @@ public class P2Manager
       System.out.println("Promoting " + buildType + " " + sourceRepository + " to " + updateSiteGenerator.getProjectRoot());
     }
 
-    if (!Files.isRegularFile(sourceRepository.resolve("content.jar")))
+    if (!Files.isRegularFile(sourceRepository.resolve("content.jar")) && !Files.isRegularFile(sourceRepository.resolve("content.xml"))
+      && !Files.isRegularFile(sourceRepository.resolve("content.xml.xz")))
     {
       throw new RuntimeException("The source repository is not a simple repository: " + sourceRepository);
     }
