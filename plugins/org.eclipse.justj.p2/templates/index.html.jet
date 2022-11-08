@@ -132,7 +132,7 @@ SPDX-License-Identifier: EPL-2.0
           <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
             <div class="wrapper-logo-default">
               <a href="<%=parent.getTitleURL()%>">
-                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; space: nowrap; display: inline-block;" alt="Project Logo" src="<%=parent.getTitleImage()%>"/>
+                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="<%=parent.getTitleImage()%>"/>
               </a>
             </div>
           </div>
@@ -354,7 +354,7 @@ SPDX-License-Identifier: EPL-2.0
   <%if (resourceURL != null) {%>
            <p>
              This update site's source code is generated from
-             <a href="<%=resourceURL%>" target="model"><%if (resourceURL.startsWith("justj.")) {%><img style="height: 2ex; space: nowrap; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/><%=resourceURL.substring(5)%><%} else {%><%=resourceURL%><%}%></a>.
+             <a href="<%=resourceURL%>" target="model"><%if (resourceURL.startsWith("justj.")) {%><img style="height: 2ex; white-space: nowrap; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/><%=resourceURL.substring(5)%><%} else {%><%=resourceURL%><%}%></a>.
            </p>
   <%}%>
   <%Map<String, List<String>> features = parent.getFeatures();

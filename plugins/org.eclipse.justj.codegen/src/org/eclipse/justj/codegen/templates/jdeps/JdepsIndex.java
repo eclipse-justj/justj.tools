@@ -124,7 +124,7 @@ public class JdepsIndex
   protected static final String _66 = "<header role=\"banner\" id=\"header-wrapper\">";
   protected static final String _67 = "<hr/>";
   protected static final String _68 = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
-  protected static final String _69 = "<img class=\"logo-eclipse-default img-responsive hidden-xs\" style=\"height: 50px; space: nowrap; display: inline-block;\" alt=\"Project Logo\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
+  protected static final String _69 = "<img class=\"logo-eclipse-default img-responsive hidden-xs\" style=\"height: 50px; white-space: nowrap; display: inline-block;\" alt=\"Project Logo\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
   protected static final String _70 = "<input name=\"module-split-packages\" type=\"checkbox\" onclick=\"filter(this.checked, 'mod-deps', 'split-package');\" onload=\"this.value = '';\"/>";
   protected static final String _71 = "<input name=\"plugin-errors\" type=\"checkbox\" onclick=\"filter(this.checked, 'plugin-deps', 'jdeps-error');\" onload=\"this.value = '';\"/>";
   protected static final String _72 = "<input type=\"checkbox\" id=\"toggle-id-";

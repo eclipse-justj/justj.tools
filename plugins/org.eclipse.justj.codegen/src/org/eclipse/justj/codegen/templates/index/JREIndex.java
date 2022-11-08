@@ -76,7 +76,7 @@ public class JREIndex
   protected static final String _48 = "<header role=\"banner\" id=\"header-wrapper\">";
   protected static final String _49 = "<hr>";
   protected static final String _50 = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
-  protected static final String _51 = "<img class=\"logo-eclipse-default img-responsive hidden-xs\" style=\"height: 50px; space: nowrap; display: inline-block;\" alt=\"Project Logo\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
+  protected static final String _51 = "<img class=\"logo-eclipse-default img-responsive hidden-xs\" style=\"height: 50px; white-space: nowrap; display: inline-block;\" alt=\"Project Logo\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
   protected static final String _52 = "<input type=\"checkbox\" id=\"toggle-id-";
   protected static final String _53 = "<label for=\"toggle-id-";
   protected static final String _54 = "<li class=\"active\">";

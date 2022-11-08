@@ -85,7 +85,7 @@ SPDX-License-Identifier: EPL-2.0
           <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
             <div class="wrapper-logo-default">
               <a href="https://www.eclipse.org/justj?page=index">
-                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; space: nowrap; display: inline-block;" alt="Project Logo" src="https://www.eclipse.org/justj/justj_title.svg"/>
+                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="https://www.eclipse.org/justj/justj_title.svg"/>
               </a>
             </div>
           </div>
