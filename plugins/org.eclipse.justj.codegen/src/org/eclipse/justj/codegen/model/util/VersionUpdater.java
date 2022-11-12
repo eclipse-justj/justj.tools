@@ -52,7 +52,7 @@ public class VersionUpdater
     String eclipseUpdatesVersion = "4.26";
 
     String jarsignerVersion = "1.3.2";
-    String tychoVersion = "2.7.4";
+    String tychoVersion = "2.7.5";
 
     int jreVersion = 17;
 
