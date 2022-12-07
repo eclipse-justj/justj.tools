@@ -1026,18 +1026,17 @@
       label="Website">
     <setupTask
         xsi:type="git:GitCloneTask"
-        id="git.clone.www.eclipse.org.justj"
-        locationQualifier="www.eclipse.org."
-        remoteURI="www.eclipse.org/justj">
+        id="git.clone.justj-website"
+        remoteURI="eclipse-justj/justj-website">
       <annotation
           source="http://www.eclipse.org/oomph/setup/InducedChoices">
         <detail
             key="inherit">
-          <value>eclipse.git.gerrit.remoteURIs</value>
+          <value>github.remoteURIs</value>
         </detail>
         <detail
             key="label">
-          <value>${scope.project.label} Git or Gerrit repository</value>
+          <value>${scope.project.label} Github repository</value>
         </detail>
         <detail
             key="target">
@@ -1048,8 +1047,8 @@
     </setupTask>
     <setupTask
         xsi:type="setup:StringSubstitutionTask"
-        name="justj.www.clone.location"
-        value="${git.clone.www.eclipse.org.justj.location}"/>
+        name="just-website.clone.location"
+        value="${git.clone.justj-website.location}"/>
     <setupTask
         xsi:type="setup.targlets:TargletTask">
       <targlet
@@ -1057,7 +1056,7 @@
         <requirement
             name="*"/>
         <sourceLocator
-            rootFolder="${git.clone.www.eclipse.org.justj.location}"/>
+            rootFolder="${git.clone.justj-website.location}"/>
       </targlet>
     </setupTask>
     <setupTask
@@ -1084,6 +1083,63 @@
         name="master"
         label="Master"/>
     <description>Website support</description>
+  </project>
+  <project name="github"
+      label="GitHub">
+    <setupTask
+        xsi:type="git:GitCloneTask"
+        id="git.clone.justj.github"
+        locationQualifier="justj"
+        remoteURI="eclipse-justj/.github">
+      <annotation
+          source="http://www.eclipse.org/oomph/setup/InducedChoices">
+        <detail
+            key="inherit">
+          <value>github.remoteURIs</value>
+        </detail>
+        <detail
+            key="label">
+          <value>${scope.project.label} Github repository</value>
+        </detail>
+        <detail
+            key="target">
+          <value>remoteURI</value>
+        </detail>
+      </annotation>
+      <description>${scope.project.label}</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:StringSubstitutionTask"
+        name="justj.github.clone.location"
+        value="${git.clone.justj.github.location}"/>
+    <setupTask
+        xsi:type="setup.targlets:TargletTask">
+      <targlet
+          name="JustJ .github Repository">
+        <requirement
+            name="*"/>
+        <sourceLocator
+            rootFolder="${git.clone.justj.github.location}"/>
+      </targlet>
+    </setupTask>
+    <setupTask
+        xsi:type="setup.workingsets:WorkingSetTask"
+        prefix="org.eclipse.justj.website-">
+      <workingSet
+          name="JustJ .github">
+        <predicate
+            xsi:type="predicates:AndPredicate">
+          <operand
+              xsi:type="predicates:RepositoryPredicate"
+              project="justj.github"/>
+        </predicate>
+      </workingSet>
+      <description>The dynamic working sets for ${scope.project.label}</description>
+    </setupTask>
+    <stream
+        name="master"
+        label="Master"/>
+    <description>The .github repository</description>
   </project>
   <logicalProjectContainer
       xsi:type="setup:ProjectCatalog"
