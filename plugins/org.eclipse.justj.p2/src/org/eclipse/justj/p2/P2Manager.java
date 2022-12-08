@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -855,6 +856,16 @@ public class P2Manager
       int index = args.indexOf(name);
       if (index == -1)
       {
+        Pattern pattern = Pattern.compile(Pattern.quote(name) + "\\s+" + "([^-].*)");
+        for (String arg : args)
+        {
+          Matcher matcher = pattern.matcher(arg);
+          if (matcher.matches())
+          {
+            args.remove(arg);
+            return matcher.group(1);
+          }
+        }
         return defaultValue;
       }
       else
@@ -988,6 +999,17 @@ public class P2Manager
           //
           environment.put("PATH", path);
           environment.put("Path", path);
+        }
+        else if (absoluteExecutablePath != null && File.separatorChar == '\\')
+        {
+          // Ensure that the path on which it is found is first in the search list so that other things like "find" look here first.
+          //
+          fullPath = absoluteExecutablePath.getParent() + File.pathSeparator + fullPath;
+
+          // Put it in for both case variants because a debug launch worked but a run launch did not.  Go figure.
+          //
+          environment.put("PATH", fullPath);
+          environment.put("Path", fullPath);
         }
 
         if (absoluteExecutablePath == null)
