@@ -9,7 +9,7 @@
       source="http://www.eclipse.org/oomph/setup/BrandingInfo">
     <detail
         key="imageURI">
-      <value>https://git.eclipse.org/c/justj/justj.tools.git/plain/plugins/org.eclipse.justj.tools/justj32.png</value>
+      <value>https://raw.githubusercontent.com/eclipse-justj/justj.tools/master/plugins/org.eclipse.justj.tools/justj32.png</value>
     </detail>
     <detail
         key="siteURI">
@@ -167,12 +167,15 @@
     <stream
         href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']/@projects[name='justj']/@projects[name='tools']/@streams[name='master']"/>
     <stream
+        href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']/@projects[name='justj']/@projects[name='github']/@streams[name='master']"/>
+    <stream
         href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']/@projects[name='justj']/@projects[name='website']/@streams[name='master']"/>
     <description>
       The JustJ development environment workspace includes all the projects from
-      &lt;a href=&quot;http://git.eclipse.org/c/justj/justj.git&quot;>justj/justj.git&lt;/a>,
-      &lt;a href=&quot;http://git.eclipse.org/c/justj/justj.tools.git&quot;>justj/justj.tools.git&lt;/a>,
-      and &lt;a href=&quot;http://git.eclipse.org/c/www.eclipse.org/justj.git&quot;>www.eclipse.org/justj.git&lt;/a>.
+      &lt;a href=&quot;https://github.com/eclipse-justj/justj&quot;>eclipse-justj/justj&lt;/a>,
+      &lt;a href=&quot;https://github.com/eclipse-justj/justj.tools&quot;>eclipse-justj/justj.tools&lt;/a>,
+      &lt;a href=&quot;https://github.com/eclipse-justj/.github&quot;>eclipse-justj/.github&lt;/a>,
+      and &lt;a href=&quot;https://github.com/eclipse-justj/justj-website&quot;>eclipse-justj/justj-website&lt;/a>.
     </description>
   </workspace>
   <description>
@@ -180,13 +183,14 @@
     The &lt;a href=&quot;https://www.eclipse.org/justj&quot;/>JustJ&lt;/a> Development Environment configuration provisions a dedicated development environment 
     for the complete set of source projects used by &lt;a href=&quot;https://ci.eclipse.org/justj/&quot;>JustJ's build server&lt;/a> 
     to produce and manage &lt;a href=&quot;https://download.eclipse.org/justj&quot;>JustJ's downloads&lt;/a>
-    as well as the project used to maintain the JustJ website.
+    as well as the projects used to maintain the JustJ websites.
     &lt;/p>
     &lt;p>
     All the source projects from 
-    &lt;a href=&quot;http://git.eclipse.org/c/justj/justj.git&quot;>justj/justj.git&lt;/a>,
-    &lt;a href=&quot;http://git.eclipse.org/c/justj/justj.tools.git&quot;>justj/justj.tools.git&lt;/a>,
-    and &lt;a href=&quot;http://git.eclipse.org/c/www.eclipse.org/justj.git&quot;>www.eclipse.org/justj.git&lt;/a>
+    &lt;a href=&quot;https://github.com/eclipse-justj/justj&quot;>eclipse-justj/justj&lt;/a>,
+    &lt;a href=&quot;https://github.com/eclipse-justj/justj.tools&quot;>eclipse-justj/justj.tools&lt;/a>,
+    &lt;a href=&quot;https://github.com/eclipse-justj/.github&quot;>eclipse-justj/.github&lt;/a>,
+    and &lt;a href=&quot;https://github.com/eclipse-justj/justj-website&quot;>eclipse-justj/justj-website&lt;/a>
     are available, organized into working sets, and ready for contribution.
     &lt;/p>
     &lt;/p>

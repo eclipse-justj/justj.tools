@@ -31,7 +31,7 @@ public class POMXML
   protected static final String _5 = "-body-image https://www.eclipse.org/justj/justj.svg";
   protected static final String _6 = "-breadcrumb \"JustJ https://www.eclipse.org/justj/?page=download\"";
   protected static final String _7 = "-build-url ${org.eclipse.justj.p2.manager.build.url}";
-  protected static final String _8 = "-commit https://git.eclipse.org/c/justj/justj.git/commit/?id=${git.commit}";
+  protected static final String _8 = "-commit https://github.com/eclipse-justj/justj/commit/${git.commit}";
   protected static final String _9 = "-consoleLog";
   protected static final String _10 = "-data @None";
   protected static final String _11 = "-favicon https://www.eclipse.org/justj/justj_favicon.ico";

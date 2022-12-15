@@ -19,7 +19,7 @@
       source="http://www.eclipse.org/oomph/setup/BrandingInfo">
     <detail
         key="imageURI">
-      <value>https://git.eclipse.org/c/justj/justj.tools.git/plain/plugins/org.eclipse.justj.tools/justj32.png</value>
+      <value>https://raw.githubusercontent.com/eclipse-justj/justj.tools/master/plugins/org.eclipse.justj.tools/justj32.png</value>
     </detail>
     <detail
         key="siteURI">
@@ -97,16 +97,16 @@
     <setupTask
         xsi:type="git:GitCloneTask"
         id="git.clone.justj"
-        remoteURI="justj/justj">
+        remoteURI="eclipse-justj/justj">
       <annotation
           source="http://www.eclipse.org/oomph/setup/InducedChoices">
         <detail
             key="inherit">
-          <value>eclipse.git.gerrit.remoteURIs</value>
+          <value>github.remoteURIs</value>
         </detail>
         <detail
             key="label">
-          <value>${scope.project.label} Git or Gerrit repository</value>
+          <value>${scope.project.label} Github repository</value>
         </detail>
         <detail
             key="target">
@@ -955,16 +955,16 @@
     <setupTask
         xsi:type="git:GitCloneTask"
         id="git.clone.justj.tools"
-        remoteURI="justj/justj.tools">
+        remoteURI="eclipse-justj/justj.tools">
       <annotation
           source="http://www.eclipse.org/oomph/setup/InducedChoices">
         <detail
             key="inherit">
-          <value>eclipse.git.gerrit.remoteURIs</value>
+          <value>github.remoteURIs</value>
         </detail>
         <detail
             key="label">
-          <value>${scope.project.label} Git or Gerrit repository</value>
+          <value>${scope.project.label} Github repository</value>
         </detail>
         <detail
             key="target">
@@ -1015,7 +1015,7 @@
       <setupTask
           xsi:type="setup:EclipseIniTask"
           option="-Doomph.redirection.justj.tools"
-          value="=https://git.eclipse.org/c/justj/justj.tools.git/plain/releng/org.eclipse.justj.tools.releng/JustJ.setup->${git.clone.justj.tools.location|uri}/releng/org.eclipse.justj.tools.releng/JustJ.setup"
+          value="=https://raw.githubusercontent.com/eclipse-justj/justj.tools/master/releng/org.eclipse.justj.tools.releng/JustJ.setup->${git.clone.justj.tools.location|uri}/releng/org.eclipse.justj.tools.releng/JustJ.setup"
           vm="true">
         <description>Set an Oomph redirection system property to redirect the logical location of this setup to its physical location in the Git clone.</description>
       </setupTask>
