@@ -309,7 +309,7 @@ public class UpdateSiteIndexGenerator
 
     if (tailEntry != null)
     {
-      result.put(tailEntry.getValue() + "/index.html", tailEntry.getKey());
+      result.put(tailEntry.getValue(), tailEntry.getKey());
     }
 
     StringBuilder prefix = new StringBuilder();
@@ -819,7 +819,7 @@ public class UpdateSiteIndexGenerator
    */
   public Map<String, String> getCommits()
   {
-    return repositoryAnalyzer.getCommits();
+    return repositoryAnalyzer.getCommits(updateSiteGenerator.getCommitMappings());
   }
 
   /**

@@ -490,6 +490,16 @@ public class P2Manager
         }
       }
 
+      Map<Pattern, String> commitMappings = new HashMap<>();
+      for (String mapping = getArgument("-commit-mapping", args, null); mapping != null; mapping = getArgument("-commit-mapping", args, null))
+      {
+        String[] parts = mapping.split("->");
+        if (parts.length == 2)
+        {
+          commitMappings.put(Pattern.compile(parts[0]), parts[1]);
+        }
+      }
+
       Path relativeTargetFolderPath = Paths.get(relativeTargetFolder);
       Assert.isTrue(!relativeTargetFolderPath.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
 
@@ -671,6 +681,7 @@ public class P2Manager
         titleImage,
         bodyImage,
         nameMappings,
+        commitMappings,
         verbose);
 
       P2Manager p2Manager = new P2Manager(updateSiteGenerator, verbose, host == null)

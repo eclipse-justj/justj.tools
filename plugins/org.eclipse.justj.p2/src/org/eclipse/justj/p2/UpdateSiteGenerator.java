@@ -207,6 +207,11 @@ public class UpdateSiteGenerator
   private Map<String, String> nameMappings;
 
   /**
+   * Mappings for migrated commit URLs.
+   */
+  private Map<Pattern, String> commitMappings;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
@@ -225,6 +230,7 @@ public class UpdateSiteGenerator
    * @param titleImage the URL of the site's title image.
    * @param bodyImage the URL if the image used in the body.
    * @param nameMappings mappings for specialized upper case conversion.
+   * @param commitMappings the mappings for migrated commit URLs.
    * @param verbose whether to print logging information.
    * @throws IOException
    */
@@ -245,6 +251,7 @@ public class UpdateSiteGenerator
     String titleImage,
     String bodyImage,
     Map<String, String> nameMappings,
+    Map<Pattern, String> commitMappings,
     boolean verbose) throws IOException
   {
     this.projectLabel = projectLabel;
@@ -260,6 +267,7 @@ public class UpdateSiteGenerator
     this.titleImage = titleImage;
     this.bodyImage = bodyImage;
     this.nameMappings = nameMappings;
+    this.commitMappings = commitMappings;
     this.verbose = verbose;
     Assert.isTrue(!relativeTargetFolder.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
     if (relativeSuperTargetFolder != null)
@@ -362,6 +370,15 @@ public class UpdateSiteGenerator
   public String getCommit()
   {
     return commit;
+  }
+
+  /**
+   * Returns the mappings for migrated commit URLs.
+   * @return the mappings for migrated commit URLs.
+   */
+  public Map<Pattern, String> getCommitMappings()
+  {
+    return commitMappings;
   }
 
   /**
@@ -1789,9 +1806,10 @@ public class UpdateSiteGenerator
 
     /**
      * Returns a map from project name to the URL for the commit ID URL in that project's branding plugin.
+     * @param commitMappings the mappings for migrated commit URLs.
      * @return a map from project name to the URL for the commit ID URL in that project's branding plugin.
      */
-    public Map<String, String> getCommits()
+    public Map<String, String> getCommits(Map<Pattern, String> commitMappings)
     {
       Map<String, String> result = new LinkedHashMap<String, String>();
       String commit = getMetadataRepository().getProperty("commit");
@@ -1799,8 +1817,18 @@ public class UpdateSiteGenerator
       {
         for (String link : commit.split(" "))
         {
+          for (var entry : commitMappings.entrySet())
+          {
+            Matcher matcher = entry.getKey().matcher(link);
+            if (matcher.matches())
+            {
+              link = matcher.replaceAll(entry.getValue());
+              break;
+            }
+          }
+
           org.eclipse.emf.common.util.URI uri = org.eclipse.emf.common.util.URI.createURI(link);
-          result.put(uri.segment(uri.segmentCount() - 3), commit);
+          result.put(uri.segment(uri.segmentCount() - 3), link);
         }
       }
       return result;
