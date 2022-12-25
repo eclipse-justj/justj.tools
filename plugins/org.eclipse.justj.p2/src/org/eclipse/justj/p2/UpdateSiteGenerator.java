@@ -1828,7 +1828,26 @@ public class UpdateSiteGenerator
           }
 
           org.eclipse.emf.common.util.URI uri = org.eclipse.emf.common.util.URI.createURI(link);
-          result.put(uri.segment(uri.segmentCount() - 3), link);
+          String label = uri.segment(uri.segmentCount() - 3);
+          for (;;)
+          {
+            String otherLink = result.get(label);
+            if (otherLink == null)
+            {
+              result.put(label, link);
+              break;
+            }
+            else if (otherLink.equals(link))
+            {
+              // Avoid duplicates.
+              break;
+            }
+            else
+            {
+              // The label will not be visibly different with a zero-width space.
+              label += "\u200B";
+            }
+          }
         }
       }
       return result;
