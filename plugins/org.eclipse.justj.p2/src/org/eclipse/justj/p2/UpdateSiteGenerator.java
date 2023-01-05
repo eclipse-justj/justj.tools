@@ -474,7 +474,7 @@ public class UpdateSiteGenerator
         {
           if (destinationMetadataRepository instanceof AbstractMetadataRepository)
           {
-            String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository, iuFilterPattern) + ' ' + getLabel(buildType);
+            String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType);
             destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
 
             if (commit != null)
@@ -657,10 +657,9 @@ public class UpdateSiteGenerator
    * If there is only one version then it will be followed by only that one version.
    * If there are none, then it's just 'Unknown'.
    * @param repository the repository.
-   * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
    * @return the computed name for the repository.
    */
-  private String getRepositoryVersion(IMetadataRepository repository, Pattern iuFilterPattern)
+  private String getRepositoryVersion(IMetadataRepository repository)
   {
     List<Version> versions = new ArrayList<Version>();
     IQueryResult<IInstallableUnit> ius = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
@@ -672,7 +671,7 @@ public class UpdateSiteGenerator
     for (Iterator<IInstallableUnit> i = ius.iterator(); i.hasNext();)
     {
       IInstallableUnit iu = i.next();
-      if (iuFilterPattern == null ? !"true".equals(iu.getProperty(QueryUtil.PROP_TYPE_CATEGORY)) : iuFilterPattern.matcher(iu.getId()).matches())
+      if (versionIU == null ? !"true".equals(iu.getProperty(QueryUtil.PROP_TYPE_CATEGORY)) : iu.getId().startsWith(versionIU))
       {
         Version iuVersion = iu.getVersion();
         if (iuVersion.isOSGiCompatible() && iuVersion instanceof BasicVersion)
@@ -749,8 +748,7 @@ public class UpdateSiteGenerator
             // Compute an appropriate name for the repository after it has been populated.
             if (destinationMetadataRepository instanceof ICompositeRepository<?>)
             {
-              String repositoryName = projectLabel + " " + getRepositoryVersion(destinationMetadataRepository, iuFilterPattern) + ' ' + getLabel(buildType)
-                + (latest ? " Latest" : " Composite");
+              String repositoryName = projectLabel + " " + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType) + (latest ? " Latest" : " Composite");
               destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
 
               if (latest && !products.isEmpty())
