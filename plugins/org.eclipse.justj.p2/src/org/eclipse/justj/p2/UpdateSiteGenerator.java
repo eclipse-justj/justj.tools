@@ -792,11 +792,11 @@ public class UpdateSiteGenerator
 
             super.finalizeRepositories();
 
-            Path p2INF = destination.resolve("p2.inf");
+            Path p2Index = destination.resolve("p2.index");
             try
             {
               Files.write(
-                p2INF,
+                p2Index,
                 Arrays.asList(
                   new String []{ "version=1", "metadata.repository.factory.order=compositeContent.xml,!", "artifact.repository.factory.order=compositeArtifacts.xml,!" }));
             }
