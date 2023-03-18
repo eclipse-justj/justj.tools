@@ -460,6 +460,7 @@ public class P2Manager
       }
 
       boolean verbose = !getArgument("-quiet", args);
+      boolean latestVersionOnly = getArgument("-latestVersionOnly", args);
       int retainedNightlyBuilds = Integer.parseInt(getArgument("-retain", args, "7"));
       String projectLabel = getArgument("-label", args, "Project");
       String buildURL = getArgument("-build-url", args, null);
@@ -682,6 +683,7 @@ public class P2Manager
         bodyImage,
         nameMappings,
         commitMappings,
+        latestVersionOnly,
         verbose);
 
       P2Manager p2Manager = new P2Manager(updateSiteGenerator, verbose, host == null)

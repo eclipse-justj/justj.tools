@@ -212,6 +212,11 @@ public class UpdateSiteGenerator
   private Map<Pattern, String> commitMappings;
 
   /**
+   * Whether to mirror only the latest version or all versions
+   */
+  private boolean latestVersionOnly;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
@@ -231,6 +236,7 @@ public class UpdateSiteGenerator
    * @param bodyImage the URL if the image used in the body.
    * @param nameMappings mappings for specialized upper case conversion.
    * @param commitMappings the mappings for migrated commit URLs.
+   * @param latestVersionOnly whether to mirror only the latest version or all versions.
    * @param verbose whether to print logging information.
    * @throws IOException
    */
@@ -252,6 +258,7 @@ public class UpdateSiteGenerator
     String bodyImage,
     Map<String, String> nameMappings,
     Map<Pattern, String> commitMappings,
+    boolean latestVersionOnly,
     boolean verbose) throws IOException
   {
     this.projectLabel = projectLabel;
@@ -268,6 +275,7 @@ public class UpdateSiteGenerator
     this.bodyImage = bodyImage;
     this.nameMappings = nameMappings;
     this.commitMappings = commitMappings;
+    this.latestVersionOnly = latestVersionOnly;
     this.verbose = verbose;
     Assert.isTrue(!relativeTargetFolder.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
     if (relativeSuperTargetFolder != null)
@@ -543,7 +551,7 @@ public class UpdateSiteGenerator
     mirrorApplication.initializeFromArguments(new String []{ "-source", source.toString(), "-destination", destination.toString(), "-writeMode", "clean" });
 
     SlicingOptions slicingOptions = new SlicingOptions();
-    slicingOptions.latestVersionOnly(true);
+    slicingOptions.latestVersionOnly(latestVersionOnly);
     mirrorApplication.setSlicingOptions(slicingOptions);
 
     IStatus status = mirrorApplication.run(new NullProgressMonitor());
