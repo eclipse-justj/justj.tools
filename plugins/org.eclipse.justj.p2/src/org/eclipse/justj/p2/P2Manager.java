@@ -631,6 +631,8 @@ public class P2Manager
             "*.html",
             "--exclude",
             "*/downloads",
+            "--exclude",
+            "*/archive",
             hostPrefix + hostPath + "/" + (superTargetFolder == null ? relativeTargetFolder : superTargetFolder) + "/",
             toShellPath(normalizedAbsolutePath));
 
