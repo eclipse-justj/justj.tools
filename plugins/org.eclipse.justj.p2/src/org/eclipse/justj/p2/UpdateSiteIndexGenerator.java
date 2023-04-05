@@ -230,6 +230,12 @@ public class UpdateSiteIndexGenerator
       }
     }
 
+    String name = folder.getFileName().toString();
+    if (name.matches("[0-9]+-(03|06|09|12)"))
+    {
+      return name;
+    }
+
     return "super";
   }
 
@@ -544,6 +550,22 @@ public class UpdateSiteIndexGenerator
         name += " - " + Character.toUpperCase(folderName.charAt(0)) + folderName.substring(1);
       }
       return name;
+    }
+  }
+
+  /**
+   * Return the branding version of this repository.
+   * @return the branding version of this repository.
+   */
+  public String getVersion()
+  {
+    try
+    {
+      return updateSiteGenerator.getVersion(folder, false);
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException(e);
     }
   }
 

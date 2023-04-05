@@ -52,6 +52,8 @@ import org.eclipse.justj.p2.UpdateSiteGenerator.RepositoryAnalyzer;
  */
 public class P2Manager
 {
+  private static final Pattern PLATFORM_VERSION_PATTERN = Pattern.compile("4\\.([0-9]+)(\\..*)?");
+
   /**
    * The update site generator used by this manager.
    */
@@ -207,13 +209,21 @@ public class P2Manager
    *
    * @throws Exception
    */
-  public void recomposeComposites() throws Exception
+  public void recomposeComposites(boolean simrelAlias) throws Exception
   {
     Path targetRoot = updateSiteGenerator.getUpdateSiteRoot();
     if (verbose)
     {
       System.out.println("Recompose composites: " + targetRoot);
     }
+
+    Map<String, Path> latestVersions = new LinkedHashMap<>();
+    Map<String, Path> buildTypeRepos = new LinkedHashMap<>();
+    for (String buildType : UpdateSiteGenerator.BUILD_TYPES)
+    {
+      buildTypeRepos.put(buildType, null);
+    }
+
     try (Stream<Path> list = Files.list(targetRoot))
     {
       for (Path child : list.collect(Collectors.toList()))
@@ -221,50 +231,110 @@ public class P2Manager
         String buildType = child.getFileName().toString();
         if (UpdateSiteGenerator.BUILD_TYPES.contains(buildType) && Files.isDirectory(child))
         {
-          if (verbose)
-          {
-            System.out.println("Recompose: " + child);
-          }
-          List<Path> children = new ArrayList<>();
-          for (Path grandChild : Files.list(child).collect(Collectors.toList()))
-          {
-            String name = grandChild.getFileName().toString();
-            if (!"latest".equals(name) && Files.isDirectory(grandChild) && Files.isRegularFile(grandChild.resolve("content.jar"))
-              && !Files.isRegularFile(grandChild.resolve("DELETED")))
-            {
-              children.add(grandChild.toRealPath());
-              if (verbose)
-              {
-                System.out.println("  <- " + name);
-              }
-            }
-          }
-
-          UpdateSiteGenerator.sort(children);
-
-          Path compositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, false);
-          if (verbose)
-          {
-            System.out.println("Composing update site " + compositePath);
-          }
-          cleanupComposite(compositePath);
-          updateSiteGenerator.composeUpdateSites(children, buildType, false);
-
-          List<Path> latestUpdateSite = new ArrayList<>();
-          if (!children.isEmpty())
-          {
-            latestUpdateSite.add(children.get(0));
-          }
-
-          Path latestCompositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, true);
-          if (verbose)
-          {
-            System.out.println("Composing update site " + latestCompositePath);
-          }
-          cleanupComposite(latestCompositePath);
-          updateSiteGenerator.composeUpdateSites(latestUpdateSite, buildType, true);
+          buildTypeRepos.put(buildType, child);
         }
       }
+    }
+
+    for (Map.Entry<String, Path> entry : buildTypeRepos.entrySet())
+    {
+      Path child = entry.getValue();
+      if (child != null)
+      {
+        String buildType = entry.getKey();
+        if (verbose)
+        {
+          System.out.println("Recompose: " + child);
+        }
+        List<Path> children = new ArrayList<>();
+        for (Path grandChild : Files.list(child).collect(Collectors.toList()))
+        {
+          String name = grandChild.getFileName().toString();
+          if (!"latest".equals(name) && Files.isDirectory(grandChild) && Files.isRegularFile(grandChild.resolve("content.jar"))
+            && !Files.isRegularFile(grandChild.resolve("DELETED")))
+          {
+            children.add(grandChild.toRealPath());
+            if (verbose)
+            {
+              System.out.println("  <- " + name);
+            }
+          }
+        }
+
+        UpdateSiteGenerator.sort(children);
+
+        Path compositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, false);
+        if (verbose)
+        {
+          System.out.println("Composing update site " + compositePath);
+        }
+        cleanupComposite(compositePath);
+        updateSiteGenerator.composeUpdateSites(children, buildType, false);
+
+        List<Path> latestUpdateSite = new ArrayList<>();
+        if (!children.isEmpty())
+        {
+          Path latest = children.get(0);
+          if (simrelAlias)
+          {
+            String version = updateSiteGenerator.getVersion(latest, false);
+            Matcher matcher = PLATFORM_VERSION_PATTERN.matcher(version);
+            if (matcher.matches())
+            {
+              int offset = Integer.valueOf(matcher.group(1)) - 11;
+              int year = 2019 + offset / 4;
+              String quarter;
+              switch (offset % 4)
+              {
+                case 0:
+                {
+                  quarter = "03";
+                  break;
+                }
+                case 1:
+                {
+                  quarter = "06";
+                  break;
+                }
+                case 2:
+                {
+                  quarter = "09";
+                  break;
+                }
+                default:
+                {
+                  quarter = "12";
+                  break;
+                }
+              }
+              String alias = year + "-" + quarter;
+              latestVersions.put(alias, latest);
+            }
+          }
+          latestUpdateSite.add(latest);
+        }
+
+        Path latestCompositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(buildType, true);
+        if (verbose)
+        {
+          System.out.println("Composing update site " + latestCompositePath);
+        }
+        cleanupComposite(latestCompositePath);
+        updateSiteGenerator.composeUpdateSites(latestUpdateSite, buildType, true);
+      }
+    }
+
+    for (Map.Entry<String, Path> entry : latestVersions.entrySet())
+    {
+      String alias = entry.getKey();
+      Path latest = entry.getValue();
+      Path aliasCompositePath = updateSiteGenerator.getCompositeUpdateSiteDestination(alias, true);
+      if (verbose)
+      {
+        System.out.println("Composing alias update site " + aliasCompositePath + " for " + latest);
+      }
+      cleanupComposite(aliasCompositePath);
+      updateSiteGenerator.composeUpdateSites(List.of(latest), alias, false);
     }
   }
 
@@ -402,7 +472,7 @@ public class P2Manager
    */
   static void cleanupComposite(Path target) throws IOException
   {
-    for (String file : new String []{ "compositeContent.jar", "compositeContent.xml", "compositeArtifacts.jar", "compositeArtifacts.xml" })
+    for (String file : new String []{ "compositeContent.jar", "compositeContent.xml", "compositeArtifacts.jar", "compositeArtifacts.xml", "p2.index" })
     {
       Files.deleteIfExists(target.resolve(file));
     }
@@ -479,6 +549,7 @@ public class P2Manager
       String iuFilterPattern = getArgument("-iu-filter-pattern", args, null);
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
+      boolean simrelAlias = getArgument("-simrel-alias", args);
 
       Map<String, String> nameMappings = new HashMap<>();
       nameMappings.put("jres", "JREs");
@@ -738,7 +809,7 @@ public class P2Manager
         p2Manager.promoteLatestMilestoneUpdateSiteToReleaseUpdateSite();
       }
 
-      p2Manager.recomposeComposites();
+      p2Manager.recomposeComposites(simrelAlias);
       p2Manager.cleanNightlyComposite();
       p2Manager.cleanMilestoneComposite();
       p2Manager.generateDownloads();

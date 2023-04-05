@@ -588,7 +588,7 @@ public class UpdateSiteGenerator
   }
 
   /**
-   * Returns the version of the {@code org.eclipse.emf.sdk.feature.group} installable unit in the target repository.
+   * Returns the version of the {@link #versionIU} installable unit in the target repository.
    * @param targetRepository the repository location.
    * @param qualified whether to include the qualifier in the version.
    * @return the associated semantic version of the repository.
@@ -1165,6 +1165,7 @@ public class UpdateSiteGenerator
   public static void sort(List<Path> repositories)
   {
     Map<Long, Path> orderedRepositories = new TreeMap<>();
+    Map<String, Path> orderedAliasRepositories = new TreeMap<>(Collections.reverseOrder());
     Map<Version, Path> orderedVersionedRepositories = new TreeMap<>(Collections.reverseOrder());
     for (Path repository : repositories)
     {
@@ -1189,6 +1190,10 @@ public class UpdateSiteGenerator
       {
         orderedRepositories.put(-Long.parseLong(name.substring(1).replaceAll("[-_]", "")), repository);
       }
+      else if (name.matches("[0-9]+-(03|06|09|12)"))
+      {
+        orderedAliasRepositories.put(name, repository);
+      }
       else
       {
         Version version = Version.create(name);
@@ -1197,6 +1202,7 @@ public class UpdateSiteGenerator
     }
 
     repositories.clear();
+    repositories.addAll(orderedAliasRepositories.values());
     repositories.addAll(orderedRepositories.values());
     repositories.addAll(orderedVersionedRepositories.values());
   }

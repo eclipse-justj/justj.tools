@@ -298,6 +298,10 @@ SPDX-License-Identifier: EPL-2.0
              This simple update site will be retained <b>permanently</b>.
            </p>
       <%}%>
+    <%} else if (buildType.matches("[0-9]+-(03|06|09|12)")) {%>
+           <p>
+             This composite update site references the recommended build of version <%=parent.getVersion()%> for SimRel <%=buildType%>.
+           </p>
     <%} else {%>
       <%if (isLatest) {%>
            <p>
