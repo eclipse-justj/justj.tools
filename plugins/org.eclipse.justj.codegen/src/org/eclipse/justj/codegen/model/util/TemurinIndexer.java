@@ -138,6 +138,16 @@ public class TemurinIndexer
       }
       out.println("    ''',");
 
+      out.println("  JDK_URLS_LINUX_PPC64LE: '''");
+      {
+        String jdkURL = getURL(jdkDownloadURLs, "ppc64le_linux");
+        if (jdkURL != null)
+        {
+          out.println("    " + jdkURL);
+        }
+      }
+      out.println("    ''',");
+
       out.println("  BUILD_TYPE: 'nightly',");
       out.println("  PROMOTE: 'true'");
       out.println("]");
@@ -151,7 +161,11 @@ public class TemurinIndexer
       Path target = Paths.get(args[args.length - 1]);
       String contents = Files.readString(target);
       String newGeneratedContents = new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
-      contents = contents.replaceAll("(?s)" + Pattern.quote(BEGIN_MARKER) + ".*" + Pattern.quote(END_MARKER) + "\r?\n", Matcher.quoteReplacement(newGeneratedContents));
+      if (!contents.contains("\r\n") && newGeneratedContents.contains("\r\n"))
+      {
+        newGeneratedContents = newGeneratedContents.replace("\r\n", "\n");
+      }
+      contents = contents.replaceAll("(?s)" + Pattern.quote(BEGIN_MARKER) + ".*?" + Pattern.quote(END_MARKER) + "\r?\n", Matcher.quoteReplacement(newGeneratedContents));
       Files.writeString(target, contents);
     }
   }

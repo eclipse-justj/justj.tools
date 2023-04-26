@@ -523,6 +523,11 @@ public class Reconciler
           label += " aarch 64 bit";
           break;
         }
+        case "ppc64le":
+        {
+          label += " PowerPC little-endian 64 bit";
+          break;
+        }
         default:
         {
           label += " " + arch;

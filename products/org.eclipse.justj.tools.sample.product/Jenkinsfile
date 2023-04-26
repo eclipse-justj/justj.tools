@@ -12,7 +12,7 @@ pipeline {
 
   tools {
     maven 'apache-maven-latest'
-    jdk 'openjdk-jdk11-latest'
+    jdk 'temurin-jdk17-latest'
   }
 
   environment {
@@ -44,7 +44,7 @@ pipeline {
 
     string(
       name: 'ECLIPSE_REPOSITORY',
-      defaultValue: 'https://download.eclipse.org/releases/2022-09',
+      defaultValue: 'https://download.eclipse.org/releases/2023-03',
       description: """${pretty(
         '''
         Choose the URL of the release train repository to use.

@@ -9,7 +9,7 @@ properties.2.name = org.eclipse.equinox.p2.provider
 properties.2.value = Eclipse JustJ
 
 instructions.configure=\
-  setProgramProperty(propName:osgi.requiredJavaVersion,propValue:11);
+  setProgramProperty(propName:osgi.requiredJavaVersion,propValue:17);
 
 instructions.unconfigure=\
   setProgramProperty(propName:osgi.requiredJavaVersion,propValue:);

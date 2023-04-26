@@ -77,7 +77,7 @@ public class POMXML
   protected static final String _51 = "<configuration>";
   protected static final String _52 = "<dependencies>";
   protected static final String _53 = "<dependency>";
-  protected static final String _54 = "<eclipse.repo>https://download.eclipse.org/releases/2022-09</eclipse.repo>";
+  protected static final String _54 = "<eclipse.repo>https://download.eclipse.org/releases/2023-03</eclipse.repo>";
   protected static final String _55 = "<execution>";
   protected static final String _56 = "<executionEnvironment>JavaSE-11</executionEnvironment>";
   protected static final String _57 = "<executions>";
