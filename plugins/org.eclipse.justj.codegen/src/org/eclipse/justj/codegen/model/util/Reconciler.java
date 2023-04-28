@@ -525,7 +525,7 @@ public class Reconciler
         }
         case "ppc64le":
         {
-          label += " PowerPC little-endian 64 bit";
+          label += " ppc le 64 bit";
           break;
         }
         default:
