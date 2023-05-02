@@ -37,7 +37,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -59,6 +61,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.equinox.internal.p2.metadata.BasicVersion;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
+import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
+import org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.internal.repository.tools.AbstractApplication;
 import org.eclipse.equinox.p2.internal.repository.tools.CompositeRepositoryApplication;
@@ -68,8 +72,10 @@ import org.eclipse.equinox.p2.internal.repository.tools.SlicingOptions;
 import org.eclipse.equinox.p2.internal.repository.tools.XZCompressor;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.ILicense;
 import org.eclipse.equinox.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.p2.metadata.IRequirement;
+import org.eclipse.equinox.p2.metadata.MetadataFactory;
 import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -82,7 +88,6 @@ import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.spi.AbstractArtifactRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
-import org.eclipse.equinox.p2.repository.metadata.spi.AbstractMetadataRepository;
 import org.eclipse.justj.codegen.model.util.ModelUtil;
 
 
@@ -480,7 +485,7 @@ public class UpdateSiteGenerator
         @Override
         protected void finalizeRepositories()
         {
-          if (destinationMetadataRepository instanceof AbstractMetadataRepository)
+          if (destinationMetadataRepository instanceof LocalMetadataRepository)
           {
             String repositoryName = projectLabel + ' ' + getRepositoryVersion(destinationMetadataRepository) + ' ' + getLabel(buildType);
             destinationMetadataRepository.setProperty(IRepository.PROP_NAME, repositoryName);
@@ -488,6 +493,36 @@ public class UpdateSiteGenerator
             if (commit != null)
             {
               destinationMetadataRepository.setProperty("commit", commit);
+            }
+
+            boolean updateLicenses = false;
+            for (IInstallableUnit iu : destinationMetadataRepository.query(QueryUtil.createIUGroupQuery(), null))
+            {
+              var licenses = new ArrayList<>(iu.getLicenses());
+              boolean updateLicense = false;
+              for (ListIterator<ILicense> it = licenses.listIterator(); it.hasNext();)
+              {
+                ILicense license = it.next();
+                URI location = license.getLocation();
+                if ("https://www.eclipse.org/legal/epl-2.0/".equals(Objects.toString(location)) && license.getBody().isBlank())
+                {
+                  updateLicenses = updateLicense = true;
+                  it.set(MetadataFactory.createLicense(location, P2Plugin.INSTANCE.getString("sua_2_0")));
+                }
+              }
+
+              if (updateLicense)
+              {
+                ((InstallableUnit)iu).setLicenses(licenses.toArray(ILicense[]::new));
+              }
+            }
+
+            if (updateLicenses)
+            {
+              // Forces save to be called.
+              ((LocalMetadataRepository)destinationMetadataRepository).executeBatch(it ->
+                {
+                }, null);
             }
 
             if (!products.isEmpty())
