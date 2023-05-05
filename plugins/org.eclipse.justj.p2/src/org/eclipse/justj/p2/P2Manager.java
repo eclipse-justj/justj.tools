@@ -551,6 +551,18 @@ public class P2Manager
       String superTargetFolder = getArgument("-super", args, null);
       boolean simrelAlias = getArgument("-simrel-alias", args);
 
+      if (buildTimestamp != null && buildTimestamp.endsWith("Z"))
+      {
+        try
+        {
+          buildTimestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(buildTimestamp));
+        }
+        catch (ParseException exception)
+        {
+          Assert.isTrue(false, "The publish.build.timestamp value '" + buildTimestamp + "'must be of the form yyyy-MM-dd'T'HH:mm:ss'Z' or yyyyMMddHHmm");
+        }
+      }
+
       Map<String, String> nameMappings = new HashMap<>();
       nameMappings.put("jres", "JREs");
       for (String mapping = getArgument("-mapping", args, null); mapping != null; mapping = getArgument("-mapping", args, null))
