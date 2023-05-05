@@ -234,7 +234,7 @@ SPDX-License-Identifier: EPL-2.0
 <%}%>
 <%if (parent.getBodyImage() != null) {%>
           <br/>
-          <img style="float: right; height: 96pt;" src="<%=parent.getBodyImage()%>" alt=""/>
+          <img style="padding-left: .5em; float: right; min-height: 64px; max-height: 96pt;" src="<%=parent.getBodyImage()%>" alt=""/>
 <%}%>
 <%if (parent.isRoot()) {%>
            <p>This is the root folder for <%=parent.getProjectLabel()%> p2 update sites.</p>
@@ -243,7 +243,7 @@ SPDX-License-Identifier: EPL-2.0
   <%}%>
 <%} else {%>
            <p>
-             This is a p2 update site for the <%=parent.getProjectLabel()%>.
+             This is a p2 update site for <%=parent.getProjectLabel()%>.
              Use the <button title="Copy to Clipboard" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#p1')">&#x270e;</button> glyph to copy the update site URL to the system clipboard.
   <%if (parent.hasArchive()) {%>
              Alternatively, you can download the archive of this repository from the download sidebar on the right.

@@ -71,13 +71,13 @@ public class UpdateSiteIndex
   protected final String TEXT_42 = "/index.html\" id=\"";
   protected final String TEXT_43 = "\" style=\"font-size: 100%; font-weight: normal;\">";
   protected final String TEXT_44 = NL + "            </span>" + NL + "          </p>";
-  protected final String TEXT_45 = NL + "          <br/>" + NL + "          <img style=\"float: right; height: 96pt;\" src=\"";
+  protected final String TEXT_45 = NL + "          <br/>" + NL + "          <img style=\"padding-left: .5em; float: right; min-height: 64px; max-height: 96pt;\" src=\"";
   protected final String TEXT_46 = "\" alt=\"\"/>";
   protected final String TEXT_47 = NL + "           <p>This is the root folder for ";
   protected final String TEXT_48 = " p2 update sites.</p>";
   protected final String TEXT_49 = NL + "           <p>These update sites are produced by <a href=\"";
   protected final String TEXT_50 = "</a>.</p>";
-  protected final String TEXT_51 = NL + "           <p>" + NL + "             This is a p2 update site for the ";
+  protected final String TEXT_51 = NL + "           <p>" + NL + "             This is a p2 update site for ";
   protected final String TEXT_52 = "." + NL + "             Use the <button title=\"Copy to Clipboard\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"copyToClipboard('#p1')\">&#x270e;</button> glyph to copy the update site URL to the system clipboard.";
   protected final String TEXT_53 = NL + "             Alternatively, you can download the archive of this repository from the download sidebar on the right.";
   protected final String TEXT_54 = NL + "           </p>";

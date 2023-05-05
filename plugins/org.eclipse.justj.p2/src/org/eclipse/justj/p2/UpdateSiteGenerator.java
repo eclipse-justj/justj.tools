@@ -1597,7 +1597,8 @@ public class UpdateSiteGenerator
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
       {
         IInstallableUnit iu = i.next();
-        if (iuFilterPattern == null || iuFilterPattern.matcher(iu.getId()).matches())
+        String id = iu.getId();
+        if (iuFilterPattern == null || iuFilterPattern.matcher(id).matches())
         {
           String name = iu.getProperty(IInstallableUnit.PROP_NAME, null);
           if ("true".equals(iu.getProperty(InstallableUnitDescription.PROP_TYPE_PRODUCT)))
@@ -1610,12 +1611,13 @@ public class UpdateSiteGenerator
             resultAll.add(name);
           }
 
-          if (iu.getId().endsWith(".sdk.feature.group") && !result.contains(name))
+          if (id.matches(".*\\.sdk([_.-]feature)?\\.feature\\.group") && !result.contains(name))
           {
             result.add(name);
           }
         }
       }
+
       if (result.isEmpty())
       {
         Collections.sort(resultAll);
