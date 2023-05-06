@@ -214,7 +214,7 @@ SPDX-License-Identifier: EPL-2.0
             <button id="<%=mainID%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=mainID%>');">&#x25B7;</button>
   <%}%>
             <button title="Copy to Clipboard" class="orange" style="font-size: 150%; background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#p1')">&#x270e;</button>
-            <span id="p1" style="font-size: 125%"><%if (rawSiteURL != null) {%><a href="<%=rawSiteURL%>" target="_blank"><%=parentSiteURL%></a><%} else {%><%=parentSiteURL%><%}%></span>
+            <span id="p1" style="font-size: 125%"><%=parentSiteURL%><%if (rawSiteURL != null) {%>&nbsp;<a href="<%=rawSiteURL%>" target="_blank" style="font-size: 75%">&#x1f9f0;<%}%></span>
             <span <%if (hasTwisty) {%>style="display: none;" <%}%>id="<%=mainID%>">
   <%if (repositories != null) {
       int count = 0;

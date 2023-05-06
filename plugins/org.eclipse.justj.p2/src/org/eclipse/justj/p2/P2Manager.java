@@ -1241,8 +1241,14 @@ public class P2Manager
      */
     public void dump()
     {
-      err.forEach(System.err::println);
-      out.forEach(System.out::println);
+      if (err != null)
+      {
+        err.forEach(System.err::println);
+      }
+      if (out != null)
+      {
+        out.forEach(System.out::println);
+      }
     }
 
     /**
