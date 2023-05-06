@@ -62,7 +62,7 @@ public class UpdateSiteIndex
   protected final String TEXT_33 = NL + "            <button title=\"Copy to Clipboard\" class=\"orange\" style=\"font-size: 150%; background-color: white; border: none; padding: 0px 0px;\" onclick=\"copyToClipboard('#p1')\">&#x270e;</button>" + NL + "            <span id=\"p1\" style=\"font-size: 125%\">";
   protected final String TEXT_34 = "&nbsp;<a href=\"";
   protected final String TEXT_35 = "\" target=\"_blank\" style=\"font-size: 75%\">&#x1f9f0;";
-  protected final String TEXT_36 = "</span>" + NL + "            <span ";
+  protected final String TEXT_36 = "</a></span>" + NL + "            <span ";
   protected final String TEXT_37 = "style=\"display: none;\" ";
   protected final String TEXT_38 = "id=\"";
   protected final String TEXT_39 = NL + "            <br/>";
