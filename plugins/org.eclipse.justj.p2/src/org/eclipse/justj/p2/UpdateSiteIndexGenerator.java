@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,6 +136,15 @@ public class UpdateSiteIndexGenerator
     {
       folders.add(folder);
     }
+
+    folders.sort(new Comparator<Path>()
+      {
+        @Override
+        public int compare(Path o1, Path o2)
+        {
+          return o2.compareTo(o1);
+        }
+      });
 
     repositoryAnalyzer = updateSiteGenerator.getRepositoryAnalyzer(folders);
   }
