@@ -31,8 +31,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -610,6 +612,12 @@ public class P2Manager
         }
       }
 
+      Set<String> excludes = new LinkedHashSet<>();
+      for (String exclude = getArgument("--exclude", args, null); exclude != null; exclude = getArgument("--exclude", args, null))
+      {
+        excludes.add(exclude);
+      }
+
       String host;
       String hostPath;
       Path absoluteTargetPath = Paths.get(projectRoot).toAbsolutePath().resolve(relativeTargetFolderPath);
@@ -694,31 +702,37 @@ public class P2Manager
           // Use rsync to transfer the remote folder to the local folder.
           // Exclude the large content, i.e., we really only need the metadata of the repositories.
           Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(absoluteSuperTargetPath == null ? absoluteTargetPath : absoluteSuperTargetPath);
-          ProcessLauncher processLauncher = new ProcessLauncher(
-            verbose,
-            "rsync",
-            "-avsh",
-            "--exclude",
-            "*.zip",
-            "--exclude",
-            "*.tar.gz",
-            "--exclude",
-            "*/features",
-            "--exclude",
-            "*/plugins",
-            "--exclude",
-            "*/binary",
-            "--exclude",
-            "*/.blobstore",
-            "--exclude",
-            "*.html",
-            "--exclude",
-            "*/downloads",
-            "--exclude",
-            "*/archive",
-            hostPrefix + hostPath + "/" + (superTargetFolder == null ? relativeTargetFolder : superTargetFolder) + "/",
-            toShellPath(normalizedAbsolutePath));
-
+          List<String> launcherArgs = new ArrayList<>();
+          launcherArgs.addAll(
+            List.of(
+              "rsync",
+              "-avsh",
+              "--exclude",
+              "*.zip",
+              "--exclude",
+              "*.tar.gz",
+              "--exclude",
+              "*/features",
+              "--exclude",
+              "*/plugins",
+              "--exclude",
+              "*/binary",
+              "--exclude",
+              "*/.blobstore",
+              "--exclude",
+              "*.html",
+              "--exclude",
+              "*/downloads",
+              "--exclude",
+              "*/archive"));
+          for (String exclude : excludes)
+          {
+            launcherArgs.add("--exclude");
+            launcherArgs.add(exclude);
+          }
+          launcherArgs.add(hostPrefix + hostPath + "/" + (superTargetFolder == null ? relativeTargetFolder : superTargetFolder) + "/");
+          launcherArgs.add(toShellPath(normalizedAbsolutePath));
+          ProcessLauncher processLauncher = new ProcessLauncher(verbose, launcherArgs.toArray(String[]::new));
           processLauncher.execute();
           if (verbose)
           {
