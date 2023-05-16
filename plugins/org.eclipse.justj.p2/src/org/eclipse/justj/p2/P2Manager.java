@@ -549,6 +549,7 @@ public class P2Manager
       String targetURL = getArgument("-target-url", args, null);
       String versionIU = getArgument("-version-iu", args, null);
       String iuFilterPattern = getArgument("-iu-filter-pattern", args, null);
+      String excludedCategoriesPattern = getArgument("-excluded-categories-pattern", args, null);
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
       boolean simrelAlias = getArgument("-simrel-alias", args);
@@ -775,6 +776,7 @@ public class P2Manager
         retainedNightlyBuilds,
         versionIU,
         iuFilterPattern == null ? null : Pattern.compile(iuFilterPattern),
+        excludedCategoriesPattern == null ? null : Pattern.compile(excludedCategoriesPattern),
         commit,
         breadcrumbs,
         favicon,

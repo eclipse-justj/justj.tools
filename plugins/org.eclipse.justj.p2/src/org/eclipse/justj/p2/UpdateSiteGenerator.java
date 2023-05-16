@@ -207,6 +207,11 @@ public class UpdateSiteGenerator
   private Pattern iuFilterPattern;
 
   /**
+   * A pattern used to match category IUs that should be excluded.
+   */
+  private Pattern excludedCategoriesPattern;
+
+  /**
    * Mappings for specialized upper case conversion.
    */
   private Map<String, String> nameMappings;
@@ -234,6 +239,7 @@ public class UpdateSiteGenerator
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIU a prefix for the IUs that will be used to determine the overall version.
    * @param iuFilterPattern a pattern that must match an IU in order for its details to be reported.
+   * @param excludedCategoriesPattern a pattern used to match category IUs that should be excluded.
    * @param commit the commit ID.
    * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
    * @param favicon the URL of the site's favicon.
@@ -256,6 +262,7 @@ public class UpdateSiteGenerator
     int retainedNightlyBuilds,
     String versionIU,
     Pattern iuFilterPattern,
+    Pattern excludedCategoriesPattern,
     String commit,
     Map<String, String> breadcrumbs,
     String favicon,
@@ -273,6 +280,7 @@ public class UpdateSiteGenerator
     this.targetURL = targetURL;
     this.versionIU = versionIU;
     this.iuFilterPattern = iuFilterPattern;
+    this.excludedCategoriesPattern = excludedCategoriesPattern;
     this.commit = commit;
     this.breadcrumbs = breadcrumbs;
     this.favicon = favicon;
@@ -523,6 +531,13 @@ public class UpdateSiteGenerator
               ((LocalMetadataRepository)destinationMetadataRepository).executeBatch(it ->
                 {
                 }, null);
+            }
+
+            if (excludedCategoriesPattern != null)
+            {
+              Set<IInstallableUnit> excludedCategories = destinationMetadataRepository.query(QueryUtil.createIUCategoryQuery(), null).toSet();
+              excludedCategories.removeIf(iu -> !excludedCategoriesPattern.matcher(iu.getId()).matches());
+              destinationMetadataRepository.removeInstallableUnits(excludedCategories);
             }
 
             if (!products.isEmpty())
