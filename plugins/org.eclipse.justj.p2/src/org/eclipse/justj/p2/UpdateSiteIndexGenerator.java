@@ -258,6 +258,19 @@ public class UpdateSiteIndexGenerator
     return folder.endsWith("latest");
   }
 
+  private UpdateSiteIndexGenerator getLatestUpdateSiteGenerator()
+  {
+    if (isLatest())
+    {
+      List<UpdateSiteIndexGenerator> siblings = getParent().getChildren();
+      if (siblings.size() > 1)
+      {
+        return siblings.get(1);
+      }
+    }
+    return this;
+  }
+
   /**
    * Returns whether this folder has a download archive along with associated SHA digests.
    * @return whether this folder has a download archive along with associated SHA digests.
@@ -266,7 +279,7 @@ public class UpdateSiteIndexGenerator
   {
     // Because we rsync, the files might not actually exist, but ones are always created for simple repositories.
     // So return true if this is a simple repository.
-    return Files.isRegularFile(folder.resolve("content.jar"));
+    return Files.isRegularFile(getLatestUpdateSiteGenerator().folder.resolve("content.jar"));
   }
 
   /**
@@ -275,7 +288,8 @@ public class UpdateSiteIndexGenerator
    */
   public String getArchive()
   {
-    Path archiveFile = updateSiteGenerator.getArchiveFile(folder);
+    UpdateSiteIndexGenerator latestUpdateSiteGenerator = getLatestUpdateSiteGenerator();
+    Path archiveFile = latestUpdateSiteGenerator.updateSiteGenerator.getArchiveFile(latestUpdateSiteGenerator.folder);
     return archiveFile.toString();
   }
 
@@ -285,8 +299,9 @@ public class UpdateSiteIndexGenerator
    */
   public String getArchiveDownloadURL()
   {
-    Path archiveFile = updateSiteGenerator.getArchiveFile(folder);
-    return updateSiteGenerator.getDownloadURL(archiveFile).toString();
+    UpdateSiteIndexGenerator latestUpdateSiteGenerator = getLatestUpdateSiteGenerator();
+    Path archiveFile = latestUpdateSiteGenerator.updateSiteGenerator.getArchiveFile(latestUpdateSiteGenerator.folder);
+    return latestUpdateSiteGenerator.updateSiteGenerator.getDownloadURL(archiveFile).toString();
   }
 
   /**
@@ -296,7 +311,8 @@ public class UpdateSiteIndexGenerator
    */
   public String getDigest(String algorithm)
   {
-    Path archiveFile = updateSiteGenerator.getArchiveFile(folder);
+    UpdateSiteIndexGenerator latestUpdateSiteGenerator = getLatestUpdateSiteGenerator();
+    Path archiveFile = latestUpdateSiteGenerator.updateSiteGenerator.getArchiveFile(latestUpdateSiteGenerator.folder);
     Path digestFile = UpdateSiteGenerator.getDigestFile(archiveFile, algorithm);
     return digestFile.toString();
   }
@@ -851,7 +867,7 @@ public class UpdateSiteIndexGenerator
    */
   public Map<String, String> getCommits()
   {
-    return repositoryAnalyzer.getCommits(updateSiteGenerator.getCommitMappings());
+    return getLatestUpdateSiteGenerator().repositoryAnalyzer.getCommits(updateSiteGenerator.getCommitMappings());
   }
 
   /**
