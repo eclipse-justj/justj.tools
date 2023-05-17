@@ -494,8 +494,10 @@ SPDX-License-Identifier: EPL-2.0
 <%-[Archive]-%>
 <%if (parent.hasArchive()) {
     String archiveName = new File(parent.getArchive()).getName();
-    String sha256Name = new File(parent.getDigest("SHA-256")).getName();
-    String sha512Name = new File(parent.getDigest("SHA-512")).getName();%>
+    String sha256 = parent.getDigest("SHA-256");
+    String sha256Name = new File(sha256).getName();
+    String sha512= parent.getDigest("SHA-512");
+    String sha512Name = new File(sha512).getName();%>
         <div style="padding-top: 100;" id="rightcolumn">
           <div class="sideitem">
             <h6>Downloads</h6>
@@ -503,8 +505,8 @@ SPDX-License-Identifier: EPL-2.0
               <a style="font-size: 75%; font-weight: bold;" href="<%=parent.getArchiveDownloadURL()%>" target="_blank"><%=archiveName%></a>
               <br/>
               <a class="btn btn-warning" style="margin-top: 5pt; font-size: 90%;" href="<%=parent.getArchiveDownloadURL()%>" target="_blank" title="Download <%=archiveName%>">Download</a>
-              <a class="btn btn-warning" style="margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;" href="<%=sha256Name%>" target="_blank" title="Download <%=sha256Name%>">sha256</a>
-              <a class="btn btn-warning" style="margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;" href="<%=sha512Name%>" target="_blank" title="Download <%=sha512Name%>">sha512</a>
+              <a class="btn btn-warning" style="margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;" href="<%=sha256%>" target="_blank" title="Download <%=sha256Name%>">sha256</a>
+              <a class="btn btn-warning" style="margin-top: 5pt; border-color: DarkGreen; background-color: OliveDrab; font-size: 90%; padding-left: 0.2em; padding-right: 0.2em;" href="<%=sha512%>" target="_blank" title="Download <%=sha512Name%>">sha512</a>
             </p>
           </div>
   <%{

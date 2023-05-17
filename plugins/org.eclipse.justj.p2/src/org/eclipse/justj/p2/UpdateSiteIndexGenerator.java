@@ -314,7 +314,11 @@ public class UpdateSiteIndexGenerator
     UpdateSiteIndexGenerator latestUpdateSiteGenerator = getLatestUpdateSiteGenerator();
     Path archiveFile = latestUpdateSiteGenerator.updateSiteGenerator.getArchiveFile(latestUpdateSiteGenerator.folder);
     Path digestFile = UpdateSiteGenerator.getDigestFile(archiveFile, algorithm);
-    return digestFile.toString();
+    if (isLatest())
+    {
+      return "../" + latestUpdateSiteGenerator.folder.getFileName() + "/" + digestFile.getFileName();
+    }
+    return digestFile.getFileName().toString();
   }
 
   /**

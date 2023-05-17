@@ -647,8 +647,10 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_145);
     if (parent.hasArchive()) {
     String archiveName = new File(parent.getArchive()).getName();
-    String sha256Name = new File(parent.getDigest("SHA-256")).getName();
-    String sha512Name = new File(parent.getDigest("SHA-512")).getName();
+    String sha256 = parent.getDigest("SHA-256");
+    String sha256Name = new File(sha256).getName();
+    String sha512= parent.getDigest("SHA-512");
+    String sha512Name = new File(sha512).getName();
     stringBuffer.append(TEXT_146);
     stringBuffer.append(parent.getArchiveDownloadURL());
     stringBuffer.append(TEXT_51);
@@ -658,11 +660,11 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_148);
     stringBuffer.append(archiveName);
     stringBuffer.append(TEXT_149);
-    stringBuffer.append(sha256Name);
+    stringBuffer.append(sha256);
     stringBuffer.append(TEXT_148);
     stringBuffer.append(sha256Name);
     stringBuffer.append(TEXT_150);
-    stringBuffer.append(sha512Name);
+    stringBuffer.append(sha512);
     stringBuffer.append(TEXT_148);
     stringBuffer.append(sha512Name);
     stringBuffer.append(TEXT_151);
