@@ -1277,7 +1277,7 @@ public class UpdateSiteGenerator
    */
   public Path getArchiveFile(Path repository)
   {
-    String name = projectLabel.replaceAll("[\\p{javaWhitespace}\u0020\u2000-\u200A\u202f\205F\3000]+", "-") + "-Updates-" + repository.getFileName() + ".zip";
+    String name = projectLabel.replaceAll("[\\p{javaWhitespace}\u0020\u2000-\u200A\u202f\u205F\u3000]+", "-") + "-Updates-" + repository.getFileName() + ".zip";
     return repository.resolve(name);
   }
 
