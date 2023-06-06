@@ -541,6 +541,7 @@ public class P2Manager
       String remote = getArgument("-remote", args, null);
       String sourceRepository = getArgument("-promote", args, null);
       String productsFolder = getArgument("-promote-products", args, null);
+      List<String> downloads = getArguments("-downloads", args, Collections.emptyList());
       String buildTimestamp = getArgument("-timestamp", args, null);
       String buildType = getArgument("-type", args, null);
       String favicon = getArgument("-favicon", args, "https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/favicon.ico");
@@ -765,6 +766,17 @@ public class P2Manager
         }
       }
 
+      List<Path> downloadPaths = new ArrayList<>();
+      for (String download : downloads)
+      {
+        Path downloadPath = Paths.get(download).toRealPath().normalize();
+        if (!Files.isRegularFile(downloadPath))
+        {
+          throw new IllegalArgumentException("The download file does not exist: " + downloadPath);
+        }
+        downloadPaths.add(downloadPath);
+      }
+
       UpdateSiteGenerator updateSiteGenerator = new UpdateSiteGenerator(
         projectLabel,
         buildURL,
@@ -772,6 +784,7 @@ public class P2Manager
         relativeTargetFolderPath,
         relativeSuperTargetFolderPath,
         products,
+        downloadPaths,
         targetURL,
         retainedNightlyBuilds,
         versionIU,
@@ -959,7 +972,7 @@ public class P2Manager
     }
 
     /**
-     * Strip and argument that has a value after it.
+     * Strip an argument that has a value after it.
      * @param name  the name of the argument.
      * @param args the target arguments.
      * @param defaultValue the value to return when the argument is not present.
@@ -990,6 +1003,37 @@ public class P2Manager
           throw new IllegalArgumentException("An argument value is expected after " + name);
         }
         return args.remove(index);
+      }
+    }
+
+    /**
+     * Strip an argument that has multiple values after it.
+     * @param name  the name of the argument.
+     * @param args the target arguments.
+     * @param defaultValue the value to return when the argument is not present.
+     * @return the values of the argument.
+     */
+    private List<String> getArguments(String name, List<String> args, List<String> defaultValue)
+    {
+      int index = args.indexOf(name);
+      if (index == -1)
+      {
+        return defaultValue;
+      }
+      else
+      {
+        args.remove(index);
+        if (index >= args.size())
+        {
+          throw new IllegalArgumentException("An argument value is expected after " + name);
+        }
+
+        List<String> result = new ArrayList<>();
+        while (index < args.size() && !args.get(index).startsWith("-"))
+        {
+          result.add(args.remove(index));
+        }
+        return result;
       }
     }
 

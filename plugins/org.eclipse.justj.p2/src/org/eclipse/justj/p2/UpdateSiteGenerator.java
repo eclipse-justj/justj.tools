@@ -202,6 +202,12 @@ public class UpdateSiteGenerator
   private List<Path> products;
 
   /**
+   * A list of download artifacts to be maintained within the update site.
+   *
+   */
+  private List<Path> downloads;
+
+  /**
    * A pattern that must match an IU in order for its details to be reported.
    */
   private Pattern iuFilterPattern;
@@ -235,6 +241,7 @@ public class UpdateSiteGenerator
    * @param relativeTargetFolder the relative location below the root at which to target the generation.
    * @param relativeSuperTargetFolder the relative location below the root and above the {@code relativeTargetFolder} at which to generate a super index.
    * @param products the list of products to be maintained within the update site.
+   * @param downloads the list of download artifacts to be maintained within the update site.
    * @param targetURL the URL at which the site will live once promoted.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIU a prefix for the IUs that will be used to determine the overall version.
@@ -258,6 +265,7 @@ public class UpdateSiteGenerator
     Path relativeTargetFolder,
     Path relativeSuperTargetFolder,
     List<Path> products,
+    List<Path> downloads,
     String targetURL,
     int retainedNightlyBuilds,
     String versionIU,
@@ -277,6 +285,7 @@ public class UpdateSiteGenerator
     this.buildURL = buildURL;
     this.relativeSuperTargetFolder = relativeSuperTargetFolder;
     this.products = products;
+    this.downloads = downloads;
     this.targetURL = targetURL;
     this.versionIU = versionIU;
     this.iuFilterPattern = iuFilterPattern;
@@ -558,6 +567,46 @@ public class UpdateSiteGenerator
 
                   Files.copy(product, productTarget);
                   Path digest = createDigest(productTarget, "SHA-512");
+                  if (verbose)
+                  {
+                    System.out.println("Created digest '" + digest + "'");
+                  }
+                }
+                catch (IOException e)
+                {
+                  throw new RuntimeException(e);
+                }
+              }
+            }
+
+            if (!downloads.isEmpty())
+            {
+              destinationMetadataRepository.setProperty(
+                "downloads",
+                downloads.stream().map(it -> org.eclipse.emf.common.util.URI.createFileURI(it.toString()).lastSegment()).collect(Collectors.joining(" ")));
+
+              Path downloadsFolder = destination.resolve("downloads");
+              try
+              {
+                Files.createDirectory(downloadsFolder);
+              }
+              catch (IOException e)
+              {
+                throw new RuntimeException(e);
+              }
+
+              for (Path download : downloads)
+              {
+                try
+                {
+                  Path downloadTarget = downloadsFolder.resolve(download.getFileName());
+                  if (verbose)
+                  {
+                    System.out.println("Mirroring download '" + download + "' to '" + downloadTarget + "'");
+                  }
+
+                  Files.copy(download, downloadTarget);
+                  Path digest = createDigest(downloadTarget, "SHA-512");
                   if (verbose)
                   {
                     System.out.println("Created digest '" + digest + "'");
@@ -1866,6 +1915,16 @@ public class UpdateSiteGenerator
     {
       String products = getMetadataRepository().getProperty("products");
       return products == null ? Collections.emptyList() : Arrays.asList(products.split(" "));
+    }
+
+    /**
+     * Returns the downloads of this site.
+     * return the downloads of this site.
+     */
+    public List<String> getDownloads()
+    {
+      String downloads = getMetadataRepository().getProperty("downloads");
+      return downloads == null ? Collections.emptyList() : Arrays.asList(downloads.split(" "));
     }
 
     /**

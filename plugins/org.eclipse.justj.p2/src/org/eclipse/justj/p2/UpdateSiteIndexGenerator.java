@@ -762,6 +762,37 @@ public class UpdateSiteIndexGenerator
     return updateSiteGenerator.getDownloadURL(folder.resolve(org.eclipse.emf.common.util.URI.decode(product)));
   }
 
+  /**
+   * Returns the downloads of this site.
+   * @return the downloads of this site.
+   */
+  public List<String> getDownloads()
+  {
+    return getLatestUpdateSiteGenerator().repositoryAnalyzer.getDownloads();
+  }
+
+  /**
+   * Returns the URL for downloading the given download artifact.
+   * @param downloadArtifact the artifact for which a download URL is needed.
+   * @return the URL for downloading the given artifact.
+   */
+  public String getArtifactDownloadURI(String downloadArtifact)
+  {
+    UpdateSiteIndexGenerator latestUpdateSiteGenerator = getLatestUpdateSiteGenerator();
+    return updateSiteGenerator.getDownloadURL(latestUpdateSiteGenerator.folder.resolve("downloads/" + org.eclipse.emf.common.util.URI.decode(downloadArtifact)));
+  }
+
+  /**
+   * Returns the URL for downloading the SHA512 for given download artifact.
+   * @param downloadArtifact the artifact for which a SHA512 download URL is needed.
+   * @return the URL for downloading the SHA512 of given artifact.
+   */
+  public String getArtifactSHA512URI(String downloadArtifact)
+  {
+    UpdateSiteIndexGenerator latestUpdateSiteGenerator = getLatestUpdateSiteGenerator();
+    return folder.relativize(latestUpdateSiteGenerator.folder.resolve("downloads/" + org.eclipse.emf.common.util.URI.decode(downloadArtifact) + ".sha512")).toString();
+  }
+
   public String getBundleSize(String bundle)
   {
     getBundles();

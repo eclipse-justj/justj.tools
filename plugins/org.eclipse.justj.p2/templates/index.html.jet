@@ -403,7 +403,25 @@ SPDX-License-Identifier: EPL-2.0
       <%for (String product : products) {%>
            <li>
              <a href="<%=parent.getProductDownloadURI(product)%>"><%=URI.decode(product)%></a>
-             <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; padding: 0.2em;" href="<%=product%>.sha512" target="_blank" title="Download <%=product%>.sha512">sha512</a>
+             <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;" href="<%=product%>.sha512" target="_blank" title="Download <%=product%>.sha512">sha512</a>
+           </li>
+      <%}%>
+           </ul>
+    <%}
+    }%>
+  <%-[Downloads]-%>
+  <%{
+      List<String> downloads = parent.getDownloads();
+      if (!downloads.isEmpty()) {%>
+           <h3><%=parent.getProjectLabel()%> Downloads</h3>
+           <p>
+             This update site provides access to the download artifacts listed below.
+           </p>
+           <ul style="list-style-type: none; padding-left: 1em;">
+      <%for (String download : downloads) {%>
+           <li>
+             <a href="<%=parent.getArtifactDownloadURI(download)%>"><%=URI.decode(download)%></a>
+             <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;" href="<%=parent.getArtifactSHA512URI(download)%>" target="_blank" title="Download <%=download%>.sha512">sha512</a>
            </li>
       <%}%>
            </ul>
