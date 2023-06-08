@@ -244,7 +244,7 @@ SPDX-License-Identifier: EPL-2.0
 <%} else {%>
            <p>
              This is a p2 update site for <%=parent.getProjectLabel()%>.
-             Use the <button title="Copy to Clipboard" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#p1')">&#x270e;</button> glyph to copy the update site URL to the system clipboard.
+             Use the <button title="Copy to Clipboard" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="copyToClipboard('#p1')">&#x270e;</button> icon to copy the update site URL to the system clipboard.
   <%if (parent.hasArchive()) {%>
              Alternatively, you can download the archive of this repository from the download sidebar on the right.
   <%}%>
@@ -328,8 +328,10 @@ SPDX-License-Identifier: EPL-2.0
   <%}%>
 <%}%>
 <%if (!children.isEmpty()) {%>
+  <%-[SDKs]-%>
   <%List<String> sdks = parent.getSDKs();
     if (!sdks.isEmpty()) {%>
+           <h3><%=parent.getProjectLabel()%> SDKs</h3>
            <p>This update site provides access to the following features:</p>
            <ul>
     <%for (String sdk : sdks) {%>
@@ -340,7 +342,7 @@ SPDX-License-Identifier: EPL-2.0
            <p>
              The update sites listed below provide access to specific versions of the features listed above.
   <%if (parent.isRoot()) {%>
-             Use the <button title="Copy to Clipboard" class="orange" style="background-color: white; border: none; padding: 0px 0px;">&#x270e;</button> glyph to copy the update site URL to the system clipboard.
+             Use the <button title="Copy to Clipboard" class="orange" style="background-color: white; border: none; padding: 0px 0px;">&#x270e;</button> icon to copy the update site URL to the system clipboard.
   <%}%>
            </p>
   <%for (UpdateSiteIndexGenerator child : children) {
@@ -361,8 +363,10 @@ SPDX-License-Identifier: EPL-2.0
              <a href="<%=resourceURL%>" target="model"><%if (resourceURL.startsWith("justj.")) {%><img style="height: 2ex; white-space: nowrap; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/><%=resourceURL.substring(5)%><%} else {%><%=resourceURL%><%}%></a>.
            </p>
   <%}%>
+  <%-[Features]-%>
   <%Map<String, List<String>> features = parent.getFeatures();
     if (!features.isEmpty()) {%>
+           <h3><%=parent.getProjectLabel()%> Features</h3>
            <p>
              This update site provides access to the following features.
              Each section is expandable via
@@ -371,7 +375,7 @@ SPDX-License-Identifier: EPL-2.0
         for (String feature : features.keySet()) {
           onClick.append("expand('").append(parent.getFolderID(feature) + "_feature").append("', 'all_features');");
         }%>
-             <span style="white-space: nowrap;">the&nbsp;<button id="all_features" title="Expand All" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="toggle('all_features');<%=onClick%>">&#x25B7;</button>&nbsp;glyph</span>
+             <span style="white-space: nowrap;">the&nbsp;<button id="all_features" title="Expand All" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="toggle('all_features');<%=onClick%>">&#x25B7;</button>&nbsp;icon</span>
     <%}%>
              to provide detailed information about the requirements of each feature.
            </p>
@@ -419,7 +423,7 @@ SPDX-License-Identifier: EPL-2.0
            </p>
            <ul style="list-style-type: none; padding-left: 1em;">
       <%for (String download : downloads) {%>
-           <li>
+           <li style="font-size: 90%;">
              <a href="<%=parent.getArtifactDownloadURI(download)%>"><%=URI.decode(download)%></a>
              <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;" href="<%=parent.getArtifactSHA512URI(download)%>" target="_blank" title="Download <%=download%>.sha512">sha512</a>
            </li>
@@ -439,22 +443,22 @@ SPDX-License-Identifier: EPL-2.0
         for (String bundle : bundles.keySet()) {
           onClick.append("expand('").append(parent.getFolderID(bundle)).append("', 'all');");
         }%>
-             <span style="white-space: nowrap;">the&nbsp;<button id="all" title="Expand All" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="toggle('all');<%=onClick%>">&#x25B7;</button>&nbsp;glyph</span>
+             <span style="white-space: nowrap;">the&nbsp;<button id="all" title="Expand All" class="orange" style="background-color: white; border: none; padding: 0px 0px;" onclick="toggle('all');<%=onClick%>">&#x25B7;</button>&nbsp;icon</span>
     <%}%>
              to provide detailed information about the exports and imports of each bundle.
            </p>
            <ul>
              <li>
-               The &#x21D6; glyph denotes the exported bundle identifier along with its full version.
+               The &#x21D6; icon denotes the exported bundle identifier along with its full version.
              </li>
              <li>
-               The &#x2196; glyph denotes an exported java package along with its full version, if specified.
+               The &#x2196; icon denotes an exported java package along with its full version, if specified.
              </li>
              <li>
-               The &#x21D8; glyph denotes a required bundle along with its version range, if specified, as well as information about whether the requirement is optional and if so, whether it's greedy.
+               The &#x21D8; icon denotes a required bundle along with its version range, if specified, as well as information about whether the requirement is optional and if so, whether it's greedy.
              </li>
              <li>
-               The &#x2198; glyph denotes a required package along with its version range, if specified.
+               The &#x2198; icon denotes a required package along with its version range, if specified.
              </li>
            </ul>
 
