@@ -1903,25 +1903,32 @@ public class UpdateSiteGenerator
             }
           }
 
+          var mavenRepository = iu.getProperty("maven-repository");
+          var wrapped = false;
+
           var mavenGroupId = iu.getProperty("maven-groupId");
           if (mavenGroupId == null)
           {
             mavenGroupId = iu.getProperty("maven-wrapped-groupId");
+            wrapped = true;
           }
 
           var mavenArtifactId = iu.getProperty("maven-artifactId");
           if (mavenArtifactId == null)
           {
             mavenArtifactId = iu.getProperty("maven-wrapped-artifactId");
+            wrapped = true;
           }
 
           var mavenVersion = iu.getProperty("maven-version");
           if (mavenVersion == null)
           {
             mavenVersion = iu.getProperty("maven-wrapped-version");
+            wrapped = true;
           }
 
-          if (mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
+          if ((wrapped || "central".equals(mavenRepository) || "eclipse.maven.central.mirror".equals(mavenRepository)) && //
+            mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
           {
             lines.add(
               0,
