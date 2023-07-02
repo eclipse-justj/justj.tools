@@ -1907,7 +1907,8 @@ public class UpdateSiteGenerator
           var mavenArtifactId = iu.getProperty("maven-artifactId");
           var mavenVersion = iu.getProperty("maven-version");
           var mavenRepository = iu.getProperty("maven-repository");
-          if ("central".equals(mavenRepository) && mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
+          if (("central".equals(mavenRepository) || "eclipse.maven.central.mirror".equals(mavenRepository)) && //
+            mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
           {
             lines.add(
               0,
