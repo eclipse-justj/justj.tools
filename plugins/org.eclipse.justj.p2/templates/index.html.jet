@@ -433,6 +433,7 @@ SPDX-License-Identifier: EPL-2.0
     }%>
   <%-[Bundles]-%>
   <%Map<String, List<String>> bundles = parent.getBundles();
+    boolean hasMavenLinks = bundles.values().stream().flatMap(Collection::stream).anyMatch(it -> it.contains("\u21d3"));
     if (!bundles.isEmpty()) {%>
            <h3><%=parent.getProjectLabel()%> Bundles</h3>
            <p>
@@ -448,6 +449,11 @@ SPDX-License-Identifier: EPL-2.0
              to provide detailed information about the exports and imports of each bundle.
            </p>
            <ul>
+    <%if (hasMavenLinks) {%>
+             <li>
+               The &#x21D3; icon denotes a link to the Maven Central source of the bundle. 
+             </li>
+    <%}%>
              <li>
                The &#x21D6; icon denotes the exported bundle identifier along with its full version.
              </li>
@@ -518,7 +524,7 @@ SPDX-License-Identifier: EPL-2.0
     String archiveName = new File(parent.getArchive()).getName();
     String sha256 = parent.getDigest("SHA-256");
     String sha256Name = new File(sha256).getName();
-    String sha512= parent.getDigest("SHA-512");
+    String sha512 = parent.getDigest("SHA-512");
     String sha512Name = new File(sha512).getName();%>
         <div style="padding-top: 100;" id="rightcolumn">
           <div class="sideitem">

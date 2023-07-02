@@ -1776,7 +1776,7 @@ public class UpdateSiteGenerator
      * @param bundleSizes returns the computed sizes of the associated artifact.
      * @param bundleDetails returns the computed additional properties.
      * @param iuBundleDetails provides the computed additional properties.
-     * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
+     * @param iuFilterPattern a pattern that must match the ID of each IU or <code>null</code> if all IUs are to be considered.
      * @return a map from bundle name to a list of information for that bundle for each bundle in the repository.
      */
     public Map<String, List<String>> getBundles(
@@ -1901,6 +1901,18 @@ public class UpdateSiteGenerator
                 lines.add(line);
               }
             }
+          }
+
+          var mavenGroupId = iu.getProperty("maven-groupId");
+          var mavenArtifactId = iu.getProperty("maven-artifactId");
+          var mavenVersion = iu.getProperty("maven-version");
+          var mavenRepository = iu.getProperty("maven-repository");
+          if ("central".equals(mavenRepository) && mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
+          {
+            lines.add(
+              0,
+              "\u21d3 <a href='" + "https://repo1.maven.org/maven2/" + mavenGroupId.replace('.', '/') + "/" + mavenArtifactId + "/" + mavenVersion + "' target='maven-central'>"
+                + mavenGroupId + "<b style='color: black;'>\u2009:\u2009</b>" + mavenArtifactId + "<b style='color: black;'>\u2009:\u2009</b>" + mavenVersion + "</a>");
           }
         }
       }
