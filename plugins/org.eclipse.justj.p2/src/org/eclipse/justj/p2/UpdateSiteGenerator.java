@@ -1904,11 +1904,24 @@ public class UpdateSiteGenerator
           }
 
           var mavenGroupId = iu.getProperty("maven-groupId");
+          if (mavenGroupId == null)
+          {
+            mavenGroupId = iu.getProperty("maven-wrapped-groupId");
+          }
+
           var mavenArtifactId = iu.getProperty("maven-artifactId");
+          if (mavenArtifactId == null)
+          {
+            mavenArtifactId = iu.getProperty("maven-wrapped-artifactId");
+          }
+
           var mavenVersion = iu.getProperty("maven-version");
-          var mavenRepository = iu.getProperty("maven-repository");
-          if (("central".equals(mavenRepository) || "eclipse.maven.central.mirror".equals(mavenRepository)) && //
-            mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
+          if (mavenVersion == null)
+          {
+            mavenVersion = iu.getProperty("maven-wrapped-version");
+          }
+
+          if (mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
           {
             lines.add(
               0,
