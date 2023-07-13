@@ -364,7 +364,7 @@ public class Reconciler
 
       if (jvm.getAboutTextExtra() == null)
       {
-        String aboutTextExtra = "\nVisit http://www.eclipse.org/justj";
+        String aboutTextExtra = "\nVisit https://eclipse.dev/justj";
         String vendor = properties.getProperty("org.eclipse.justj.url.vendor");
         aboutTextExtra += "\n\nProvides Java Runtimes derived from " + vendor + ".";
         jvm.setAboutTextExtra(aboutTextExtra);

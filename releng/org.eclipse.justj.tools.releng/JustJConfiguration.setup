@@ -13,7 +13,7 @@
     </detail>
     <detail
         key="siteURI">
-      <value>https://www.eclipse.org/justj/</value>
+      <value>https://eclipse.dev/justj/</value>
     </detail>
   </annotation>
   <installation
@@ -180,7 +180,7 @@
   </workspace>
   <description>
     &lt;p>
-    The &lt;a href=&quot;https://www.eclipse.org/justj&quot;/>JustJ&lt;/a> Development Environment configuration provisions a dedicated development environment 
+    The &lt;a href=&quot;https://eclipse.dev/justj&quot;/>JustJ&lt;/a> Development Environment configuration provisions a dedicated development environment 
     for the complete set of source projects used by &lt;a href=&quot;https://ci.eclipse.org/justj/&quot;>JustJ's build server&lt;/a> 
     to produce and manage &lt;a href=&quot;https://download.eclipse.org/justj&quot;>JustJ's downloads&lt;/a>
     as well as the projects used to maintain the JustJ websites.
@@ -194,7 +194,7 @@
     are available, organized into working sets, and ready for contribution.
     &lt;/p>
     &lt;/p>
-    Please &lt;a href=&quot;https://www.eclipse.org/justj/?page=developer#setup&quot;>read the documentation&lt;/a> for more details.
+    Please &lt;a href=&quot;https://eclipse.dev/justj/?page=developer#setup&quot;>read the documentation&lt;/a> for more details.
     &lt;/p>
   </description>
 </setup:Configuration>

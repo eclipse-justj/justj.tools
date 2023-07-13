@@ -99,8 +99,8 @@ public class JdepsIndex
   protected static final String _41 = "</ul>";
   protected static final String _42 = "<a href=\"";
   protected static final String _43 = "<a href=\"#";
-  protected static final String _44 = "<a href=\"https://www.eclipse.org/justj?page=index\">";
-  protected static final String _45 = "<a href=\"justj.modules\" target=\"modules\" style=\"float: right; font-size: 75%;\"><img style=\"height: 2ex; display: inline-block;\" alt=\"justj\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>.modules</a>";
+  protected static final String _44 = "<a href=\"https://eclipse.dev/justj?page=index\">";
+  protected static final String _45 = "<a href=\"justj.modules\" target=\"modules\" style=\"float: right; font-size: 75%;\"><img style=\"height: 2ex; display: inline-block;\" alt=\"justj\" src=\"https://eclipse.dev/justj/justj_title.svg\"/>.modules</a>";
   protected static final String _46 = "<a style=\"font-size: 66%;\" href=\"";
   protected static final String _47 = "<body id=\"body_solstice\">";
   protected static final String _48 = "<br/>";
@@ -124,7 +124,7 @@ public class JdepsIndex
   protected static final String _66 = "<header role=\"banner\" id=\"header-wrapper\">";
   protected static final String _67 = "<hr/>";
   protected static final String _68 = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
-  protected static final String _69 = "<img class=\"logo-eclipse-default img-responsive hidden-xs\" style=\"height: 50px; white-space: nowrap; display: inline-block;\" alt=\"Project Logo\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
+  protected static final String _69 = "<img class=\"logo-eclipse-default img-responsive hidden-xs\" style=\"height: 50px; white-space: nowrap; display: inline-block;\" alt=\"Project Logo\" src=\"https://eclipse.dev/justj/justj_title.svg\"/>";
   protected static final String _70 = "<input name=\"module-split-packages\" type=\"checkbox\" onclick=\"filter(this.checked, 'mod-deps', 'split-package');\" onload=\"this.value = '';\"/>";
   protected static final String _71 = "<input name=\"plugin-errors\" type=\"checkbox\" onclick=\"filter(this.checked, 'plugin-deps', 'jdeps-error');\" onload=\"this.value = '';\"/>";
   protected static final String _72 = "<input type=\"checkbox\" id=\"toggle-id-";
@@ -137,11 +137,11 @@ public class JdepsIndex
   protected static final String _79 = "<li>";
   protected static final String _80 = "<li><a href=\"";
   protected static final String _81 = "<li><a href=\"https://download.eclipse.org/justj/jdeps\">Jdeps</a></li>";
-  protected static final String _82 = "<li><a href=\"https://www.eclipse.org/\">Home</a></li>";
-  protected static final String _83 = "<li><a href=\"https://www.eclipse.org/justj?page=download\">JustJ</a></li>";
+  protected static final String _82 = "<li><a href=\"https://eclipse.dev/justj?page=download\">JustJ</a></li>";
+  protected static final String _83 = "<li><a href=\"https://www.eclipse.org/\">Home</a></li>";
   protected static final String _84 = "<li><a href=\"https://www.eclipse.org/projects/\">Projects</a></li>";
   protected static final String _85 = "<link href=\"//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100\" rel=\"stylesheet\" type=\"text/css\"/>";
-  protected static final String _86 = "<link rel=\"icon\" type=\"image/ico\" href=\"https://www.eclipse.org/justj/justj_favicon.ico\"/>";
+  protected static final String _86 = "<link rel=\"icon\" type=\"image/ico\" href=\"https://eclipse.dev/justj/justj_favicon.ico\"/>";
   protected static final String _87 = "<link rel=\"stylesheet\" href=\"https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css\"/>";
   protected static final String _88 = "<main class=\"no-promo\">";
   protected static final String _89 = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>";
@@ -234,7 +234,7 @@ public class JdepsIndex
   protected final String NL_9 = NL + "              ";
   protected final String NL_10 = NL + "                ";
   protected final String _168 = _20 + NL + _68 + NL + _65 + NL_1 + _89 + NL_1 + _99;
-  protected final String _169 = _40 + NL_1 + _91 + NL_1 + _90 + NL_1 + _85 + NL_1 + _87 + NL_1 + _86 + NL_1 + _94 + NL_1 + _95 + NL_3 + _131 + NL_4 + _154 + NL_4 + _153 + NL_4 + _161 + NL_4 + _165 + NL_4 + _129 + NL_6 + _158 + NL_6 + _137 + NL_4 + _167 + NL_3 + _167 + NL + NL_3 + _132 + NL_4 + _154 + NL_4 + _155 + NL_4 + _128 + NL_6 + _162 + NL_6 + _150 + NL_4 + _167 + NL_4 + _134 + NL_6 + _156 + NL_6 + _164 + NL_6 + _129 + NL_8 + _163 + NL_8 + _151 + NL_8 + _130 + NL_9 + _135 + NL_10 + _149 + NL_9 + _167 + NL_8 + _167 + NL_6 + _167 + NL_4 + _167 + NL_3 + _167 + NL + NL_3 + _160 + NL_3 + _166 + NL_4 + _124 + NL_4 + _159 + NL_4 + _127 + NL_6 + _157 + NL_6 + _138 + NL_4 + _167 + NL_4 + _136 + NL_6 + _143 + NL_4 + _167 + NL_3 + _167 + NL_1 + _36 + NL + _28 + NL + NL_1 + _47 + NL_2 + _98 + NL + _12 + NL_1 + _123 + NL + _167 + NL + NL + _14 + NL_1 + _125 + NL_1 + _140 + NL_1 + _126 + NL + _167 + NL + NL + _9 + NL_1 + _141 + NL_1 + _144 + NL_1 + _147 + NL_1 + _152 + NL + _167 + NL + NL + _11 + NL_1 + _123 + NL + _167 + NL + NL + _10 + NL_1 + _122 + NL + _167 + NL + NL + _18 + NL_1 + _122 + NL + _167 + NL + NL + _17 + NL_1 + _123 + NL + _167 + NL + NL + _16 + NL_1 + _142 + NL_1 + _145 + NL + _167 + NL + NL + _13 + NL_1 + _148 + NL + _167 + NL + NL + _15 + NL_1 + _121 + NL + _167 + NL + NL + _8 + NL_1 + _120 + NL + _167 + NL + NL + _139 + NL_1 + _119 + NL + _167 + NL_2 + _39 + NL + NL_2 + _66 + NL_3 + _51 + NL_4 + _55 + NL_6 + _53 + NL_8 + _57 + NL_9 + _44 + NL_10 + _69 + NL_9 + _21 + NL_8 + _25 + NL_6 + _25 + NL_4 + _25 + NL_3 + _25 + NL_2 + _29 + NL + NL_2 + _96 + NL_3 + _51 + NL_4 + _63 + NL_4 + _56 + NL_6 + _49 + NL_8 + _92 + NL_9 + _82 + NL_9 + _84 + NL_9 + _83 + NL_9 + _81;
+  protected final String _169 = _40 + NL_1 + _91 + NL_1 + _90 + NL_1 + _85 + NL_1 + _87 + NL_1 + _86 + NL_1 + _94 + NL_1 + _95 + NL_3 + _131 + NL_4 + _154 + NL_4 + _153 + NL_4 + _161 + NL_4 + _165 + NL_4 + _129 + NL_6 + _158 + NL_6 + _137 + NL_4 + _167 + NL_3 + _167 + NL + NL_3 + _132 + NL_4 + _154 + NL_4 + _155 + NL_4 + _128 + NL_6 + _162 + NL_6 + _150 + NL_4 + _167 + NL_4 + _134 + NL_6 + _156 + NL_6 + _164 + NL_6 + _129 + NL_8 + _163 + NL_8 + _151 + NL_8 + _130 + NL_9 + _135 + NL_10 + _149 + NL_9 + _167 + NL_8 + _167 + NL_6 + _167 + NL_4 + _167 + NL_3 + _167 + NL + NL_3 + _160 + NL_3 + _166 + NL_4 + _124 + NL_4 + _159 + NL_4 + _127 + NL_6 + _157 + NL_6 + _138 + NL_4 + _167 + NL_4 + _136 + NL_6 + _143 + NL_4 + _167 + NL_3 + _167 + NL_1 + _36 + NL + _28 + NL + NL_1 + _47 + NL_2 + _98 + NL + _12 + NL_1 + _123 + NL + _167 + NL + NL + _14 + NL_1 + _125 + NL_1 + _140 + NL_1 + _126 + NL + _167 + NL + NL + _9 + NL_1 + _141 + NL_1 + _144 + NL_1 + _147 + NL_1 + _152 + NL + _167 + NL + NL + _11 + NL_1 + _123 + NL + _167 + NL + NL + _10 + NL_1 + _122 + NL + _167 + NL + NL + _18 + NL_1 + _122 + NL + _167 + NL + NL + _17 + NL_1 + _123 + NL + _167 + NL + NL + _16 + NL_1 + _142 + NL_1 + _145 + NL + _167 + NL + NL + _13 + NL_1 + _148 + NL + _167 + NL + NL + _15 + NL_1 + _121 + NL + _167 + NL + NL + _8 + NL_1 + _120 + NL + _167 + NL + NL + _139 + NL_1 + _119 + NL + _167 + NL_2 + _39 + NL + NL_2 + _66 + NL_3 + _51 + NL_4 + _55 + NL_6 + _53 + NL_8 + _57 + NL_9 + _44 + NL_10 + _69 + NL_9 + _21 + NL_8 + _25 + NL_6 + _25 + NL_4 + _25 + NL_3 + _25 + NL_2 + _29 + NL + NL_2 + _96 + NL_3 + _51 + NL_4 + _63 + NL_4 + _56 + NL_6 + _49 + NL_8 + _92 + NL_9 + _83 + NL_9 + _84 + NL_9 + _82 + NL_9 + _81;
   protected final String _170 = NL_9 + _76;
   protected final String _171 = NL_9 + _79;
   protected final String _172 = NL_9 + _80;

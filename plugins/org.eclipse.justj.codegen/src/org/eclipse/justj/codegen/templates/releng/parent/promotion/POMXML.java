@@ -28,13 +28,13 @@ public class POMXML
   protected static final String _2 = "${org.eclipse.justj.p2.manager.extra.args}";
   protected static final String _3 = "-->";
   protected static final String _4 = "-application org.eclipse.justj.p2.manager";
-  protected static final String _5 = "-body-image https://www.eclipse.org/justj/justj.svg";
-  protected static final String _6 = "-breadcrumb \"JustJ https://www.eclipse.org/justj/?page=download\"";
+  protected static final String _5 = "-body-image https://eclipse.dev/justj/justj.svg";
+  protected static final String _6 = "-breadcrumb \"JustJ https://eclipse.dev/justj/?page=download\"";
   protected static final String _7 = "-build-url ${org.eclipse.justj.p2.manager.build.url}";
   protected static final String _8 = "-commit https://github.com/eclipse-justj/justj/commit/${git.commit}";
   protected static final String _9 = "-consoleLog";
   protected static final String _10 = "-data @None";
-  protected static final String _11 = "-favicon https://www.eclipse.org/justj/justj_favicon.ico";
+  protected static final String _11 = "-favicon https://eclipse.dev/justj/justj_favicon.ico";
   protected static final String _12 = "-label \"JustJ JREs\"";
   protected static final String _13 = "-nosplash";
   protected static final String _14 = "-promote ${project.basedir}/../../org.eclipse.justj.site/target/repository";
@@ -43,7 +43,7 @@ public class POMXML
   protected static final String _17 = "-root ${project.build.directory}/justj-sync";
   protected static final String _18 = "-target-url https://download.eclipse.org/justj";
   protected static final String _19 = "-timestamp ${build.timestamp}";
-  protected static final String _20 = "-title-image https://www.eclipse.org/justj/justj_title.svg";
+  protected static final String _20 = "-title-image https://eclipse.dev/justj/justj_title.svg";
   protected static final String _21 = "-type ${build.type}";
   protected static final String _22 = "-version-iu org.eclipse.justj.";
   protected static final String _23 = ".parent</artifactId>";

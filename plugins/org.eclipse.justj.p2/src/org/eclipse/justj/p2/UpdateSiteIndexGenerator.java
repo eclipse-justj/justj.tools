@@ -506,7 +506,16 @@ public class UpdateSiteIndexGenerator
 
     if (labels.size() > 1)
     {
-      links.put(labels.get(labels.size() - 1), "/justj/www/download.eclipse.org.php?file=" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+      String targetURL = updateSiteGenerator.getTargetURL();
+      if ("https://download.eclipse.org/justj".equals(targetURL))
+      {
+        links.put(labels.get(labels.size() - 1), "/justj/www/download.eclipse.org.php?file=" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+      }
+      else if (targetURL != null && targetURL.startsWith("https://download.eclipse.org/"))
+      {
+        String prefix = targetURL.substring("https://download.eclipse.org/".length());
+        links.put(labels.get(labels.size() - 1), "https://download.eclipse.org/justj?file=" + prefix + "/" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+      }
     }
 
     // Build another map in the right order.

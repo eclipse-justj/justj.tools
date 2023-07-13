@@ -126,7 +126,7 @@ public class UpdateSiteIndex
   protected final String TEXT_97 = "</a>" + NL + "           </p>" + NL + "           <p>Click the header link or the update site link for more details.</p>";
   protected final String TEXT_98 = NL + "           <p>" + NL + "             This update site's source code is generated from" + NL + "             <a href=\"";
   protected final String TEXT_99 = "\" target=\"model\">";
-  protected final String TEXT_100 = "<img style=\"height: 2ex; white-space: nowrap; display: inline-block;\" alt=\"justj\" src=\"https://www.eclipse.org/justj/justj_title.svg\"/>";
+  protected final String TEXT_100 = "<img style=\"height: 2ex; white-space: nowrap; display: inline-block;\" alt=\"justj\" src=\"https://eclipse.dev/justj/justj_title.svg\"/>";
   protected final String TEXT_101 = "</a>." + NL + "           </p>";
   protected final String TEXT_102 = " Features</h3>" + NL + "           <p>" + NL + "             This update site provides access to the following features." + NL + "             Each section is expandable via";
   protected final String TEXT_103 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all_features\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all_features');";

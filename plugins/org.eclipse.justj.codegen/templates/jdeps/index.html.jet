@@ -27,7 +27,7 @@ SPDX-License-Identifier: EPL-2.0
   <meta name="description" content="JustJ's JDeps Report"/>
   <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" href="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css"/>
-  <link rel="icon" type="image/ico" href="https://www.eclipse.org/justj/justj_favicon.ico"/>
+  <link rel="icon" type="image/ico" href="https://eclipse.dev/justj/justj_favicon.ico"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
       function expand_collapse(id, targetId) {
@@ -140,8 +140,8 @@ label:target {
         <div class="row" id="header-row">
           <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
             <div class="wrapper-logo-default">
-              <a href="https://www.eclipse.org/justj?page=index">
-                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="https://www.eclipse.org/justj/justj_title.svg"/>
+              <a href="https://eclipse.dev/justj?page=index">
+                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="https://eclipse.dev/justj/justj_title.svg"/>
               </a>
             </div>
           </div>
@@ -157,7 +157,7 @@ label:target {
             <ol class="breadcrumb">
               <li><a href="https://www.eclipse.org/">Home</a></li>
               <li><a href="https://www.eclipse.org/projects/">Projects</a></li>
-              <li><a href="https://www.eclipse.org/justj?page=download">JustJ</a></li>
+              <li><a href="https://eclipse.dev/justj?page=download">JustJ</a></li>
               <li><a href="https://download.eclipse.org/justj/jdeps">Jdeps</a></li>
 <%for (Map.Entry<String, String> entry : getBreadcrumbs().entrySet()) {%>
   <%if (entry.getValue() == null) {%>
@@ -182,7 +182,7 @@ label:target {
 <%if (!indices.isEmpty()) {%>
         <h2 style="">
           <%=title%> Index
-          <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/>.modules</a>
+          <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://eclipse.dev/justj/justj_title.svg"/>.modules</a>
         </h2>
         <p>
           The plugins of the following repositories or products have been analyzed for module dependencies using jdeps.
@@ -211,7 +211,7 @@ label:target {
         <h2 style="">
           <%=title%>:
           <a style="font-size: 66%;" href="<%=repoURI%>"><%=repoURI%></a>
-          <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://www.eclipse.org/justj/justj_title.svg"/>.modules</a>
+          <a href="justj.modules" target="modules" style="float: right; font-size: 75%;"><img style="height: 2ex; display: inline-block;" alt="justj" src="https://eclipse.dev/justj/justj_title.svg"/>.modules</a>
         </h2>
         <p>
       The plugins of this repository or product have been analyzed for module dependencies using jdeps.
