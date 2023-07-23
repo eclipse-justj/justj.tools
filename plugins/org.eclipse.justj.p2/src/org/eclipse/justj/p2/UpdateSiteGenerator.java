@@ -27,6 +27,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1684,12 +1685,12 @@ public class UpdateSiteGenerator
 
       if (result.isEmpty())
       {
-        Collections.sort(resultAll);
+        Collections.sort(resultAll, Collator.getInstance());
         return resultAll;
       }
       else
       {
-        Collections.sort(result);
+        Collections.sort(result, Collator.getInstance());
         return result;
       }
     }
@@ -1701,7 +1702,7 @@ public class UpdateSiteGenerator
      */
     public Map<String, List<String>> getFeatures(Pattern iuFilterPattern)
     {
-      Map<String, List<String>> result = new TreeMap<>();
+      Map<String, List<String>> result = new TreeMap<>(Collator.getInstance());
       IMetadataRepository repository = getCompositeMetadataRepository();
       IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUGroupQuery(), new NullProgressMonitor());
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
@@ -1785,7 +1786,7 @@ public class UpdateSiteGenerator
       Map<IInstallableUnit, Map<String, String>> iuBundleDetails,
       Pattern iuFilterPattern)
     {
-      Map<String, List<String>> result = new TreeMap<String, List<String>>();
+      Map<String, List<String>> result = new TreeMap<String, List<String>>(Collator.getInstance());
       IMetadataRepository repository = getCompositeMetadataRepository();
       IArtifactRepository artifactRepository = getCompositeArtifactRepository();
       IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
