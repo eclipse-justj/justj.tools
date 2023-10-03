@@ -567,6 +567,20 @@ public class P2Manager
         }
       }
 
+      Map<Pattern, String> mavenWrappedMappings = new HashMap<>();
+      for (String mapping = getArgument("-maven-wrapped-mapping", args, null); mapping != null; mapping = getArgument("-maven-wrapped-mapping", args, null))
+      {
+        String[] parts = mapping.split("->");
+        if (parts.length == 2)
+        {
+          mavenWrappedMappings.put(Pattern.compile(parts[0]), parts[1]);
+        }
+        else
+        {
+          mavenWrappedMappings.put(Pattern.compile(parts[0]), null);
+        }
+      }
+
       Map<String, String> nameMappings = new HashMap<>();
       nameMappings.put("jres", "JREs");
       for (String mapping = getArgument("-mapping", args, null); mapping != null; mapping = getArgument("-mapping", args, null))
@@ -795,6 +809,7 @@ public class P2Manager
         favicon,
         titleImage,
         bodyImage,
+        mavenWrappedMappings,
         nameMappings,
         commitMappings,
         latestVersionOnly,

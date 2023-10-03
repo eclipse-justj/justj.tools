@@ -219,6 +219,11 @@ public class UpdateSiteGenerator
   private Pattern excludedCategoriesPattern;
 
   /**
+   * Mappings for the "maven-wrapped-" IU properties, i.e., maven coordinates, to their replacements.
+   */
+  private Map<Pattern, String> mavenWrappedMappings;
+
+  /**
    * Mappings for specialized upper case conversion.
    */
   private Map<String, String> nameMappings;
@@ -277,6 +282,7 @@ public class UpdateSiteGenerator
     String favicon,
     String titleImage,
     String bodyImage,
+    Map<Pattern, String> mavenWrappedMappings,
     Map<String, String> nameMappings,
     Map<Pattern, String> commitMappings,
     boolean latestVersionOnly,
@@ -296,6 +302,7 @@ public class UpdateSiteGenerator
     this.favicon = favicon;
     this.titleImage = titleImage;
     this.bodyImage = bodyImage;
+    this.mavenWrappedMappings = mavenWrappedMappings;
     this.nameMappings = nameMappings;
     this.commitMappings = commitMappings;
     this.latestVersionOnly = latestVersionOnly;
@@ -513,7 +520,7 @@ public class UpdateSiteGenerator
               destinationMetadataRepository.setProperty("commit", commit);
             }
 
-            boolean updateLicenses = false;
+            boolean forceSave = false;
             for (IInstallableUnit iu : destinationMetadataRepository.query(QueryUtil.createIUGroupQuery(), null))
             {
               var licenses = new ArrayList<>(iu.getLicenses());
@@ -524,7 +531,7 @@ public class UpdateSiteGenerator
                 URI location = license.getLocation();
                 if ("https://www.eclipse.org/legal/epl-2.0/".equals(Objects.toString(location)) && license.getBody().isBlank())
                 {
-                  updateLicenses = updateLicense = true;
+                  forceSave = updateLicense = true;
                   it.set(MetadataFactory.createLicense(location, P2Plugin.INSTANCE.getString("sua_2_0")));
                 }
               }
@@ -535,7 +542,53 @@ public class UpdateSiteGenerator
               }
             }
 
-            if (updateLicenses)
+            if (!mavenWrappedMappings.isEmpty())
+            {
+              for (IInstallableUnit iu : destinationMetadataRepository.query(QueryUtil.ALL_UNITS, null))
+              {
+                String groupId = iu.getProperty("maven-wrapped-groupId");
+                String artifactId = iu.getProperty("maven-wrapped-artifactId");
+                String version = iu.getProperty("maven-wrapped-version");
+                if (groupId != null && artifactId != null && version != null)
+                {
+                  String coordinate = groupId + ':' + artifactId + ':' + version;
+                  for (Map.Entry<Pattern, String> entry : mavenWrappedMappings.entrySet())
+                  {
+                    Matcher matcher = entry.getKey().matcher(coordinate);
+                    if (matcher.matches())
+                    {
+                      forceSave = true;
+
+                      InstallableUnit unit = (InstallableUnit)iu;
+                      StringBuilder replacement = new StringBuilder();
+                      String value = entry.getValue();
+                      if (value == null)
+                      {
+                        unit.setProperty("maven-wrapped-groupId", null);
+                        unit.setProperty("maven-wrapped-artifactId", null);
+                        unit.setProperty("maven-wrapped-version", null);
+                      }
+                      else
+                      {
+                        matcher.appendReplacement(replacement, value);
+                        matcher.appendTail(replacement);
+                        String[] parts = replacement.toString().split(":");
+                        if (parts.length == 3)
+                        {
+                          unit.setProperty("maven-wrapped-groupId", parts[0]);
+                          unit.setProperty("maven-wrapped-artifactId", parts[1]);
+                          unit.setProperty("maven-wrapped-version", parts[2]);
+                        }
+                      }
+
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+
+            if (forceSave)
             {
               // Forces save to be called.
               ((LocalMetadataRepository)destinationMetadataRepository).executeBatch(it ->
