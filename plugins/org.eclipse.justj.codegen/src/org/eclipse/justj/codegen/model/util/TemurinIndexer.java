@@ -67,7 +67,7 @@ public class TemurinIndexer
 
     out.println(BEGIN_MARKER);
 
-    for (String repo : new String []{ "11", "17", "18", "19", "20" })
+    for (String repo : new String []{ "11", "17", "18", "19", "20", "21" })
     {
       URI releasesURI = URI.createURI("https://api.github.com/repos/adoptium/temurin" + repo + "-binaries/releases");
       String content = getContent(releasesURI);
