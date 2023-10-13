@@ -8,12 +8,11 @@ Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.justj.p2.P2Plugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.justj.p2
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.apache.commons.compress,
  org.eclipse.equinox.app,
  org.eclipse.equinox.p2.artifact.repository,
  org.eclipse.equinox.p2.core,

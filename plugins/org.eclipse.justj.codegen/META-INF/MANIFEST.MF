@@ -8,7 +8,7 @@ Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.justj.codegen.model.ModelPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.justj.codegen.model,
  org.eclipse.justj.codegen.model.impl,
  org.eclipse.justj.codegen.model.util,
@@ -20,8 +20,9 @@ Export-Package: org.eclipse.justj.codegen.model,
  org.eclipse.justj.codegen.templates.releng.parent.features,
  org.eclipse.justj.codegen.templates.releng.parent.plugins,
  org.eclipse.justj.codegen.templates.releng.site
+Import-Package: org.apache.commons.compress.archivers.tar,
+ org.apache.commons.compress.compressors.gzip
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.apache.commons.compress
+ org.eclipse.emf.ecore.xmi;visibility:=reexport
 Bundle-ActivationPolicy: lazy
