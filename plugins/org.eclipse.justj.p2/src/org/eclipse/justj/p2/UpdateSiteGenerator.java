@@ -1857,6 +1857,10 @@ public class UpdateSiteGenerator
             if ("org.eclipse.equinox.p2.eclipse.type".equals(namespace) && "bundle".equals(name))
             {
               String iuName = iu.getProperty(IInstallableUnit.PROP_NAME, null);
+              if (iuName == null)
+              {
+                iuName = iu.getId();
+              }
               iuName += " " + iu.getVersion();
               iuName = iuName.replaceAll("( [0-9]+\\.[0-9]+\\.[0-9]+)\\.[^ ]+$", "$1");
               if (!result.containsKey(iuName))
