@@ -183,9 +183,9 @@ public class UpdateSiteGenerator
   private final boolean verbose;
 
   /**
-   * The IU prefix filter for determining the version of the repo.
+   * The IU pattern for determining the version of the repo.
    */
-  private String versionIU;
+  private Pattern versionIUPattern;
 
   /**
    * The URL of the git commit that triggered this build of the repository to be promoted.
@@ -250,7 +250,7 @@ public class UpdateSiteGenerator
    * @param downloads the list of download artifacts to be maintained within the update site.
    * @param targetURL the URL at which the site will live once promoted.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
-   * @param versionIU a prefix for the IUs that will be used to determine the overall version.
+   * @param versionIUPattern a pattern for the IUs that will be used to determine the overall version.
    * @param iuFilterPattern a pattern that must match an IU in order for its details to be reported.
    * @param excludedCategoriesPattern a pattern used to match category IUs that should be excluded.
    * @param commit the commit ID.
@@ -274,7 +274,7 @@ public class UpdateSiteGenerator
     List<Path> downloads,
     String targetURL,
     int retainedNightlyBuilds,
-    String versionIU,
+    Pattern versionIUPattern,
     Pattern iuFilterPattern,
     Pattern excludedCategoriesPattern,
     String commit,
@@ -294,7 +294,7 @@ public class UpdateSiteGenerator
     this.products = products;
     this.downloads = downloads;
     this.targetURL = targetURL;
-    this.versionIU = versionIU;
+    this.versionIUPattern = versionIUPattern;
     this.iuFilterPattern = iuFilterPattern;
     this.excludedCategoriesPattern = excludedCategoriesPattern;
     this.commit = commit;
@@ -741,7 +741,7 @@ public class UpdateSiteGenerator
   }
 
   /**
-   * Returns the version of the {@link #versionIU} installable unit in the target repository.
+   * Returns the version of the {@link #versionIUPattern} installable unit in the target repository.
    * @param targetRepository the repository location.
    * @param qualified whether to include the qualifier in the version.
    * @return the associated semantic version of the repository.
@@ -753,7 +753,7 @@ public class UpdateSiteGenerator
     RepositoryDescriptor repositoryDescriptor = new RepositoryDescriptor();
     repositoryDescriptor.setLocation(createURI(targetRepository));
     repositoryAnalyzer.addSource(repositoryDescriptor);
-    String version = repositoryAnalyzer.getVersion(versionIU, qualified);
+    String version = repositoryAnalyzer.getVersion(versionIUPattern, qualified);
     return version;
   }
 
@@ -832,7 +832,7 @@ public class UpdateSiteGenerator
     for (Iterator<IInstallableUnit> i = ius.iterator(); i.hasNext();)
     {
       IInstallableUnit iu = i.next();
-      if (versionIU == null ? !"true".equals(iu.getProperty(QueryUtil.PROP_TYPE_CATEGORY)) : iu.getId().startsWith(versionIU))
+      if (versionIUPattern == null ? !"true".equals(iu.getProperty(QueryUtil.PROP_TYPE_CATEGORY)) : versionIUPattern.matcher(iu.getId()).matches())
       {
         Version iuVersion = iu.getVersion();
         if (iuVersion.isOSGiCompatible() && iuVersion instanceof BasicVersion)
@@ -1579,13 +1579,13 @@ public class UpdateSiteGenerator
     /**
      * Returns the three-segment version of the largest version of the IU with the prefix as its ID in the repository.
      *
-     * @param prefix the prefix used to filter down the IUs to consider, or {@code null} to consider all IUs.
+     * @param iuPattern the pattern used to filter down the IUs to consider, or {@code null} to consider all IUs.
      * @param qualified whether to include the qualifier in the version.
      * @return the three-segment version of the largest version of the IU with the prefix as its ID in the repository.
      *
      * @throws ProvisionException
      */
-    public String getVersion(String prefix, boolean qualified) throws ProvisionException
+    public String getVersion(Pattern iuPattern, boolean qualified) throws ProvisionException
     {
       IMetadataRepository repository = getCompositeMetadataRepository();
       IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
@@ -1593,7 +1593,7 @@ public class UpdateSiteGenerator
       for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
       {
         IInstallableUnit iu = i.next();
-        if (prefix == null || iu.getId().startsWith(prefix))
+        if (iuPattern == null || iuPattern.matcher(iu.getId()).matches())
         {
           Version version = iu.getVersion();
           if (version instanceof BasicVersion)
@@ -2041,8 +2041,14 @@ public class UpdateSiteGenerator
             }
           }
 
-          org.eclipse.emf.common.util.URI uri = org.eclipse.emf.common.util.URI.createURI(link);
-          String label = uri.segment(uri.segmentCount() - 3);
+          var uri = org.eclipse.emf.common.util.URI.createURI(link);
+          int labelIndex = uri.segmentCount() - 3;
+          String label = uri.segment(labelIndex);
+          if ("-".equals(label))
+          {
+            label = uri.segment(labelIndex - 1);
+          }
+
           for (;;)
           {
             String otherLink = result.get(label);

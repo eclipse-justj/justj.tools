@@ -549,6 +549,7 @@ public class P2Manager
       String bodyImage = getArgument("-body-image", args, null);
       String targetURL = getArgument("-target-url", args, null);
       String versionIU = getArgument("-version-iu", args, null);
+      String versionIUPattern = getArgument("-version-iu-pattern", args, null);
       String iuFilterPattern = getArgument("-iu-filter-pattern", args, null);
       String excludedCategoriesPattern = getArgument("-excluded-categories-pattern", args, null);
       String commit = getArgument("-commit", args, null);
@@ -791,6 +792,9 @@ public class P2Manager
         downloadPaths.add(downloadPath);
       }
 
+      Pattern effectiveIUVersionPattern = versionIU != null
+        ? Pattern.compile(Pattern.quote(versionIU) + ".*") : versionIUPattern != null ? Pattern.compile(versionIUPattern) : null;
+
       UpdateSiteGenerator updateSiteGenerator = new UpdateSiteGenerator(
         projectLabel,
         buildURL,
@@ -801,7 +805,7 @@ public class P2Manager
         downloadPaths,
         targetURL,
         retainedNightlyBuilds,
-        versionIU,
+        effectiveIUVersionPattern,
         iuFilterPattern == null ? null : Pattern.compile(iuFilterPattern),
         excludedCategoriesPattern == null ? null : Pattern.compile(excludedCategoriesPattern),
         commit,
