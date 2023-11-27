@@ -258,6 +258,7 @@ public class UpdateSiteGenerator
    * @param favicon the URL of the site's favicon.
    * @param titleImage the URL of the site's title image.
    * @param bodyImage the URL if the image used in the body.
+   * @param mavenWrappedMappings mappings for the "maven-wrapped-" IU properties, i.e., maven coordinates, to their replacements.
    * @param nameMappings mappings for specialized upper case conversion.
    * @param commitMappings the mappings for migrated commit URLs.
    * @param latestVersionOnly whether to mirror only the latest version or all versions.

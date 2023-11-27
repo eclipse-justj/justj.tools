@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -543,7 +544,7 @@ public class P2Manager
       String productsFolder = getArgument("-promote-products", args, null);
       List<String> downloads = getArguments("-downloads", args, Collections.emptyList());
       String buildTimestamp = getArgument("-timestamp", args, null);
-      String buildType = getArgument("-type", args, null);
+      String buildType = getArgument("-type", args, "nightly");
       String favicon = getArgument("-favicon", args, "https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/favicon.ico");
       String titleImage = getArgument("-title-image", args, "https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-426x100.png");
       String bodyImage = getArgument("-body-image", args, null);
@@ -556,7 +557,11 @@ public class P2Manager
       String superTargetFolder = getArgument("-super", args, null);
       boolean simrelAlias = getArgument("-simrel-alias", args);
 
-      if (buildTimestamp != null && buildTimestamp.endsWith("Z"))
+      if (buildTimestamp == null)
+      {
+        buildTimestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+      }
+      else if (buildTimestamp.endsWith("Z"))
       {
         try
         {
