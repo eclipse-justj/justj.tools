@@ -724,7 +724,7 @@ public class UpdateSiteGenerator
     SlicingOptions slicingOptions = new SlicingOptions();
     slicingOptions.latestVersionOnly(latestVersionOnly);
     mirrorApplication.setSlicingOptions(slicingOptions);
-    if (baselineURL != null)
+    if (baselineURL != null && !"release".equals(buildType))
     {
       mirrorApplication.setBaseline(URI.create(baselineURL));
     }
