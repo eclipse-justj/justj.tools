@@ -74,7 +74,7 @@ public class P2Manager
   protected boolean delete;
 
   /**
-   * Create an instance that used the given update site generator.
+   * Create an instance that uses the given update site generator.
    * @param updateSiteGenerator the update site generator.
    * @param verbose whether to print progress during activities.
    * @param delete whether to delete folder or simply mark them as deleted.
@@ -549,6 +549,7 @@ public class P2Manager
       String titleImage = getArgument("-title-image", args, "https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-426x100.png");
       String bodyImage = getArgument("-body-image", args, null);
       String targetURL = getArgument("-target-url", args, null);
+      String baselineURL = getArgument("-baseline-url", args, null);
       String versionIU = getArgument("-version-iu", args, null);
       String versionIUPattern = getArgument("-version-iu-pattern", args, null);
       String iuFilterPattern = getArgument("-iu-filter-pattern", args, null);
@@ -809,6 +810,7 @@ public class P2Manager
         products,
         downloadPaths,
         targetURL,
+        baselineURL,
         retainedNightlyBuilds,
         effectiveIUVersionPattern,
         iuFilterPattern == null ? null : Pattern.compile(iuFilterPattern),

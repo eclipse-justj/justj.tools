@@ -178,6 +178,11 @@ public class UpdateSiteGenerator
   private final String targetURL;
 
   /**
+   * The URL from which to do artifact baseline replacement.
+   */
+  private final String baselineURL;
+
+  /**
    * Whether to print logging information.
    */
   private final boolean verbose;
@@ -249,6 +254,7 @@ public class UpdateSiteGenerator
    * @param products the list of products to be maintained within the update site.
    * @param downloads the list of download artifacts to be maintained within the update site.
    * @param targetURL the URL at which the site will live once promoted.
+   * @param baselineURL the URL from which to do artifact baseline replacement.
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIUPattern a pattern for the IUs that will be used to determine the overall version.
    * @param iuFilterPattern a pattern that must match an IU in order for its details to be reported.
@@ -274,6 +280,7 @@ public class UpdateSiteGenerator
     List<Path> products,
     List<Path> downloads,
     String targetURL,
+    String baselineURL,
     int retainedNightlyBuilds,
     Pattern versionIUPattern,
     Pattern iuFilterPattern,
@@ -295,6 +302,7 @@ public class UpdateSiteGenerator
     this.products = products;
     this.downloads = downloads;
     this.targetURL = targetURL;
+    this.baselineURL = baselineURL;
     this.versionIUPattern = versionIUPattern;
     this.iuFilterPattern = iuFilterPattern;
     this.excludedCategoriesPattern = excludedCategoriesPattern;
@@ -400,6 +408,15 @@ public class UpdateSiteGenerator
   public String getTargetURL()
   {
     return targetURL;
+  }
+
+  /**
+   * The URL from which to do artifact baseline replacement.
+   * @return the URL from which to do artifact baseline replacement.
+   */
+  public String getBaselineURL()
+  {
+    return baselineURL;
   }
 
   /**
@@ -707,6 +724,10 @@ public class UpdateSiteGenerator
     SlicingOptions slicingOptions = new SlicingOptions();
     slicingOptions.latestVersionOnly(latestVersionOnly);
     mirrorApplication.setSlicingOptions(slicingOptions);
+    if (baselineURL != null)
+    {
+      mirrorApplication.setBaseline(URI.create(baselineURL));
+    }
 
     IStatus status = mirrorApplication.run(new NullProgressMonitor());
     if (!status.isOK())
