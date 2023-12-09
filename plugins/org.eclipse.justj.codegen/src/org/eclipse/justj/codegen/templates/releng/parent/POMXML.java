@@ -141,7 +141,7 @@ public class POMXML
   protected static final String _115 = "<sourceReferences>";
   protected static final String _116 = "<target>";
   protected static final String _117 = "<timestampProvider>jgit</timestampProvider>";
-  protected static final String _118 = "<tycho-version>4.0.4</tycho-version>";
+  protected static final String _118 = "<tycho-version>3.0.5</tycho-version>";
   protected static final String _119 = "<tycho.scmUrl>scm:git:https://github.com/eclipse-justj/justj.git</tycho.scmUrl>";
   protected static final String _120 = "<type>p2-installable-unit</type>";
   protected static final String _121 = "<url>https://download.eclipse.org/cbi/updates/license/</url>";
