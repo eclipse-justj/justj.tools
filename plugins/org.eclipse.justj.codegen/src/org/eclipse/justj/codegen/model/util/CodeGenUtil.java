@@ -96,7 +96,7 @@ public final class CodeGenUtil
         InputStream gzipCompressorInputStream = fileName.endsWith(".gz") ? new GzipCompressorInputStream(bufferedInputStream) : bufferedInputStream;
         TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipCompressorInputStream);)
     {
-      for (TarArchiveEntry entry; (entry = tarArchiveInputStream.getNextTarEntry()) != null;)
+      for (TarArchiveEntry entry; (entry = tarArchiveInputStream.getNextEntry()) != null;)
       {
         String name = entry.getName();
         Path path = Paths.get(name).normalize();

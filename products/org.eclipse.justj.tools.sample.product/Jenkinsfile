@@ -44,7 +44,7 @@ pipeline {
 
     string(
       name: 'ECLIPSE_REPOSITORY',
-      defaultValue: 'https://download.eclipse.org/releases/2023-09',
+      defaultValue: 'https://download.eclipse.org/releases/latest',
       description: """${pretty(
         '''
         Choose the URL of the release train repository to use.

@@ -994,6 +994,8 @@
               url="https://download.eclipse.org/modeling/emf/emf/builds/nightly/latest"/>
           <repository
               url="https://download.eclipse.org/tools/orbit/downloads/latest-R"/>
+          <repository
+              url="https://download.eclipse.org/oomph/updates/milestone/latest"/>
         </repositoryList>
       </targlet>
     </setupTask>

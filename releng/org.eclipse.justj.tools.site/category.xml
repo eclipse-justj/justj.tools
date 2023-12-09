@@ -14,4 +14,5 @@ SPDX-License-Identifier: EPL-2.0
       <category name="org.eclipse.justj.category"/>
    </feature>
    <category-def name="org.eclipse.justj.category" label="JustJ"/>
+   <feature id="org.eclipse.justj.tools.source"/>
 </site>
