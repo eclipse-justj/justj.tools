@@ -564,44 +564,9 @@ public class UpdateSiteGenerator
             {
               for (IInstallableUnit iu : destinationMetadataRepository.query(QueryUtil.ALL_UNITS, null))
               {
-                String groupId = iu.getProperty("maven-wrapped-groupId");
-                String artifactId = iu.getProperty("maven-wrapped-artifactId");
-                String version = iu.getProperty("maven-wrapped-version");
-                if (groupId != null && artifactId != null && version != null)
+                if (handleMavenMappings(iu))
                 {
-                  String coordinate = groupId + ':' + artifactId + ':' + version;
-                  for (Map.Entry<Pattern, String> entry : mavenWrappedMappings.entrySet())
-                  {
-                    Matcher matcher = entry.getKey().matcher(coordinate);
-                    if (matcher.matches())
-                    {
-                      forceSave = true;
-
-                      InstallableUnit unit = (InstallableUnit)iu;
-                      StringBuilder replacement = new StringBuilder();
-                      String value = entry.getValue();
-                      if (value == null)
-                      {
-                        unit.setProperty("maven-wrapped-groupId", null);
-                        unit.setProperty("maven-wrapped-artifactId", null);
-                        unit.setProperty("maven-wrapped-version", null);
-                      }
-                      else
-                      {
-                        matcher.appendReplacement(replacement, value);
-                        matcher.appendTail(replacement);
-                        String[] parts = replacement.toString().split(":");
-                        if (parts.length == 3)
-                        {
-                          unit.setProperty("maven-wrapped-groupId", parts[0]);
-                          unit.setProperty("maven-wrapped-artifactId", parts[1]);
-                          unit.setProperty("maven-wrapped-version", parts[2]);
-                        }
-                      }
-
-                      break;
-                    }
-                  }
+                  forceSave = true;
                 }
               }
             }
@@ -738,6 +703,78 @@ public class UpdateSiteGenerator
     xzCompress(destination);
 
     return destination;
+  }
+
+  /**
+   * Applies {@link #mavenWrappedMappings maven mappings} to the installable unit.
+   * @param iu the installable unit to transform.
+   * @return whether the unit was modified.
+   */
+  private boolean handleMavenMappings(IInstallableUnit iu)
+  {
+    return handleMavenMappings(iu, "maven-wrapped-") || handleMavenMappings(iu, "maven-");
+  }
+
+  /**
+   * Applies {@link #mavenWrappedMappings maven mappings} to the installable unit using the given prefix to find the properties.
+   * @param iu the installable unit to transform.
+   * @param prefix the prefix of the properties to transform.
+   * @return whether the unit was modified.
+   */
+  private boolean handleMavenMappings(IInstallableUnit iu, String prefix)
+  {
+    boolean modified = false;
+
+    String groupIdProperty = prefix + "groupId";
+    String groupId = iu.getProperty(groupIdProperty);
+    String artifactIdProperty = prefix + "artifactId";
+    String artifactId = iu.getProperty(artifactIdProperty);
+    String versionProperty = prefix + "version";
+    String version = iu.getProperty(versionProperty);
+
+    if (groupId != null && artifactId != null && version != null)
+    {
+      String coordinate = groupId + ':' + artifactId + ':' + version;
+      for (Map.Entry<Pattern, String> entry : mavenWrappedMappings.entrySet())
+      {
+        Matcher matcher = entry.getKey().matcher(coordinate);
+        if (matcher.matches())
+        {
+          modified = true;
+
+          InstallableUnit unit = (InstallableUnit)iu;
+          StringBuilder replacement = new StringBuilder();
+          String value = entry.getValue();
+          if (value == null)
+          {
+            for (var property : unit.getProperties().entrySet())
+            {
+              String key = property.getKey();
+              if (key.startsWith(prefix))
+              {
+                unit.setProperty(key, null);
+              }
+            }
+          }
+          else
+          {
+            matcher.appendReplacement(replacement, value);
+            matcher.appendTail(replacement);
+            String[] parts = replacement.toString().split(":");
+            if (parts.length == 3)
+            {
+              unit.setProperty(groupIdProperty, parts[0]);
+              unit.setProperty(artifactIdProperty, parts[1]);
+              unit.setProperty(versionProperty, parts[2]);
+            }
+          }
+
+          break;
+        }
+      }
+    }
+
+    return modified;
   }
 
   /**
