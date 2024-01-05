@@ -1,0 +1,136 @@
+<%--
+Copyright (c) 2023 Eclipse contributors and others.
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+SPDX-License-Identifier: EPL-2.0
+--%>
+<%@jet package="org.eclipse.justj.p2" class="UpdateSiteTable" imports="java.util.*"%>
+<%UpdateSiteIndexGenerator parent = (UpdateSiteIndexGenerator)argument;
+  String title = parent.getTableTitle();%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title><%=title%> Summary</title>
+  <meta name="keywords" content="eclipse,<%=title.toLowerCase()%>"/>
+  <meta name="description" content="<%=title%> of p2 Update Sites"/>
+  <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css"/>
+  <link rel="icon" type="image/ico" href="<%=parent.getFavicon()%>"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+  <body id="body_solstice">
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 0ex 1ex;
+      }
+
+      th {
+        padding: 0.5ex 1ex;
+      }
+
+      tr:nth-child(even) {
+        background-color: OldLace;
+      }
+
+      .long-segment {
+        font-size: 85%;
+      }
+
+      .qualifier {
+        font-size: 75%;
+      }
+
+      .bsn-prefix {
+        font-size: 85%;
+      }
+    </style>
+    <script>
+    </script>
+
+    <header role="banner" id="header-wrapper">
+      <div class="container">
+        <div class="row" id="header-row">
+          <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
+            <div class="wrapper-logo-default">
+              <a href="<%=parent.getTitleURL()%>">
+                <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="<%=parent.getTitleImage()%>"/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hidden-print default-breadcrumbs" id="breadcrumb">
+      <div class="container">
+        <h3 class="sr-only">Breadcrumbs</h3>
+        <div class="row">
+          <div class="col-sm-16 padding-left-30">
+            <ol class="breadcrumb">
+              <li><a href="https://www.eclipse.org/">Home</a></li>
+              <li><a href="https://www.eclipse.org/projects/">Projects</a></li>
+<%for (Map.Entry<String, String> entry : parent.getBreadcrumbs(false).entrySet()) {%>
+  <%if (entry.getValue() == null) {%>
+              <li class="active"><%=entry.getKey()%></li>
+  <%} else if (entry.getValue().trim().isEmpty()) {%>
+              <li><%=entry.getKey()%></li>
+  <%} else {%>
+              <li><a href="<%=entry.getValue()%>"><%=entry.getKey()%></a></li>
+  <%}%>
+<%}%>
+            </ol>
+          </div>
+          <div class="col-sm-8 margin-top-15"></div>
+        </div>
+      </div>
+    </section>
+
+    <main class="no-promo">
+      <div id="novaContent" style="display: flex; justify-content: center;">
+        <div>
+          <h2 style="text-align: center;"><%=title%></h2>
+<%if (parent.getBodyImage() != null) {%>
+          <img style="padding-left: .5em; float: right; min-height: 64px; max-height: 96pt;" src="<%=parent.getBodyImage()%>" alt=""/>
+          <br/>
+<%}%>
+           <p>This is a tabular summary of the bundle versions available in the p2 update sites for <%=parent.getProjectLabel()%>.</p>
+<%if (parent.getTableChildren().size() > 1) {%>
+           <p>A version decorated with &#x2b06; indicates a version increase relative to the next/older column.</p>
+<%}%>
+<%if (parent.hasMavenDescriptors()) {%>
+           <p>Where applicable, each version is link to the Maven Central source.</p>
+<%}%>
+
+           <table>
+
+<%{
+    List<UpdateSiteIndexGenerator> tableChildren = parent.getTableChildren();%>
+             <tr>
+               <th>Bundle Symbolic Name</th>
+  <%for (UpdateSiteIndexGenerator tableChild : tableChildren) {%>
+               <th><a href="<%=parent.getRelativeIndexURL(tableChild)%>"><%=tableChild.getTableChildFolderName()%></a></th>
+  <%}%>
+            </tr>
+  <%for (String bsn : parent.getTableBundles()) {%>
+            <tr>
+              <td><%=parent.getShortBSN(bsn)%></td>
+    <%for (UpdateSiteIndexGenerator tableChild : tableChildren) {%>
+              <td><%=parent.getVersions(bsn, tableChild)%></td>
+    <%}%>
+            </tr>
+  <%}%>
+          </table>
+<%}%>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

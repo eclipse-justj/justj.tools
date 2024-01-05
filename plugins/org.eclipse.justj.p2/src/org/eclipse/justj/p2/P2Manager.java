@@ -557,6 +557,8 @@ public class P2Manager
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
       boolean simrelAlias = getArgument("-simrel-alias", args);
+      int summary = Integer.parseInt(getArgument("-summary", args, "0"));
+      Pattern summaryIUPattern = Pattern.compile(getArgument("-summary-iu-pattern", args, ".*(?<!\\.source|\\.feature\\.group|\\.feature\\.jar)"));
 
       if (buildTimestamp == null)
       {
@@ -824,6 +826,8 @@ public class P2Manager
         nameMappings,
         commitMappings,
         latestVersionOnly,
+        summary,
+        summaryIUPattern,
         verbose);
 
       P2Manager p2Manager = new P2Manager(updateSiteGenerator, verbose, host == null)

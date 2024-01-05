@@ -131,7 +131,7 @@ SPDX-License-Identifier: EPL-2.0
         <div class="row" id="header-row">
           <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
             <div class="wrapper-logo-default">
-              <a href="<%=parent.getTitleURL()%>">
+              <a href="<%=title%>">
                 <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="<%=parent.getTitleImage()%>"/>
               </a>
             </div>
@@ -148,7 +148,7 @@ SPDX-License-Identifier: EPL-2.0
             <ol class="breadcrumb">
               <li><a href="https://www.eclipse.org/">Home</a></li>
               <li><a href="https://www.eclipse.org/projects/">Projects</a></li>
-<%for (Map.Entry<String, String> entry : parent.getBreadcrumbs().entrySet()) {%>
+<%for (Map.Entry<String, String> entry : parent.getBreadcrumbs(true).entrySet()) {%>
   <%if (entry.getValue() == null) {%>
               <li class="active"><%=entry.getKey()%></li>
   <%} else if (entry.getValue().trim().isEmpty()) {%>
@@ -193,7 +193,7 @@ SPDX-License-Identifier: EPL-2.0
 
       <div id="maincontent">
         <div id="midcolumn">
-          <h2 style="text-align: center;"><%=parent.getTitle()%></h2>
+          <h2 style="text-align: center;"><%=title%></h2>
 <%if (children.isEmpty()) {
     String date = parent.getDate();
     if (date != null) {%>
@@ -560,7 +560,7 @@ SPDX-License-Identifier: EPL-2.0
         </div>
 
 <%}%>
-      </div>
+       </div>
      </div>
      </main>
   </body>

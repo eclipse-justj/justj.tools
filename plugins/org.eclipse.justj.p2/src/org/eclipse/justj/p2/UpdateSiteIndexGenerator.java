@@ -16,18 +16,28 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.justj.codegen.model.util.Indexer.Property;
+import org.eclipse.justj.p2.UpdateSiteGenerator.MavenDescriptor;
 import org.eclipse.justj.p2.UpdateSiteGenerator.RepositoryAnalyzer;
 
 
@@ -40,6 +50,11 @@ public class UpdateSiteIndexGenerator
    * The ordered folders that will be indexed.
    */
   private static final String[] ROOT_FOLDERS = new String []{ "release", "milestone", "nightly" };
+
+  /**
+   * A pattern used by {@link #getShortBSN(String)} to produce shorter names.
+   */
+  private static final Pattern BSN_PATTERN = Pattern.compile("((?:org|com)\\.[^.]+\\.)(.*)");
 
   /**
    * The folder for this generator..
@@ -85,6 +100,12 @@ public class UpdateSiteIndexGenerator
    * Additional properties to show for each bundle.
    */
   private Map<String, Map<String, String>> bundleDetails;
+
+  /**
+   * A cache used to generate a table summary.
+   * @see #getTableChildren()
+   */
+  private Map<UpdateSiteIndexGenerator, Map<String, Set<IInstallableUnit>>> table;
 
   /**
    * An addition resource induced from the p2 metadata.
@@ -214,6 +235,15 @@ public class UpdateSiteIndexGenerator
   public boolean isRoot()
   {
     return folder.equals(updateSiteGenerator.getUpdateSiteRoot());
+  }
+
+  /**
+   * Returns whether this folder generates a summary table.
+   * @return whether this folder generates a summary table.
+   */
+  public boolean hasSummary()
+  {
+    return isRoot() && updateSiteGenerator.getSummary() > 0;
   }
 
   /**
@@ -357,6 +387,12 @@ public class UpdateSiteIndexGenerator
     String rootLabel = rootSiteURL.substring(rootSiteURL.lastIndexOf('/') + 1);
     rootLabel = updateSiteGenerator.getFolderLabel(rootLabel);
     result.put(prefix + "index.html", rootLabel);
+
+    if (updateSiteGenerator.getSummary() > 0)
+    {
+      result.put(prefix + "table.html", "<b class='orange'>Summary</b>");
+    }
+
     for (UpdateSiteIndexGenerator child : root.getChildren())
     {
       child.visit(result, prefix.toString(), 0);
@@ -370,6 +406,7 @@ public class UpdateSiteIndexGenerator
       if ((lastSegment == -1 || rootSiteURI.resolve(url.substring(0, lastSegment)).toString().equals(siteURL)))
       {
         entry.setValue(entry.getValue() + "@");
+        break;
       }
     }
 
@@ -441,10 +478,20 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
+   * The relative URL to the child's index.
+   * @return the relative URL to the child's index.
+   */
+  public String getRelativeIndexURL(UpdateSiteIndexGenerator child)
+  {
+    return folder.relativize(child.folder).resolve("index.html").toString().replace('\\', '/');
+  }
+
+  /**
    * This is used to populate the bread crumbs.
+   * @param rawLastLink whether the final link should be one that allows a raw look at the server's file system.
    * @return the bread crumbs.
    */
-  public Map<String, String> getBreadcrumbs()
+  public Map<String, String> getBreadcrumbs(boolean rawLastLink)
   {
     Path root = updateSiteGenerator.getUpdateSiteRoot();
     Path projectRoot = updateSiteGenerator.getProjectRoot();
@@ -506,15 +553,22 @@ public class UpdateSiteIndexGenerator
 
     if (labels.size() > 1)
     {
-      String targetURL = updateSiteGenerator.getTargetURL();
-      if ("https://download.eclipse.org/justj".equals(targetURL))
+      if (rawLastLink)
       {
-        links.put(labels.get(labels.size() - 1), "/justj/www/download.eclipse.org.php?file=" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+        String targetURL = updateSiteGenerator.getTargetURL();
+        if ("https://download.eclipse.org/justj".equals(targetURL))
+        {
+          links.put(labels.get(labels.size() - 1), "/justj/www/download.eclipse.org.php?file=" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+        }
+        else if (targetURL != null && targetURL.startsWith("https://download.eclipse.org/"))
+        {
+          String prefix = targetURL.substring("https://download.eclipse.org/".length());
+          links.put(labels.get(labels.size() - 1), "https://download.eclipse.org/justj?file=" + prefix + "/" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+        }
       }
-      else if (targetURL != null && targetURL.startsWith("https://download.eclipse.org/"))
+      else
       {
-        String prefix = targetURL.substring("https://download.eclipse.org/".length());
-        links.put(labels.get(labels.size() - 1), "https://download.eclipse.org/justj?file=" + prefix + "/" + projectRoot.relativize(folder).toString().replace('\\', '/'));
+        links.put(labels.get(labels.size() - 1), "index.html");
       }
     }
 
@@ -753,6 +807,21 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
+   * Returns a shorter name for common bundle symbolic name prefixes.
+   * @param bsn the bundle symbolic name.
+   * @return a shorter name for common bundle symbolic name prefixes.
+   */
+  public String getShortBSN(String bsn)
+  {
+    Matcher matcher = BSN_PATTERN.matcher(bsn);
+    if (matcher.matches())
+    {
+      return "<span class='bsn-prefix'>" + matcher.group(1) + "</span>" + matcher.group(2);
+    }
+    return bsn;
+  }
+
+  /**
    * Returns the products of this site.
    * @return the products of this site.
    */
@@ -955,5 +1024,173 @@ public class UpdateSiteIndexGenerator
   public String getDate()
   {
     return repositoryAnalyzer.getDate();
+  }
+
+  /**
+   * Returns the title for the table summary.
+   * @return the title for the table summary.
+   */
+  public String getTableTitle()
+  {
+    return updateSiteGenerator.getProjectLabel() + " Summary";
+  }
+
+  /**
+   * Returns the name of the update site as displayed in the table summary column for this site.
+   * @return the name of the update site as displayed in the table summary column for this site.
+   */
+  public String getTableChildFolderName()
+  {
+    return folder.getParent().getFileName() + "/" + getFolderName();
+  }
+
+  /**
+   * Returns the sites for which a summary column is generated in the table summary.
+   * @return the sites for which a summary column is generated in the table summary.
+   */
+  public List<UpdateSiteIndexGenerator> getTableChildren()
+  {
+    if (table == null)
+    {
+      table = new LinkedHashMap<UpdateSiteIndexGenerator, Map<String, Set<IInstallableUnit>>>();
+
+      if (hasSummary())
+      {
+        int summary = updateSiteGenerator.getSummary();
+        Pattern summaryIUPattern = updateSiteGenerator.getSummaryIUPattern();
+        Consumer<? super UpdateSiteIndexGenerator> accumulate = it ->
+          {
+            if (table.size() < summary)
+            {
+              table.put(it, it.repositoryAnalyzer.getBundles(summaryIUPattern));
+            }
+          };
+        List<UpdateSiteIndexGenerator> children = getChildren();
+        Collections.reverse(children);
+        for (UpdateSiteIndexGenerator child : children)
+        {
+          String folderName = child.getFolderName();
+          if ("release".equals(folderName))
+          {
+            child.getChildren().stream().filter(it -> !it.isLatest()).forEach(accumulate);
+          }
+          else if ("milestone".equals(folderName) || "nightly".equals(folderName))
+          {
+            child.getChildren().stream().filter(it -> it.isLatest()).forEach(accumulate);
+          }
+        }
+      }
+    }
+
+    return new ArrayList<UpdateSiteIndexGenerator>(table.keySet());
+  }
+
+  /**
+   * The sorted set of bundle symbolic names to display in the summary table.
+   * @return the sorted set of bundle symbolic names to display in the summary table.
+   */
+  public Set<String> getTableBundles()
+  {
+    getTableChildren();
+    return table.values().stream().map(Map::keySet).flatMap(Set::stream).collect(Collectors.toCollection(() -> new TreeSet<>(Collator.getInstance())));
+  }
+
+  /**
+   * Returns information about the version information to show in each cell of the summary table.
+   * @param bsn the bundle symbolic name, i.e., row of the table.
+   * @param child the child site, i.e, the column of the table.
+   * @return information about the version information to show in each cell of the summary table.
+   */
+  public String getVersions(String bsn, UpdateSiteIndexGenerator child)
+  {
+    List<UpdateSiteIndexGenerator> tableChildren = getTableChildren();
+    Map<String, Set<IInstallableUnit>> bsns = table.get(child);
+    if (bsns != null)
+    {
+      Set<IInstallableUnit> olderVersions;
+      int index = tableChildren.indexOf(child);
+      if (index + 1 < tableChildren.size())
+      {
+        Map<String, Set<IInstallableUnit>> olderBSNs = table.get(tableChildren.get(index + 1));
+        if (olderBSNs != null)
+        {
+          olderVersions = olderBSNs.get(bsn);
+        }
+        else
+        {
+          olderVersions = null;
+        }
+      }
+      else
+      {
+        olderVersions = null;
+      }
+
+      Set<IInstallableUnit> versions = bsns.get(bsn);
+      if (versions != null)
+      {
+        return versions.stream().map(it ->
+          {
+            Version version = it.getVersion();
+            StringBuilder result = new StringBuilder();
+            for (int i = 0, limit = version.getSegmentCount() - 1; i <= limit; ++i)
+            {
+              String segment = version.getSegment(i).toString();
+              if (segment.isBlank())
+              {
+                break;
+              }
+
+              if (i != 0)
+              {
+                result.append('.');
+              }
+
+              if (i == limit)
+              {
+                result.append("<span class='qualifier'>").append(segment).append("</span>");
+              }
+              else if (segment.length() >= 8)
+              {
+                result.append("<span class='long-segment'>").append(segment).append("</span>");
+              }
+              else
+              {
+                result.append(segment);
+              }
+            }
+
+            if (olderVersions != null && !olderVersions.contains(it))
+            {
+              result.append("&nbsp;<b>\u2b06</b>");
+            }
+
+            MavenDescriptor descriptor = UpdateSiteGenerator.MavenDescriptor.create(it);
+            if (descriptor != null)
+            {
+              return "<a href='" + descriptor.toURL() + "' target='maven-central'>" + result + "</a>";
+            }
+
+            return result.toString();
+          }).collect(Collectors.joining("<br/>"));
+      }
+    }
+    return "";
+  }
+
+  /**
+   * Whether any bundle in the table summary has a maven descriptor.
+   * @return whether any bundle in the table summary has a maven descriptor.
+   */
+  public boolean hasMavenDescriptors()
+  {
+    getTableBundles();
+    return table.values().stream().map(Map::values).flatMap(Collection::stream).flatMap(Set::stream).anyMatch(it -> MavenDescriptor.create(it) != null);
+  }
+
+  @Override
+  public String toString()
+  {
+    return folder.toString();
   }
 }

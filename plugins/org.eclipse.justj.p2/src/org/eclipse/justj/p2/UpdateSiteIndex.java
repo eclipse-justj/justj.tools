@@ -195,7 +195,7 @@ public class UpdateSiteIndex
   protected final String TEXT_166 = "</a></tt>" + NL + "            </p>";
   protected final String TEXT_167 = NL + "          </div>";
   protected final String TEXT_168 = NL + "        </div>" + NL;
-  protected final String TEXT_169 = NL + "      </div>" + NL + "     </div>" + NL + "     </main>" + NL + "  </body>" + NL + "</html>";
+  protected final String TEXT_169 = NL + "       </div>" + NL + "     </div>" + NL + "     </main>" + NL + "  </body>" + NL + "</html>";
 
   public String generate(Object argument)
   {
@@ -219,11 +219,11 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_6);
     }
     stringBuffer.append(TEXT_7);
-    stringBuffer.append(parent.getTitleURL());
+    stringBuffer.append(title);
     stringBuffer.append(TEXT_8);
     stringBuffer.append(parent.getTitleImage());
     stringBuffer.append(TEXT_9);
-    for (Map.Entry<String, String> entry : parent.getBreadcrumbs().entrySet()) {
+    for (Map.Entry<String, String> entry : parent.getBreadcrumbs(true).entrySet()) {
     if (entry.getValue() == null) {
     stringBuffer.append(TEXT_10);
     stringBuffer.append(entry.getKey());
@@ -268,7 +268,7 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_24);
     }
     stringBuffer.append(TEXT_25);
-    stringBuffer.append(parent.getTitle());
+    stringBuffer.append(title);
     stringBuffer.append(TEXT_26);
     if (children.isEmpty()) {
     String date = parent.getDate();

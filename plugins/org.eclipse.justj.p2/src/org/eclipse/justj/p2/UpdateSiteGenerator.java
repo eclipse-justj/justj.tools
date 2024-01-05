@@ -244,6 +244,16 @@ public class UpdateSiteGenerator
   private boolean latestVersionOnly;
 
   /**
+   * The number of columns to show in the summary table.
+   */
+  private int summary;
+
+  /**
+   * A pattern for the IUs that will be displayed in the summary table.
+   */
+  private Pattern summaryIUPattern;
+
+  /**
    *  Creates an instance.
    *
    * @param projectLabel the label used to identify the project name.
@@ -268,6 +278,8 @@ public class UpdateSiteGenerator
    * @param nameMappings mappings for specialized upper case conversion.
    * @param commitMappings the mappings for migrated commit URLs.
    * @param latestVersionOnly whether to mirror only the latest version or all versions.
+   * @param summary the number of columns to show in the summary table.
+   * @param summaryIUPattern a pattern for the IUs that will be displayed in the summary table.
    * @param verbose whether to print logging information.
    * @throws IOException
    */
@@ -294,6 +306,8 @@ public class UpdateSiteGenerator
     Map<String, String> nameMappings,
     Map<Pattern, String> commitMappings,
     boolean latestVersionOnly,
+    int summary,
+    Pattern summaryIUPattern,
     boolean verbose) throws IOException
   {
     this.projectLabel = projectLabel;
@@ -315,6 +329,8 @@ public class UpdateSiteGenerator
     this.nameMappings = nameMappings;
     this.commitMappings = commitMappings;
     this.latestVersionOnly = latestVersionOnly;
+    this.summary = summary;
+    this.summaryIUPattern = summaryIUPattern;
     this.verbose = verbose;
     Assert.isTrue(!relativeTargetFolder.isAbsolute(), "The relative target folder '" + relativeTargetFolder + "' must be relative");
     if (relativeSuperTargetFolder != null)
@@ -435,6 +451,25 @@ public class UpdateSiteGenerator
   public Map<Pattern, String> getCommitMappings()
   {
     return commitMappings;
+  }
+
+  /**
+   * Returns the number of columns to show in the summary table.
+   * Returns <code>0</code> to indicate that no summary table is to be generated.
+   * @return the number of columns to show in the summary table.
+   */
+  public int getSummary()
+  {
+    return summary;
+  }
+
+  /**
+   * Returns the pattern for the IUs that will be displayed in the summary table.
+   * @return the pattern for the IUs that will be displayed in the summary table.
+   */
+  public Pattern getSummaryIUPattern()
+  {
+    return summaryIUPattern;
   }
 
   /**
@@ -1313,6 +1348,22 @@ public class UpdateSiteGenerator
     {
       generateIndex(child);
     }
+
+    if (updateSiteIndexGenerator.hasSummary())
+    {
+      Path targetTable = updateSiteIndexGenerator.getFolder().resolve("table.html");
+      if (verbose)
+      {
+        System.out.println("Generating " + targetTable);
+      }
+
+      String tableHTML = new UpdateSiteTable().generate(updateSiteIndexGenerator);
+      try (OutputStream out = Files.newOutputStream(targetTable))
+      {
+        byte[] bytes = tableHTML.getBytes("UTF-8");
+        out.write(bytes);
+      }
+    }
   }
 
   /**
@@ -2020,38 +2071,37 @@ public class UpdateSiteGenerator
             }
           }
 
-          var mavenRepository = iu.getProperty("maven-repository");
-          var wrapped = false;
-
-          var mavenGroupId = iu.getProperty("maven-groupId");
-          if (mavenGroupId == null)
-          {
-            mavenGroupId = iu.getProperty("maven-wrapped-groupId");
-            wrapped = true;
-          }
-
-          var mavenArtifactId = iu.getProperty("maven-artifactId");
-          if (mavenArtifactId == null)
-          {
-            mavenArtifactId = iu.getProperty("maven-wrapped-artifactId");
-            wrapped = true;
-          }
-
-          var mavenVersion = iu.getProperty("maven-version");
-          if (mavenVersion == null)
-          {
-            mavenVersion = iu.getProperty("maven-wrapped-version");
-            wrapped = true;
-          }
-
-          if ((wrapped || "central".equals(mavenRepository) || "eclipse.maven.central.mirror".equals(mavenRepository)) && //
-            mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
+          MavenDescriptor descriptor = MavenDescriptor.create(iu);
+          if (descriptor != null)
           {
             lines.add(
               0,
-              "\u21d3 <a href='" + "https://repo1.maven.org/maven2/" + mavenGroupId.replace('.', '/') + "/" + mavenArtifactId + "/" + mavenVersion + "' target='maven-central'>"
-                + mavenGroupId + "<b style='color: black;'>\u2009:\u2009</b>" + mavenArtifactId + "<b style='color: black;'>\u2009:\u2009</b>" + mavenVersion + "</a>");
+              "\u21d3 <a href='" + descriptor.toURL() + "' target='maven-central'>" + descriptor.toCoordinate().replace(":", "<b style='color: black;'>\u2009:\u2009</b>")
+                + "</a>");
           }
+        }
+      }
+      return result;
+    }
+
+    /**
+     * Returns a map from bundle symbolic name to set the of installable units with that name.
+     * @param iuFilterPattern a pattern that must match the ID of each IU or <code>null</code> if all IUs are to be considered.
+     * @return a map from bundle symbolic name to set the of installable units with that name.
+     */
+    public Map<String, Set<IInstallableUnit>> getBundles(Pattern iuFilterPattern)
+    {
+      Map<String, Set<IInstallableUnit>> result = new TreeMap<>(Collator.getInstance());
+      IMetadataRepository repository = getCompositeMetadataRepository();
+      IQueryResult<IInstallableUnit> query = repository.query(QueryUtil.createIUAnyQuery(), new NullProgressMonitor());
+      for (Iterator<IInstallableUnit> i = query.iterator(); i.hasNext();)
+      {
+        IInstallableUnit iu = i.next();
+        String id = iu.getId();
+        if (!"true".equals(iu.getProperty(QueryUtil.PROP_TYPE_CATEGORY)) && (iuFilterPattern == null || iuFilterPattern.matcher(id).matches()))
+        {
+          Set<IInstallableUnit> versions = result.computeIfAbsent(id, it -> new TreeSet<>());
+          versions.add(iu);
         }
       }
       return result;
@@ -2206,6 +2256,54 @@ public class UpdateSiteGenerator
     public IStatus run(IProgressMonitor monitor) throws ProvisionException
     {
       return Status.OK_STATUS;
+    }
+  }
+
+  record MavenDescriptor(String groupId, String artifactId, String version)
+  {
+    public static MavenDescriptor create(IInstallableUnit iu)
+    {
+      var mavenRepository = iu.getProperty("maven-repository");
+      var wrapped = false;
+
+      var mavenGroupId = iu.getProperty("maven-groupId");
+      if (mavenGroupId == null)
+      {
+        mavenGroupId = iu.getProperty("maven-wrapped-groupId");
+        wrapped = true;
+      }
+
+      var mavenArtifactId = iu.getProperty("maven-artifactId");
+      if (mavenArtifactId == null)
+      {
+        mavenArtifactId = iu.getProperty("maven-wrapped-artifactId");
+        wrapped = true;
+      }
+
+      var mavenVersion = iu.getProperty("maven-version");
+      if (mavenVersion == null)
+      {
+        mavenVersion = iu.getProperty("maven-wrapped-version");
+        wrapped = true;
+      }
+
+      if ((wrapped || "central".equals(mavenRepository) || "central-id".equals(mavenRepository) || "eclipse.maven.central.mirror".equals(mavenRepository)) && //
+        mavenGroupId != null && mavenArtifactId != null && mavenVersion != null)
+      {
+        return new MavenDescriptor(mavenGroupId, mavenArtifactId, mavenVersion);
+      }
+
+      return null;
+    }
+
+    public String toURL()
+    {
+      return "https://repo1.maven.org/maven2/" + groupId.replace('.', '/') + "/" + artifactId + "/" + version;
+    }
+
+    public String toCoordinate()
+    {
+      return groupId + ':' + artifactId + ':' + version;
     }
   }
 }
