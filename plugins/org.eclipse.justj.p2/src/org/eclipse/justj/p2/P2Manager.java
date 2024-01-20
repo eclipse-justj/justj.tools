@@ -1275,7 +1275,8 @@ public class P2Manager
 
       try
       {
-        process.waitFor(2, TimeUnit.MINUTES);
+        int wait = Integer.parseInt(System.getProperty("org.eclipse.justj.p2.P2Manager.wait", "5"));
+        process.waitFor(wait, TimeUnit.MINUTES);
         stderrThread.join(1000 * 60);
         stdoutThread.join(1000 * 60);
       }
