@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -171,7 +172,7 @@ public class P2Manager
   {
     Path milestoneLatest = updateSiteGenerator.getCompositeUpdateSiteDestination("milestone", true);
     Path source = updateSiteGenerator.getLatest(milestoneLatest);
-    ensureSourceMilestoneExists(source);
+    ensureRepositorySourceExists(source);
     String version = updateSiteGenerator.getVersion(source, false);
     Path target = updateSiteGenerator.getPromoteUpdateSiteDestination("release", version);
     Path primaryTarget = target;
@@ -200,10 +201,10 @@ public class P2Manager
 
   /**
    * This call-out is called right before this repository will be loaded and can be used to transfer the contents from a remote location to a local location..
-   * @param source the repository to be loaded
+   * @param source the repository to be loaded.
    * @throws IOException
    */
-  protected void ensureSourceMilestoneExists(Path source) throws IOException
+  protected void ensureRepositorySourceExists(Path source) throws IOException
   {
   }
 
@@ -708,7 +709,7 @@ public class P2Manager
             {
               System.err.println("exitValue=" + processLauncher.exitValue());
             }
-            return processLauncher.exitValue();
+            return Long.valueOf(processLauncher.exitValue());
           }
         }
 
@@ -774,7 +775,7 @@ public class P2Manager
             {
               System.err.println("exitValue=" + processLauncher.exitValue());
             }
-            return processLauncher.exitValue();
+            return Long.valueOf(processLauncher.exitValue());
           }
         }
       }
@@ -803,6 +804,47 @@ public class P2Manager
       Pattern effectiveIUVersionPattern = versionIU != null
         ? Pattern.compile(Pattern.quote(versionIU) + ".*") : versionIUPattern != null ? Pattern.compile(versionIUPattern) : null;
 
+      Consumer<Path> repositoryMirror = (Path source) ->
+        {
+          if (host != null)
+          {
+            try
+            {
+              // Use rsync to transfer the complete contents of the remote folder to the local folder.
+              Path sourceRelativeTargetFolder = Paths.get(projectRoot).relativize(source);
+              Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(source);
+              ProcessLauncher processLauncher = new ProcessLauncher(
+                verbose,
+                "rsync",
+                "-avsh",
+                hostPrefix + hostPath + "/" + toShellPath(sourceRelativeTargetFolder) + "/",
+                toShellPath(normalizedAbsolutePath));
+
+              processLauncher.execute();
+              if (verbose)
+              {
+                processLauncher.dump();
+              }
+
+              if (processLauncher.exitValue() != 0)
+              {
+                if (!verbose)
+                {
+                  processLauncher.fullDump();
+                }
+                else
+                {
+                  System.err.println("exitValue=" + processLauncher.exitValue());
+                }
+              }
+            }
+            catch (Exception exception)
+            {
+              throw new RuntimeException(exception);
+            }
+          }
+        };
+
       UpdateSiteGenerator updateSiteGenerator = new UpdateSiteGenerator(
         projectLabel,
         buildURL,
@@ -828,43 +870,26 @@ public class P2Manager
         latestVersionOnly,
         summary,
         summaryIUPattern,
-        verbose);
+        verbose)
+        {
+          @Override
+          public Path createArchive(Path repository) throws IOException
+          {
+            if (!Files.isDirectory(repository.resolve("plugins")))
+            {
+              repositoryMirror.accept(repository);
+            }
+
+            return super.createArchive(repository);
+          }
+        };
 
       P2Manager p2Manager = new P2Manager(updateSiteGenerator, verbose, host == null)
         {
           @Override
-          protected void ensureSourceMilestoneExists(Path source) throws IOException
+          protected void ensureRepositorySourceExists(Path source) throws IOException
           {
-            if (host != null)
-            {
-              // Use rsync to transfer the complete contents of the remote folder to the local folder.
-              Path relativeTargetFolder = Paths.get(projectRoot).relativize(source);
-              Path normalizedAbsolutePath = ProcessLauncher.getNormalizedAbsolutePath(source);
-              ProcessLauncher processLauncher = new ProcessLauncher(
-                verbose,
-                "rsync",
-                "-avsh",
-                hostPrefix + hostPath + "/" + toShellPath(relativeTargetFolder) + "/",
-                toShellPath(normalizedAbsolutePath));
-
-              processLauncher.execute();
-              if (verbose)
-              {
-                processLauncher.dump();
-              }
-
-              if (processLauncher.exitValue() != 0)
-              {
-                if (!verbose)
-                {
-                  processLauncher.fullDump();
-                }
-                else
-                {
-                  System.err.println("exitValue=" + processLauncher.exitValue());
-                }
-              }
-            }
+            repositoryMirror.accept(source);
           }
         };
 
@@ -917,7 +942,7 @@ public class P2Manager
               System.err.println("exitValue=" + processLauncher.exitValue());
             }
 
-            return processLauncher.exitValue();
+            return Long.valueOf(processLauncher.exitValue());
           }
         }
 
@@ -949,7 +974,7 @@ public class P2Manager
             {
               System.err.println("exitValue=" + processLauncher.exitValue());
             }
-            return processLauncher.exitValue();
+            return Long.valueOf(processLauncher.exitValue());
           }
         }
 
@@ -982,7 +1007,7 @@ public class P2Manager
             {
               System.err.println("exitValue=" + processLauncher.exitValue());
             }
-            return processLauncher.exitValue();
+            return Long.valueOf(processLauncher.exitValue());
           }
         }
       }

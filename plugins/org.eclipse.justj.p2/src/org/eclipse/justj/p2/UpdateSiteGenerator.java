@@ -1100,6 +1100,15 @@ public class UpdateSiteGenerator
         compositeRepositoryApplication.addChild(childRepositoryDescriptor);
       }
 
+      for (String compositeFile : new String []{ "compositeContent.jar", "compositeContent.xml", "compositeArtifacts.jar", "compositeArtifacts.xml" })
+      {
+        Path path = destination.resolve(compositeFile);
+        if (Files.deleteIfExists(path) && verbose)
+        {
+          System.out.println("Deleted all releases update site " + path);
+        }
+      }
+
       IStatus status = compositeRepositoryApplication.run(new NullProgressMonitor());
       if (!status.isOK())
       {
