@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -46,6 +47,16 @@ import org.eclipse.justj.p2.UpdateSiteGenerator.RepositoryAnalyzer;
  */
 public class UpdateSiteIndexGenerator
 {
+  /**
+   * The decorator used for indicating a version update.
+   */
+  public static final String UPDATED_DECORATOR = "\u2b06";
+
+  /**
+   * The decorator used for indicating a removed bundle.
+   */
+  public static final String REMOVED_DECORATOR = "\u232b";
+
   /**
    * The ordered folders that will be indexed.
    */
@@ -1045,6 +1056,78 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
+   * Returns decorations to indicate what types of updates are available in this table column.
+   * @return decorations to indicate what types of updates are available in this table column.
+   */
+  public String getTableChildFolderDecoration(UpdateSiteIndexGenerator tableParent)
+  {
+    List<UpdateSiteIndexGenerator> tableChildren = tableParent.getTableChildren();
+    int index = tableChildren.indexOf(this);
+    if (index + 1 == tableChildren.size())
+    {
+      return "";
+    }
+
+    boolean updated = false;
+    boolean removed = false;
+
+    LOOP: //
+    for (String bsn : tableParent.getTableBundles())
+    {
+      Map<String, Set<IInstallableUnit>> bsns = tableParent.table.get(this);
+      if (bsns != null)
+      {
+        Set<IInstallableUnit> olderVersions;
+        Map<String, Set<IInstallableUnit>> olderBSNs = tableParent.table.get(tableChildren.get(index + 1));
+        if (olderBSNs != null)
+        {
+          olderVersions = olderBSNs.get(bsn);
+        }
+        else
+        {
+          olderVersions = null;
+        }
+
+        Set<IInstallableUnit> versions = bsns.get(bsn);
+
+        if (!Objects.equals(versions, olderVersions))
+        {
+          if (versions == null)
+          {
+            removed = true;
+          }
+          else
+          {
+            updated = true;
+          }
+        }
+
+        if (removed && updated)
+        {
+          break LOOP;
+        }
+      }
+    }
+
+    if (updated || removed)
+    {
+      StringBuilder result = new StringBuilder();
+      result.append("&nbsp;");
+      if (updated)
+      {
+        result.append("<b>" + UPDATED_DECORATOR + "</b>");
+      }
+      if (removed)
+      {
+        result.append("<b>" + REMOVED_DECORATOR + "</b>");
+      }
+      return result.toString();
+    }
+
+    return "";
+  }
+
+  /**
    * Returns the sites for which a summary column is generated in the table summary.
    * @return the sites for which a summary column is generated in the table summary.
    */
@@ -1127,7 +1210,14 @@ public class UpdateSiteIndexGenerator
       }
 
       Set<IInstallableUnit> versions = bsns.get(bsn);
-      if (versions != null)
+      if (versions == null)
+      {
+        if (olderVersions != null)
+        {
+          return "<b>" + REMOVED_DECORATOR + "</b>";
+        }
+      }
+      else
       {
         return versions.stream().map(it ->
           {
@@ -1162,7 +1252,7 @@ public class UpdateSiteIndexGenerator
 
             if (olderVersions != null && !olderVersions.contains(it))
             {
-              result.append("&nbsp;<b>\u2b06</b>");
+              result.append("&nbsp;<b>" + UPDATED_DECORATOR + "</b>");
             }
 
             MavenDescriptor descriptor = UpdateSiteGenerator.MavenDescriptor.create(it);

@@ -8,9 +8,11 @@ https://www.eclipse.org/legal/epl-2.0/
 
 SPDX-License-Identifier: EPL-2.0
 --%>
-<%@jet package="org.eclipse.justj.p2" class="UpdateSiteTable" imports="java.util.*"%>
+<%@jet package="org.eclipse.justj.p2" class="UpdateSiteTable" imports="java.util.* java.util.function.Function java.util.stream.Collectors"%>
 <%UpdateSiteIndexGenerator parent = (UpdateSiteIndexGenerator)argument;
-  String title = parent.getTableTitle();%>
+  String title = parent.getTableTitle();
+  List<UpdateSiteIndexGenerator> tableChildren = parent.getTableChildren();
+  Map<UpdateSiteIndexGenerator, String> decorators = tableChildren.stream().collect(Collectors.toMap(Function.identity(), child -> child.getTableChildFolderDecoration(parent)));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -103,7 +105,12 @@ SPDX-License-Identifier: EPL-2.0
 <%}%>
            <p>This is a tabular summary of the bundle versions available in the p2 update sites for <%=parent.getProjectLabel()%>.</p>
 <%if (parent.getTableChildren().size() > 1) {%>
-           <p>A version decorated with &#x2b06; indicates a version increase relative to the next/older column.</p>
+  <%if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.UPDATED_DECORATOR))) {%>
+           <p>A column header or version decorated with <b><%=UpdateSiteIndexGenerator.UPDATED_DECORATOR%></b> indicates a version increase relative to the next/older column.</p>
+  <%}%>
+  <%if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.REMOVED_DECORATOR))) {%>
+           <p>A cell decorated with <b><%=UpdateSiteIndexGenerator.REMOVED_DECORATOR%></b> indicates a removal relative to the next/older column.</p>
+  <%}%>
 <%}%>
 <%if (parent.hasMavenDescriptors()) {%>
            <p>Where applicable, each version is link to the Maven Central source.</p>
@@ -111,24 +118,21 @@ SPDX-License-Identifier: EPL-2.0
 
            <table>
 
-<%{
-    List<UpdateSiteIndexGenerator> tableChildren = parent.getTableChildren();%>
              <tr>
                <th>Bundle Symbolic Name</th>
-  <%for (UpdateSiteIndexGenerator tableChild : tableChildren) {%>
-               <th><a href="<%=parent.getRelativeIndexURL(tableChild)%>"><%=tableChild.getTableChildFolderName()%></a></th>
-  <%}%>
+<%for (UpdateSiteIndexGenerator tableChild : tableChildren) {%>
+               <th><a href="<%=parent.getRelativeIndexURL(tableChild)%>"><%=tableChild.getTableChildFolderName()%></a><%=decorators.get(tableChild)%></th>
+<%}%>
             </tr>
-  <%for (String bsn : parent.getTableBundles()) {%>
+<%for (String bsn : parent.getTableBundles()) {%>
             <tr>
               <td><%=parent.getShortBSN(bsn)%></td>
-    <%for (UpdateSiteIndexGenerator tableChild : tableChildren) {%>
+  <%for (UpdateSiteIndexGenerator tableChild : tableChildren) {%>
               <td><%=parent.getVersions(bsn, tableChild)%></td>
-    <%}%>
-            </tr>
   <%}%>
-          </table>
+            </tr>
 <%}%>
+          </table>
         </div>
       </div>
     </main>
