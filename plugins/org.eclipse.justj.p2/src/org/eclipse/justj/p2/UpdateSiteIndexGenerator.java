@@ -124,6 +124,12 @@ public class UpdateSiteIndexGenerator
   private Resource resource;
 
   /**
+   * The cached children.
+   * @see #getChildren()
+   */
+  private List<UpdateSiteIndexGenerator> children;
+
+  /**
    * Creates an instance for the given folder with the given update site generator
    * @param folder
    * @param updateSiteGenerator
@@ -922,58 +928,61 @@ public class UpdateSiteIndexGenerator
    */
   public List<UpdateSiteIndexGenerator> getChildren()
   {
-    List<Path> children = new ArrayList<>();
-    List<Path> superChildren = new ArrayList<>();
-    List<UpdateSiteIndexGenerator> result = new ArrayList<UpdateSiteIndexGenerator>();
-    try
+    if (children == null)
     {
-      for (Path child : Files.list(folder).collect(Collectors.toList()))
+      List<Path> directChildren = new ArrayList<>();
+      List<Path> superChildren = new ArrayList<>();
+      children = new ArrayList<UpdateSiteIndexGenerator>();
+      try
       {
-        if (Files.isDirectory(child) && !Files.isRegularFile(child.resolve("DELETED"))
-          && (Files.isRegularFile(child.resolve("compositeContent.jar")) || Files.isRegularFile(child.resolve("content.jar"))))
+        for (Path child : Files.list(folder).collect(Collectors.toList()))
         {
-          children.add(child);
+          if (Files.isDirectory(child) && !Files.isRegularFile(child.resolve("DELETED"))
+            && (Files.isRegularFile(child.resolve("compositeContent.jar")) || Files.isRegularFile(child.resolve("content.jar"))))
+          {
+            directChildren.add(child);
+          }
+        }
+
+        if ("super".equals(getBuildType()) && directChildren.size() == 1 && directChildren.get(0).endsWith("latest"))
+        {
+          superChildren.addAll(repositoryAnalyzer.getChildren());
         }
       }
-
-      if ("super".equals(getBuildType()) && children.size() == 1 && children.get(0).endsWith("latest"))
+      catch (IOException exception)
       {
-        superChildren.addAll(repositoryAnalyzer.getChildren());
+        throw new RuntimeException(exception);
+      }
+
+      UpdateSiteGenerator.sort(directChildren);
+
+      for (Path child : directChildren)
+      {
+        children.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this));
+      }
+
+      Path parentFolder = folder;
+      for (Path child : superChildren)
+      {
+        children.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this)
+          {
+            @Override
+            public String getIndexName()
+            {
+              return "index_super.html";
+            }
+
+            @Override
+            public String getRelativeIndexURL()
+            {
+              Path relativePath = parentFolder.relativize(child);
+              return relativePath.resolve(getIndexName()).toString().replace('\\', '/');
+            }
+          });
       }
     }
-    catch (IOException exception)
-    {
-      throw new RuntimeException(exception);
-    }
 
-    UpdateSiteGenerator.sort(children);
-
-    for (Path child : children)
-    {
-      result.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this));
-    }
-
-    Path parentFolder = folder;
-    for (Path child : superChildren)
-    {
-      result.add(new UpdateSiteIndexGenerator(child, updateSiteGenerator, this)
-        {
-          @Override
-          public String getIndexName()
-          {
-            return "index_super.html";
-          }
-
-          @Override
-          public String getRelativeIndexURL()
-          {
-            Path relativePath = parentFolder.relativize(child);
-            return relativePath.resolve(getIndexName()).toString().replace('\\', '/');
-          }
-        });
-    }
-
-    return result;
+    return children;
   }
 
   /**
@@ -1029,8 +1038,8 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
-   * Returns the date string for when the IUs in the repository were built.
-   * @return the date string for when the IUs in the repository were built.
+   * Returns the date string for when the repository was created.
+   * @return the date string for when the repository was created.
    */
   public String getDate()
   {

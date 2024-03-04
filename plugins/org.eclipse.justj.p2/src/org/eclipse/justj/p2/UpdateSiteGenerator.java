@@ -2192,18 +2192,59 @@ public class UpdateSiteGenerator
     }
 
     /**
-     * Returns the build date as determined from the EMF project's branding plugin.
-     * @return the build date as determined from the EMF project's branding plugin.
+     * Returns the date of the repository.
+     * @return the date of the repository.
      */
     public String getDate()
     {
-      String timestamp = getMetadataRepository().getProperty(IRepository.PROP_TIMESTAMP);
+      IMetadataRepository metadataRepository = getMetadataRepository();
+      Long timestamp = getTimestamp(metadataRepository);
       if (timestamp != null)
       {
         try
         {
-          Date date = new Date(Long.parseLong(timestamp));
+          Date date = new Date(timestamp);
           return new SimpleDateFormat("yyyy'-'MM'-'dd' at 'HH':'mm ").format(date);
+        }
+        catch (NumberFormatException e)
+        {
+          // Ignore.
+        }
+      }
+
+      return null;
+    }
+
+    private Long getTimestamp(IRepository<?> repository)
+    {
+      if (repository instanceof ICompositeRepository<?> composite)
+      {
+        Long timestamp = null;
+        for (URI uri : composite.getChildren())
+        {
+          try
+          {
+            Long childTimestamp = getTimestamp(getMetadataRepositoryManager().loadRepository(uri, null));
+            if (childTimestamp != null)
+            {
+              timestamp = timestamp == null || timestamp.compareTo(childTimestamp) < 0 ? childTimestamp : timestamp;
+            }
+          }
+          catch (ProvisionException e)
+          {
+            // Ignore.
+          }
+        }
+
+        return timestamp;
+      }
+
+      String timestamp = repository.getProperty(IRepository.PROP_TIMESTAMP);
+      if (timestamp != null)
+      {
+        try
+        {
+          return Long.parseLong(timestamp);
         }
         catch (NumberFormatException e)
         {
