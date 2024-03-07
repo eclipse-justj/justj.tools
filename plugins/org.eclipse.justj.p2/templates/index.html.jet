@@ -329,7 +329,7 @@ SPDX-License-Identifier: EPL-2.0
 <%}%>
 <%if (!children.isEmpty()) {%>
   <%-[SDKs]-%>
-  <%List<String> sdks = parent.getSDKs();
+  <%List<String> sdks = parent.getPrimaryFeatures();
     if (!sdks.isEmpty()) {%>
            <h3><%=parent.getProjectLabel()%> SDKs</h3>
            <p>This update site provides access to the following features:</p>
@@ -385,7 +385,7 @@ SPDX-License-Identifier: EPL-2.0
         String id = parent.getFolderID(feature) + "_feature";%>
              <li style="font-size: 90%;">
               <button id="<%=id%>_arrows" class="orange" style="background-color: white; margin-left: 1em; border: none; padding: 0px 0px;" onclick="expand_collapse('<%=id%>');">&#x25B7;</button>
-              <span style="font-size:100%;"><%if (parent.isSDK(feature)) {%><b><%}%><%=feature.replace(" ", "&nbsp;")%><%if (parent.isSDK(feature)) {%></b><%}%></span>
+              <span style="font-size:100%;"><%if (parent.isPrimary(feature)) {%><b><%}%><%=feature.replace(" ", "&nbsp;")%><%if (parent.isPrimary(feature)) {%></b><%}%></span>
               <div id="<%=id%>" style="display:none; margin-left: 2em; white-space: nowrap;">
       <%for (String line : entry.getValue()) {%>
                 <%=line%><br/>

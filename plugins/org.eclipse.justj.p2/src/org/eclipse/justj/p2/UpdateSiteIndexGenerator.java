@@ -759,30 +759,30 @@ public class UpdateSiteIndexGenerator
   }
 
   /**
-   * Returns the SDKs in this folder's repository.
-   * @return the SDKs in this folder's repository.
+   * Returns the primary features in this folder's repository.
+   * @return the primary features in this folder's repository.
    */
-  public List<String> getSDKs()
+  public List<String> getPrimaryFeatures()
   {
     if (sdks == null)
     {
-      sdks = repositoryAnalyzer.getSDKs(updateSiteGenerator.getIUFilterPattern());
+      sdks = repositoryAnalyzer.getPrimaryFeatures(updateSiteGenerator.getIUFilterPattern(), updateSiteGenerator.getPrimaryIUFilterPattern());
     }
     return sdks;
   }
 
   /**
-   * Returns whether the given feature is an SDK.
+   * Returns whether the given feature is an primary feature.
    * @param feature the feature.
-   * @return whether the given feature is an SDK.
+   * @return whether the given feature is an primary feature.
    */
-  public boolean isSDK(String feature)
+  public boolean isPrimary(String feature)
   {
-    List<String> sdks = getSDKs();
+    List<String> primaryFeatures = getPrimaryFeatures();
     Map<String, List<String>> features = getFeatures();
-    if (sdks.size() != features.size())
+    if (primaryFeatures.size() != features.size())
     {
-      for (String sdk : getSDKs())
+      for (String sdk : getPrimaryFeatures())
       {
         if (feature.startsWith(sdk))
         {

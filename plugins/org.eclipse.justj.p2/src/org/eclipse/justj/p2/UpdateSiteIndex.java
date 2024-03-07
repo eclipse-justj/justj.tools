@@ -451,7 +451,7 @@ public class UpdateSiteIndex
     }
     }
     if (!children.isEmpty()) {
-    List<String> sdks = parent.getSDKs();
+    List<String> sdks = parent.getPrimaryFeatures();
     if (!sdks.isEmpty()) {
     stringBuffer.append(TEXT_86);
     stringBuffer.append(parent.getProjectLabel());
@@ -521,11 +521,11 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_31);
     stringBuffer.append(id);
     stringBuffer.append(TEXT_107);
-    if (parent.isSDK(feature)) {
+    if (parent.isPrimary(feature)) {
     stringBuffer.append(TEXT_108);
     }
     stringBuffer.append(feature.replace(" ", "&nbsp;"));
-    if (parent.isSDK(feature)) {
+    if (parent.isPrimary(feature)) {
     stringBuffer.append(TEXT_109);
     }
     stringBuffer.append(TEXT_110);

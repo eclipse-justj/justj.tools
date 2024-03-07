@@ -554,6 +554,7 @@ public class P2Manager
       String versionIU = getArgument("-version-iu", args, null);
       String versionIUPattern = getArgument("-version-iu-pattern", args, null);
       String iuFilterPattern = getArgument("-iu-filter-pattern", args, null);
+      String primaryIUFilterPattern = getArgument("-primary-iu-filter-pattern", args, ".*\\.sdk([_.-]feature)?\\.feature\\.group");
       String excludedCategoriesPattern = getArgument("-excluded-categories-pattern", args, null);
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
@@ -858,6 +859,7 @@ public class P2Manager
         retainedNightlyBuilds,
         effectiveIUVersionPattern,
         iuFilterPattern == null ? null : Pattern.compile(iuFilterPattern),
+        primaryIUFilterPattern == null ? null : Pattern.compile(primaryIUFilterPattern),
         excludedCategoriesPattern == null ? null : Pattern.compile(excludedCategoriesPattern),
         commit,
         breadcrumbs,

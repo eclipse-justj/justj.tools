@@ -219,6 +219,11 @@ public class UpdateSiteGenerator
   private Pattern iuFilterPattern;
 
   /**
+   * A pattern that must match an IU in order for it to be presented as a primary IU.
+   */
+  private Pattern primaryIUFilterPattern;
+
+  /**
    * A pattern used to match category IUs that should be excluded.
    */
   private Pattern excludedCategoriesPattern;
@@ -268,6 +273,7 @@ public class UpdateSiteGenerator
    * @param retainedNightlyBuilds the number of nightly builds to retain.
    * @param versionIUPattern a pattern for the IUs that will be used to determine the overall version.
    * @param iuFilterPattern a pattern that must match an IU in order for its details to be reported.
+   * @param primaryIUFilterPattern a pattern that must match an IU in order for it to be presented as a primary IU.
    * @param excludedCategoriesPattern a pattern used to match category IUs that should be excluded.
    * @param commit the commit ID.
    * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
@@ -296,6 +302,7 @@ public class UpdateSiteGenerator
     int retainedNightlyBuilds,
     Pattern versionIUPattern,
     Pattern iuFilterPattern,
+    Pattern primaryIUFilterPattern,
     Pattern excludedCategoriesPattern,
     String commit,
     Map<String, String> breadcrumbs,
@@ -319,6 +326,7 @@ public class UpdateSiteGenerator
     this.baselineURL = baselineURL;
     this.versionIUPattern = versionIUPattern;
     this.iuFilterPattern = iuFilterPattern;
+    this.primaryIUFilterPattern = primaryIUFilterPattern;
     this.excludedCategoriesPattern = excludedCategoriesPattern;
     this.commit = commit;
     this.breadcrumbs = breadcrumbs;
@@ -352,6 +360,15 @@ public class UpdateSiteGenerator
   public Pattern getIUFilterPattern()
   {
     return iuFilterPattern;
+  }
+
+  /**
+   * Return a pattern that must match an IU in order for it to be presented as a primary IU.
+   * @return a pattern that must match an IU in order for it to be presented as a primary IU.
+   */
+  public Pattern getPrimaryIUFilterPattern()
+  {
+    return primaryIUFilterPattern;
   }
 
   /**
@@ -1821,11 +1838,12 @@ public class UpdateSiteGenerator
     }
 
     /**
-     * Returns the sorted list of all the SDK features in the repository.
+     * Returns the sorted list of all the primary group IUs in the repository.
      * @param iuFilterPattern a pattern that must match the ID of each IU or <code> null</code> if all IUs are to be considered.
-     * @return the sorted list of all the SDK features in the repository.
+     * @param primaryIUFilterPattern a pattern that must match the ID of each primary group IU or <code> null</code> if all IUs are to be considered primary.
+     * @return the sorted list of all the primary features in the repository.
      */
-    public List<String> getSDKs(Pattern iuFilterPattern)
+    public List<String> getPrimaryFeatures(Pattern iuFilterPattern, Pattern primaryIUFilterPattern)
     {
       List<String> result = new ArrayList<String>();
       List<String> resultAll = new ArrayList<String>();
@@ -1848,7 +1866,7 @@ public class UpdateSiteGenerator
             resultAll.add(name);
           }
 
-          if (id.matches(".*\\.sdk([_.-]feature)?\\.feature\\.group") && !result.contains(name))
+          if (!result.contains(name) && (primaryIUFilterPattern == null || primaryIUFilterPattern.matcher(id).matches()))
           {
             result.add(name);
           }
