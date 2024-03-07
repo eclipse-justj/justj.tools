@@ -639,6 +639,20 @@ public class P2Manager
         }
       }
 
+      Map<String, String> archives = new LinkedHashMap<>();
+      for (String archive = getArgument("-archive", args, null); archive != null; archive = getArgument("-archive", args, null))
+      {
+        int index = archive.lastIndexOf(' ');
+        if (index == -1)
+        {
+          archives.put(archive, "");
+        }
+        else
+        {
+          archives.put(archive.substring(0, index), archive.substring(index + 1));
+        }
+      }
+
       Set<String> excludes = new LinkedHashSet<>();
       for (String exclude = getArgument("--exclude", args, null); exclude != null; exclude = getArgument("--exclude", args, null))
       {
@@ -863,6 +877,7 @@ public class P2Manager
         excludedCategoriesPattern == null ? null : Pattern.compile(excludedCategoriesPattern),
         commit,
         breadcrumbs,
+        archives,
         favicon,
         titleImage,
         bodyImage,

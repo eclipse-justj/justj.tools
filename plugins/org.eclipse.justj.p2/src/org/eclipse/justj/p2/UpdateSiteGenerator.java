@@ -153,6 +153,12 @@ public class UpdateSiteGenerator
   private final Map<String, String> breadcrumbs;
 
   /**
+   * A cache of the information used to populated archive navigation links.
+   * It's a map from label to URL.
+   */
+  private final Map<String, String> archives;
+
+  /**
    * The URL of the site's favicon.
    */
   private final String favicon;
@@ -277,6 +283,7 @@ public class UpdateSiteGenerator
    * @param excludedCategoriesPattern a pattern used to match category IUs that should be excluded.
    * @param commit the commit ID.
    * @param breadcrumbs a map from label to URL for populating the site's bread crumbs.
+   * @param archives a map from label to URL for populating the site's archive navigation.
    * @param favicon the URL of the site's favicon.
    * @param titleImage the URL of the site's title image.
    * @param bodyImage the URL if the image used in the body.
@@ -306,6 +313,7 @@ public class UpdateSiteGenerator
     Pattern excludedCategoriesPattern,
     String commit,
     Map<String, String> breadcrumbs,
+    Map<String, String> archives,
     String favicon,
     String titleImage,
     String bodyImage,
@@ -330,6 +338,7 @@ public class UpdateSiteGenerator
     this.excludedCategoriesPattern = excludedCategoriesPattern;
     this.commit = commit;
     this.breadcrumbs = breadcrumbs;
+    this.archives = archives;
     this.favicon = favicon;
     this.titleImage = titleImage;
     this.bodyImage = bodyImage;
@@ -423,6 +432,15 @@ public class UpdateSiteGenerator
   public Map<String, String> getBreadcrumbs()
   {
     return breadcrumbs;
+  }
+
+  /**
+   * A map from label to URL used for populating the site's archive navigation.
+   * @return a map from label to URL used for populating the site's archive navigation.
+   */
+  public Map<String, String> getArchives()
+  {
+    return archives;
   }
 
   /**

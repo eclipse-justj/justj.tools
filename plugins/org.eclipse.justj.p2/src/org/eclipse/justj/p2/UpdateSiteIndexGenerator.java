@@ -410,8 +410,23 @@ public class UpdateSiteIndexGenerator
       result.put(prefix + "table.html", "<b class='orange'>Summary</b>");
     }
 
+    Map<String, String> archives = new LinkedHashMap<>(updateSiteGenerator.getArchives());
     for (UpdateSiteIndexGenerator child : root.getChildren())
     {
+      String label = child.getLabel();
+      if ("Milestone".equals(label) || "Nightly".equals(label))
+      {
+        if (!archives.isEmpty())
+        {
+          result.put("", "Archive");
+          for (var entry : archives.entrySet())
+          {
+            result.put(entry.getValue(), "-" + entry.getKey());
+          }
+          archives.clear();
+        }
+      }
+
       child.visit(result, prefix.toString(), 0);
     }
 

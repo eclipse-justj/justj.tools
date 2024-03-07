@@ -182,7 +182,11 @@ SPDX-License-Identifier: EPL-2.0
   <%if (!isTopLevel) {%>
             <tt class="orange">&#xbb;</tt>
   <%}%>
+  <%if (entry.getKey().isBlank()) {%>
+            <span class="separator"><%=label%></span>
+  <%} else {%>
             <a class="separator" href="<%=entry.getKey()%>"><%=label%></a>
+  <%}%>
   <%if (index != -1) {%>
             <div style="float: right;"><tt class="orange">&#xab;</tt></div>
   <%}%>
@@ -451,7 +455,7 @@ SPDX-License-Identifier: EPL-2.0
            <ul>
     <%if (hasMavenLinks) {%>
              <li>
-               The &#x21D3; icon denotes a link to the Maven Central source of the bundle. 
+               The &#x21D3; icon denotes a link to the Maven Central source of the bundle.
              </li>
     <%}%>
              <li>
