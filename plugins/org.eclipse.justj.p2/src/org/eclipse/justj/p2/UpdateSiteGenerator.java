@@ -568,7 +568,7 @@ public class UpdateSiteGenerator
    * @return the destination location to which the repository is promoted.
    * @throws Exception
    */
-  public Path promoteUpdateSite(final Path source, final String buildType, String buildTimestamp) throws Exception
+  public Path promoteUpdateSite(final URI source, final String buildType, String buildTimestamp) throws Exception
   {
     final Path destination = getPromoteUpdateSiteDestination(buildType, buildTimestamp);
     return mirrorUpdateSite(source, destination, buildType);
@@ -586,11 +586,11 @@ public class UpdateSiteGenerator
    * @return the destination location to which the repository is mirrored.
    * @throws Exception
    */
-  public Path mirrorUpdateSite(final Path source, final Path destination, final String buildType) throws Exception
+  public Path mirrorUpdateSite(final URI source, final Path destination, final String buildType) throws Exception
   {
     if (verbose)
     {
-      System.out.println("Mirroring '" + source + "' to '" + destination + "'");
+      System.out.println("Mirroring '" + toString(source) + "' to '" + destination + "'");
     }
 
     MirrorApplication mirrorApplication = new MirrorApplication()
@@ -2391,5 +2391,14 @@ public class UpdateSiteGenerator
     {
       return groupId + ':' + artifactId + ':' + version;
     }
+  }
+
+  public static String toString(URI uri)
+  {
+    if ("file".equals(uri.getScheme()))
+    {
+      return Path.of(uri).toString();
+    }
+    return uri.toString();
   }
 }

@@ -93,17 +93,22 @@ public class P2Manager
    * @param buildTimestamp the time stamp of this build.
    * @param sourceRepository the repository to promote
    */
-  public void promoteUpdateSite(String buildType, String buildTimestamp, Path sourceRepository) throws Exception
+  public void promoteUpdateSite(String buildType, String buildTimestamp, URI sourceRepository) throws Exception
   {
     if (verbose)
     {
-      System.out.println("Promoting " + buildType + " " + sourceRepository + " to " + updateSiteGenerator.getProjectRoot());
+      System.out.println("Promoting " + buildType + " " + UpdateSiteGenerator.toString(sourceRepository) + " to " + updateSiteGenerator.getProjectRoot());
     }
 
-    if (!Files.isRegularFile(sourceRepository.resolve("content.jar")) && !Files.isRegularFile(sourceRepository.resolve("content.xml"))
-      && !Files.isRegularFile(sourceRepository.resolve("content.xml.xz")))
+    if ("file".equals(sourceRepository.getScheme()))
     {
-      throw new RuntimeException("The source repository is not a simple repository: " + sourceRepository);
+      Path sourceRepositoryPath = Path.of(sourceRepository);
+
+      if (!Files.isRegularFile(sourceRepositoryPath.resolve("content.jar")) && !Files.isRegularFile(sourceRepositoryPath.resolve("content.xml"))
+        && !Files.isRegularFile(sourceRepositoryPath.resolve("content.xml.xz")))
+      {
+        throw new RuntimeException("The source repository is not a simple repository: " + sourceRepositoryPath);
+      }
     }
 
     Assert.isNotNull(buildTimestamp, "The build time stamp must not be null");
@@ -182,7 +187,7 @@ public class P2Manager
       target = updateSiteGenerator.getPromoteUpdateSiteDestination("release", version);
       Assert.isTrue(!Files.exists(target), "The release '" + target + "' already exists and so does '" + primaryTarget + "'");
     }
-    updateSiteGenerator.mirrorUpdateSite(source, target, "release");
+    updateSiteGenerator.mirrorUpdateSite(source.toUri(), target, "release");
 
     Path milestone = updateSiteGenerator.getCompositeUpdateSiteDestination("milestone", false);
     try (Stream<Path> list = Files.list(milestone))
@@ -913,7 +918,17 @@ public class P2Manager
       // Only do a promote of a build when we're not doing a release build.
       if (buildType != null && !"release".equals(buildType) && buildTimestamp != null && sourceRepository != null)
       {
-        p2Manager.promoteUpdateSite(buildType, buildTimestamp, Paths.get(sourceRepository).toRealPath().normalize());
+        URI sourceRepositoryURI = null;
+        try
+        {
+          sourceRepositoryURI = Paths.get(sourceRepository).toRealPath().normalize().toUri();
+        }
+        catch (Exception ex)
+        {
+          sourceRepositoryURI = URI.create(sourceRepository);
+        }
+
+        p2Manager.promoteUpdateSite(buildType, buildTimestamp, sourceRepositoryURI);
       }
 
       // Promote the latest milestone build when doing a release build.
