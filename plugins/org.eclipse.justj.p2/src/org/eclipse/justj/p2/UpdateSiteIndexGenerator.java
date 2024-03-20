@@ -58,6 +58,11 @@ public class UpdateSiteIndexGenerator
   public static final String REMOVED_DECORATOR = "\u232b";
 
   /**
+   * The decorator used for indicating an added bundle.
+   */
+  public static final String ADDED_DECORATOR = "\u2a2d";
+
+  /**
    * The ordered folders that will be indexed.
    */
   private static final String[] ROOT_FOLDERS = new String []{ "release", "milestone", "nightly" };
@@ -1092,6 +1097,7 @@ public class UpdateSiteIndexGenerator
       return "";
     }
 
+    boolean added = false;
     boolean updated = false;
     boolean removed = false;
 
@@ -1116,7 +1122,11 @@ public class UpdateSiteIndexGenerator
 
         if (!Objects.equals(versions, olderVersions))
         {
-          if (versions == null)
+          if (olderVersions == null)
+          {
+            added = true;
+          }
+          else if (versions == null)
           {
             removed = true;
           }
@@ -1133,10 +1143,14 @@ public class UpdateSiteIndexGenerator
       }
     }
 
-    if (updated || removed)
+    if (updated || removed || added)
     {
       StringBuilder result = new StringBuilder();
       result.append("&nbsp;");
+      if (added)
+      {
+        result.append("<b>" + ADDED_DECORATOR + "</b>");
+      }
       if (updated)
       {
         result.append("<b>" + UPDATED_DECORATOR + "</b>");
@@ -1221,11 +1235,11 @@ public class UpdateSiteIndexGenerator
         Map<String, Set<IInstallableUnit>> olderBSNs = table.get(tableChildren.get(index + 1));
         if (olderBSNs != null)
         {
-          olderVersions = olderBSNs.get(bsn);
+          olderVersions = olderBSNs.getOrDefault(bsn, Set.of());
         }
         else
         {
-          olderVersions = null;
+          olderVersions = Set.of();
         }
       }
       else
@@ -1236,7 +1250,7 @@ public class UpdateSiteIndexGenerator
       Set<IInstallableUnit> versions = bsns.get(bsn);
       if (versions == null)
       {
-        if (olderVersions != null)
+        if (olderVersions != null && !olderVersions.isEmpty())
         {
           return "<b>" + REMOVED_DECORATOR + "</b>";
         }
@@ -1274,7 +1288,15 @@ public class UpdateSiteIndexGenerator
               }
             }
 
-            if (olderVersions != null && !olderVersions.contains(it))
+            if (olderVersions == null)
+            {
+              // No next column.
+            }
+            else if (olderVersions.isEmpty())
+            {
+              result.append("&nbsp;<b>" + ADDED_DECORATOR + "</b>");
+            }
+            else if (olderVersions.contains(it))
             {
               result.append("&nbsp;<b>" + UPDATED_DECORATOR + "</b>");
             }

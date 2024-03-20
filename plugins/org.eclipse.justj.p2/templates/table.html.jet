@@ -105,6 +105,9 @@ SPDX-License-Identifier: EPL-2.0
 <%}%>
            <p>This is a tabular summary of the bundle versions available in the p2 update sites for <%=parent.getProjectLabel()%>.</p>
 <%if (parent.getTableChildren().size() > 1) {%>
+  <%if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.ADDED_DECORATOR))) {%>
+           <p>A column header or version decorated with <b><%=UpdateSiteIndexGenerator.ADDED_DECORATOR%></b> indicates an addition of a bundle absent in the next/old column.</p>
+  <%}%>
   <%if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.UPDATED_DECORATOR))) {%>
            <p>A column header or version decorated with <b><%=UpdateSiteIndexGenerator.UPDATED_DECORATOR%></b> indicates a version increase relative to the next/older column.</p>
   <%}%>

@@ -46,19 +46,20 @@ public class UpdateSiteTable
   protected final String TEXT_18 = NL + "           <p>This is a tabular summary of the bundle versions available in the p2 update sites for ";
   protected final String TEXT_19 = ".</p>";
   protected final String TEXT_20 = NL + "           <p>A column header or version decorated with <b>";
-  protected final String TEXT_21 = "</b> indicates a version increase relative to the next/older column.</p>";
-  protected final String TEXT_22 = NL + "           <p>A cell decorated with <b>";
-  protected final String TEXT_23 = "</b> indicates a removal relative to the next/older column.</p>";
-  protected final String TEXT_24 = NL + "           <p>Where applicable, each version is link to the Maven Central source.</p>";
-  protected final String TEXT_25 = NL + NL + "           <table>" + NL + "" + NL + "             <tr>" + NL + "               <th>Bundle Symbolic Name</th>";
-  protected final String TEXT_26 = NL + "               <th><a href=\"";
-  protected final String TEXT_27 = "</a>";
-  protected final String TEXT_28 = "</th>";
-  protected final String TEXT_29 = NL + "            </tr>";
-  protected final String TEXT_30 = NL + "            <tr>" + NL + "              <td>";
-  protected final String TEXT_31 = "</td>";
-  protected final String TEXT_32 = NL + "              <td>";
-  protected final String TEXT_33 = NL + "          </table>" + NL + "        </div>" + NL + "      </div>" + NL + "    </main>" + NL + "  </body>" + NL + "</html>";
+  protected final String TEXT_21 = "</b> indicates an addition of a bundle absent in the next/old column.</p>";
+  protected final String TEXT_22 = "</b> indicates a version increase relative to the next/older column.</p>";
+  protected final String TEXT_23 = NL + "           <p>A cell decorated with <b>";
+  protected final String TEXT_24 = "</b> indicates a removal relative to the next/older column.</p>";
+  protected final String TEXT_25 = NL + "           <p>Where applicable, each version is link to the Maven Central source.</p>";
+  protected final String TEXT_26 = NL + NL + "           <table>" + NL + "" + NL + "             <tr>" + NL + "               <th>Bundle Symbolic Name</th>";
+  protected final String TEXT_27 = NL + "               <th><a href=\"";
+  protected final String TEXT_28 = "</a>";
+  protected final String TEXT_29 = "</th>";
+  protected final String TEXT_30 = NL + "            </tr>";
+  protected final String TEXT_31 = NL + "            <tr>" + NL + "              <td>";
+  protected final String TEXT_32 = "</td>";
+  protected final String TEXT_33 = NL + "              <td>";
+  protected final String TEXT_34 = NL + "          </table>" + NL + "        </div>" + NL + "      </div>" + NL + "    </main>" + NL + "  </body>" + NL + "</html>";
 
   public String generate(Object argument)
   {
@@ -109,43 +110,48 @@ public class UpdateSiteTable
     stringBuffer.append(parent.getProjectLabel());
     stringBuffer.append(TEXT_19);
     if (parent.getTableChildren().size() > 1) {
+    if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.ADDED_DECORATOR))) {
+    stringBuffer.append(TEXT_20);
+    stringBuffer.append(UpdateSiteIndexGenerator.ADDED_DECORATOR);
+    stringBuffer.append(TEXT_21);
+    }
     if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.UPDATED_DECORATOR))) {
     stringBuffer.append(TEXT_20);
     stringBuffer.append(UpdateSiteIndexGenerator.UPDATED_DECORATOR);
-    stringBuffer.append(TEXT_21);
+    stringBuffer.append(TEXT_22);
     }
     if (decorators.values().stream().anyMatch(decorator -> decorator.contains(UpdateSiteIndexGenerator.REMOVED_DECORATOR))) {
-    stringBuffer.append(TEXT_22);
-    stringBuffer.append(UpdateSiteIndexGenerator.REMOVED_DECORATOR);
     stringBuffer.append(TEXT_23);
+    stringBuffer.append(UpdateSiteIndexGenerator.REMOVED_DECORATOR);
+    stringBuffer.append(TEXT_24);
     }
     }
     if (parent.hasMavenDescriptors()) {
-    stringBuffer.append(TEXT_24);
-    }
     stringBuffer.append(TEXT_25);
-    for (UpdateSiteIndexGenerator tableChild : tableChildren) {
+    }
     stringBuffer.append(TEXT_26);
+    for (UpdateSiteIndexGenerator tableChild : tableChildren) {
+    stringBuffer.append(TEXT_27);
     stringBuffer.append(parent.getRelativeIndexURL(tableChild));
     stringBuffer.append(TEXT_12);
     stringBuffer.append(tableChild.getTableChildFolderName());
-    stringBuffer.append(TEXT_27);
-    stringBuffer.append(decorators.get(tableChild));
     stringBuffer.append(TEXT_28);
-    }
+    stringBuffer.append(decorators.get(tableChild));
     stringBuffer.append(TEXT_29);
-    for (String bsn : parent.getTableBundles()) {
+    }
     stringBuffer.append(TEXT_30);
+    for (String bsn : parent.getTableBundles()) {
+    stringBuffer.append(TEXT_31);
     stringBuffer.append(parent.getShortBSN(bsn));
-    stringBuffer.append(TEXT_31);
-    for (UpdateSiteIndexGenerator tableChild : tableChildren) {
     stringBuffer.append(TEXT_32);
-    stringBuffer.append(parent.getVersions(bsn, tableChild));
-    stringBuffer.append(TEXT_31);
-    }
-    stringBuffer.append(TEXT_29);
-    }
+    for (UpdateSiteIndexGenerator tableChild : tableChildren) {
     stringBuffer.append(TEXT_33);
+    stringBuffer.append(parent.getVersions(bsn, tableChild));
+    stringBuffer.append(TEXT_32);
+    }
+    stringBuffer.append(TEXT_30);
+    }
+    stringBuffer.append(TEXT_34);
     return stringBuffer.toString();
   }
 }
