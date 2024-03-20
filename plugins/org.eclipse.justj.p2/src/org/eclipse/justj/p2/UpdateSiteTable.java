@@ -46,7 +46,7 @@ public class UpdateSiteTable
   protected final String TEXT_18 = NL + "           <p>This is a tabular summary of the bundle versions available in the p2 update sites for ";
   protected final String TEXT_19 = ".</p>";
   protected final String TEXT_20 = NL + "           <p>A column header or version decorated with <b>";
-  protected final String TEXT_21 = "</b> indicates an addition of a bundle absent in the next/old column.</p>";
+  protected final String TEXT_21 = "</b> indicates an addition of a bundle absent in the next/older column.</p>";
   protected final String TEXT_22 = "</b> indicates a version increase relative to the next/older column.</p>";
   protected final String TEXT_23 = NL + "           <p>A cell decorated with <b>";
   protected final String TEXT_24 = "</b> indicates a removal relative to the next/older column.</p>";
