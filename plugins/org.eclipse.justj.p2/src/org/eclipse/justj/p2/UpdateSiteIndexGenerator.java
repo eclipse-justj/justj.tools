@@ -1296,7 +1296,7 @@ public class UpdateSiteIndexGenerator
             {
               result.append("&nbsp;<b>" + ADDED_DECORATOR + "</b>");
             }
-            else if (olderVersions.contains(it))
+            else if (!olderVersions.contains(it))
             {
               result.append("&nbsp;<b>" + UPDATED_DECORATOR + "</b>");
             }
