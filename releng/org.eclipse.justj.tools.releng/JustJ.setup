@@ -129,7 +129,7 @@
             rootFolder="${git.clone.justj.location}"/>
         <repositoryList>
           <repository
-              url="https://download.eclipse.org/justj/jres/17/updates/release/latest"/>
+              url="https://download.eclipse.org/justj/jres/21/updates/release/latest"/>
         </repositoryList>
       </targlet>
     </setupTask>

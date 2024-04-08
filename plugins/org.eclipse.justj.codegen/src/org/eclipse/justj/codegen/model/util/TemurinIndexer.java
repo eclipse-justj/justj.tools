@@ -64,7 +64,7 @@ public class TemurinIndexer
 
     out.println(BEGIN_MARKER);
 
-    for (String repo : new String []{ "11", "17", "21" })
+    for (String repo : new String []{ "11", "17", "21", "22" })
     {
       URI releasesURI = URI.createURI("https://api.adoptium.net/v3/assets/latest/" + repo + "/hotspot?image_type=jdk&vendor=eclipse");
       String content = getContent(releasesURI);
