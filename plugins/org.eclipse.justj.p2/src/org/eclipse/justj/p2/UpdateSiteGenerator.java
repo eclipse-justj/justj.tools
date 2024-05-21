@@ -13,11 +13,12 @@ package org.eclipse.justj.p2;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +52,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -1555,19 +1555,22 @@ public class UpdateSiteGenerator
       throw new IllegalStateException(repository + "is not a valid p2 repository");
     }
 
-    boolean delete = false;
-    FileOutputStream fileOutputStream = null;
-    ZipOutputStream zipOutputStream = null;
-    try
+    // Delete it if it already exists.
+    if (Files.isRegularFile(archiveFile))
     {
-      fileOutputStream = new FileOutputStream(archiveFile.toFile());
-      zipOutputStream = new ZipOutputStream(fileOutputStream);
+      Files.delete(archiveFile);
+    }
+
+    URI archiveURI = URI.create("jar:" + archiveFile.toUri());
+    boolean delete = false;
+    try (FileSystem fileSystem = FileSystems.newFileSystem(archiveURI, Map.of("create", true)))
+    {
       for (Path file : Files.list(folder).collect(Collectors.toList()))
       {
         String name = file.getFileName().toString();
         if (UPDATE_SITE_CONTENT.contains(name))
         {
-          visit(zipOutputStream, folder, name);
+          visit(fileSystem, folder, name);
         }
       }
     }
@@ -1577,14 +1580,6 @@ public class UpdateSiteGenerator
     }
     finally
     {
-      if (zipOutputStream != null)
-      {
-        zipOutputStream.close();
-      }
-      if (fileOutputStream != null)
-      {
-        fileOutputStream.close();
-      }
       if (delete)
       {
         Files.delete(archiveFile);
@@ -1597,43 +1592,22 @@ public class UpdateSiteGenerator
   /**
    * Visits the folders recursively to zip all files.
    *
-   * @param zipOutputStream the target archive.
+   * @param fileSystem the target archive file system.
    * @param root the root at which we started visiting.
    * @param path the relative path we are currently visiting.
    *
    * @throws IOException
    */
-  private static void visit(ZipOutputStream zipOutputStream, Path root, String path) throws IOException
+  private static void visit(FileSystem fileSystem, Path root, String path) throws IOException
   {
     Path file = root.resolve(path);
-    if (Files.isRegularFile(file))
-    {
-      ZipEntry zipEntry = new ZipEntry(path);
-      zipOutputStream.putNextEntry(zipEntry);
-      InputStream fileInputStream = null;
-      try
-      {
-        fileInputStream = Files.newInputStream(file);
-        byte[] bytes = new byte [10000];
-        for (int length = fileInputStream.read(bytes); length != -1; length = fileInputStream.read(bytes))
-        {
-          zipOutputStream.write(bytes, 0, length);
-        }
-        zipOutputStream.closeEntry();
-      }
-      finally
-      {
-        if (fileInputStream != null)
-        {
-          fileInputStream.close();
-        }
-      }
-    }
-    else
+    Path targetPath = fileSystem.getPath(path);
+    Files.copy(file, targetPath, StandardCopyOption.COPY_ATTRIBUTES);
+    if (Files.isDirectory(file))
     {
       for (Path child : Files.list(file).collect(Collectors.toList()))
       {
-        visit(zipOutputStream, root, path + "/" + child.getFileName());
+        visit(fileSystem, root, path + "/" + child.getFileName());
       }
     }
   }
