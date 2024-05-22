@@ -1563,7 +1563,7 @@ public class UpdateSiteGenerator
 
     URI archiveURI = URI.create("jar:" + archiveFile.toUri());
     boolean delete = false;
-    try (FileSystem fileSystem = FileSystems.newFileSystem(archiveURI, Map.of("create", true)))
+    try (FileSystem fileSystem = FileSystems.newFileSystem(archiveURI, Map.of("create", true, "enablePosixFileAttributes", true)))
     {
       for (Path file : Files.list(folder).collect(Collectors.toList()))
       {
