@@ -71,7 +71,7 @@ public class POMXML
   protected static final String _45 = "<artifactId>";
   protected static final String _46 = "<artifactId>org.apache.felix.scr</artifactId>";
   protected static final String _47 = "<artifactId>org.eclipse.justj.p2</artifactId>";
-  protected static final String _48 = "<artifactId>tycho-eclipserun-plugin</artifactId>";
+  protected static final String _48 = "<artifactId>tycho-eclipse-plugin</artifactId>";
   protected static final String _49 = "<build.type>nightly</build.type>";
   protected static final String _50 = "<build>";
   protected static final String _51 = "<configuration>";
@@ -79,12 +79,12 @@ public class POMXML
   protected static final String _53 = "<dependency>";
   protected static final String _54 = "<eclipse.repo>https://download.eclipse.org/releases/latest</eclipse.repo>";
   protected static final String _55 = "<execution>";
-  protected static final String _56 = "<executionEnvironment>JavaSE-17</executionEnvironment>";
+  protected static final String _56 = "<executionEnvironment>JavaSE-21</executionEnvironment>";
   protected static final String _57 = "<executions>";
   protected static final String _58 = "<goal>eclipse-run</goal>";
   protected static final String _59 = "<goals>";
   protected static final String _60 = "<groupId>";
-  protected static final String _61 = "<groupId>org.eclipse.tycho.extras</groupId>";
+  protected static final String _61 = "<groupId>org.eclipse.tycho</groupId>";
   protected static final String _62 = "<id>eclipse.repo</id>";
   protected static final String _63 = "<id>justj.tools.repo</id>";
   protected static final String _64 = "<id>promote</id>";
