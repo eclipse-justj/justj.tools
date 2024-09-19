@@ -66,7 +66,7 @@ public class TemurinIndexer
 
     out.println(BEGIN_MARKER);
 
-    for (String repo : new String []{ "11", "17", "21", "22" })
+    for (String repo : new String []{ "11", "17", "21", "22", "23" })
     {
       URI releasesURI = URI.createURI("https://api.adoptium.net/v3/assets/latest/" + repo + "/hotspot?image_type=jdk&vendor=eclipse");
       String content = getContent(releasesURI);
@@ -146,6 +146,16 @@ public class TemurinIndexer
       out.println("  JDK_URLS_LINUX_PPC64LE: '''");
       {
         String jdkURL = getURL(jdkDownloadURLs, "ppc64le_linux");
+        if (jdkURL != null)
+        {
+          out.println("    " + jdkURL);
+        }
+      }
+      out.println("    ''',");
+
+      out.println("  JDK_URLS_LINUX_RISCV64: '''");
+      {
+        String jdkURL = getURL(jdkDownloadURLs, "riscv64_linux");
         if (jdkURL != null)
         {
           out.println("    " + jdkURL);
