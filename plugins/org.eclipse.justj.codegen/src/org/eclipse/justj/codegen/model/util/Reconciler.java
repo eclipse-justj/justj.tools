@@ -528,6 +528,11 @@ public class Reconciler
           label += " ppc le 64 bit";
           break;
         }
+        case "riscv64":
+        {
+          label += " riscv 64 bit";
+          break;
+        }
         default:
         {
           label += " " + arch;
