@@ -54,7 +54,6 @@ SPDX-License-Identifier: EPL-2.0
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-          <resolver>p2</resolver>
           <environments>
             <environment>
               <os><%=os%></os>
