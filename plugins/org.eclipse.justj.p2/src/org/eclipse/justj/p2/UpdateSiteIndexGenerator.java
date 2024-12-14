@@ -837,7 +837,12 @@ public class UpdateSiteIndexGenerator
       bundleSizes = new TreeMap<>();
       bundleDetails = new TreeMap<>();
       AtomicReference<Resource> resourceReference = new AtomicReference<>();
-      bundles = repositoryAnalyzer.getBundles(bundleSizes, bundleDetails, repositoryAnalyzer.buildAdditionalDetails(resourceReference), updateSiteGenerator.getIUFilterPattern());
+      bundles = repositoryAnalyzer.getBundles(
+        bundleSizes,
+        bundleDetails,
+        repositoryAnalyzer.buildAdditionalDetails(resourceReference),
+        updateSiteGenerator.getIUFilterPattern(),
+        updateSiteGenerator.isBREE());
       resource = resourceReference.get();
     }
     return bundles;
@@ -1287,6 +1292,8 @@ public class UpdateSiteIndexGenerator
                 result.append(segment);
               }
             }
+
+            result.append(UpdateSiteGenerator.getBREEText(updateSiteGenerator.isBREE(), it));
 
             if (olderVersions == null)
             {

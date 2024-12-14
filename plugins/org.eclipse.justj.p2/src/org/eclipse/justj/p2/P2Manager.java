@@ -564,6 +564,7 @@ public class P2Manager
       String commit = getArgument("-commit", args, null);
       String superTargetFolder = getArgument("-super", args, null);
       boolean simrelAlias = getArgument("-simrel-alias", args);
+      boolean bree = getArgument("-bree", args);
       int summary = Integer.parseInt(getArgument("-summary", args, "0"));
       Pattern summaryIUPattern = Pattern.compile(getArgument("-summary-iu-pattern", args, ".*(?<!\\.source|\\.feature\\.group|\\.feature\\.jar)"));
 
@@ -892,6 +893,7 @@ public class P2Manager
         latestVersionOnly,
         summary,
         summaryIUPattern,
+        bree,
         verbose)
         {
           @Override
@@ -1230,6 +1232,11 @@ public class P2Manager
       if (!executable.isAbsolute())
       {
         absoluteExecutablePath = search(executableArg, path);
+        if (absoluteExecutablePath != null && File.separatorChar == '\\' && Path.of("C:\\Windows\\System32").equals(absoluteExecutablePath.getParent()))
+        {
+          // The one in System32 behaves strangely and I don't know how it ended up in there for me locally.
+          absoluteExecutablePath = null;
+        }
         String fullPath = path;
         if (absoluteExecutablePath == null && File.separatorChar == '\\')
         {

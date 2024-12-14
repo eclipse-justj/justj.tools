@@ -63,6 +63,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.equinox.internal.p2.metadata.BasicVersion;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
+import org.eclipse.equinox.internal.p2.metadata.OSGiVersion;
+import org.eclipse.equinox.internal.p2.metadata.RequiredPropertiesMatch;
 import org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.internal.repository.tools.AbstractApplication;
@@ -80,6 +82,9 @@ import org.eclipse.equinox.p2.metadata.MetadataFactory;
 import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.expression.IExpression;
+import org.eclipse.equinox.p2.metadata.expression.IFilterExpression;
+import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.ICompositeRepository;
@@ -194,6 +199,11 @@ public class UpdateSiteGenerator
   private final boolean verbose;
 
   /**
+   * Whether to generate information about the bundle's minimum execution environment.
+   */
+  private final boolean bree;
+
+  /**
    * The IU pattern for determining the version of the repo.
    */
   private Pattern versionIUPattern;
@@ -293,6 +303,7 @@ public class UpdateSiteGenerator
    * @param latestVersionOnly whether to mirror only the latest version or all versions.
    * @param summary the number of columns to show in the summary table.
    * @param summaryIUPattern a pattern for the IUs that will be displayed in the summary table.
+   * @param bree whether to generate information about the bundle's minimum execution environment.
    * @param verbose whether to print logging information.
    * @throws IOException
    */
@@ -323,6 +334,7 @@ public class UpdateSiteGenerator
     boolean latestVersionOnly,
     int summary,
     Pattern summaryIUPattern,
+    boolean bree,
     boolean verbose) throws IOException
   {
     this.projectLabel = projectLabel;
@@ -359,6 +371,7 @@ public class UpdateSiteGenerator
 
     this.projectRoot = getCanonicalPath(projectRoot);
     this.retainedNightlyBuilds = retainedNightlyBuilds;
+    this.bree = bree;
     updateSiteRoot = projectRoot.resolve(relativeTargetFolder);
   }
 
@@ -542,6 +555,15 @@ public class UpdateSiteGenerator
   public int getRetainedNightlyBuilds()
   {
     return retainedNightlyBuilds;
+  }
+
+  /**
+   * Whether to generate information about the bundle's minimum execution environment.
+   * @return to generate information about the bundle's minimum execution environment.
+   */
+  public boolean isBREE()
+  {
+    return bree;
   }
 
   /**
@@ -1684,6 +1706,26 @@ public class UpdateSiteGenerator
   }
 
   /**
+   * Returns the textual representation of the minimum execution environment of the installable unit.
+   * @param bree whether to actually compute text or simply return the empty string.
+   * @param iu the installable unit.
+   * @return the textual representation of the minimum execution environment of the installable unit.
+   */
+  static String getBREEText(boolean bree, IInstallableUnit iu)
+  {
+    if (bree)
+    {
+      String breeVersion = RepositoryAnalyzer.getBREE(iu);
+      if (breeVersion != null)
+      {
+        // The style sheets in the templates have special handling for <sup> tags.
+        return "<sup>\u2009<small>\u2265</small>" + breeVersion + "</sup>";
+      }
+    }
+    return "";
+  }
+
+  /**
    * A utility class used to load a repository in order to analyze its contents.
    * This needs to be reworked to be more general.
    */
@@ -1966,7 +2008,8 @@ public class UpdateSiteGenerator
       Map<String, Long> bundleSizes,
       Map<String, Map<String, String>> bundleDetails,
       Map<IInstallableUnit, Map<String, String>> iuBundleDetails,
-      Pattern iuFilterPattern)
+      Pattern iuFilterPattern,
+      boolean bree)
     {
       Map<String, List<String>> result = new TreeMap<String, List<String>>(Collator.getInstance());
       IMetadataRepository repository = getCompositeMetadataRepository();
@@ -1992,6 +2035,8 @@ public class UpdateSiteGenerator
               }
               iuName += " " + iu.getVersion();
               iuName = iuName.replaceAll("( [0-9]+\\.[0-9]+\\.[0-9]+)\\.[^ ]+$", "$1");
+              iuName += getBREEText(bree, iu);
+
               if (!result.containsKey(iuName))
               {
                 lines.add(0, "\u21D6 " + id + " <span style=\"color: DarkOliveGreen; font-size: 90%;\">" + iu.getVersion() + "</span>");
@@ -2101,6 +2146,63 @@ public class UpdateSiteGenerator
         }
       }
       return result;
+    }
+
+    /**
+     * Computes the minimum execution environment of the installable unit extracted from the requirements.
+     * @param iu the installable unit.
+     * @return the minimum execution environment of the installable unit.
+     */
+    public static String getBREE(IInstallableUnit iu)
+    {
+      for (IRequirement requirement : iu.getRequirements())
+      {
+        IMatchExpression<IInstallableUnit> matches = requirement.getMatches();
+        if (matches != null && RequiredPropertiesMatch.isPropertiesMatchRequirement(matches))
+        {
+          String namespace = RequiredPropertiesMatch.extractNamespace(matches);
+          if ("osgi.ee".equals(namespace))
+          {
+            IFilterExpression propertiesMatch = RequiredPropertiesMatch.extractPropertiesMatch(matches);
+            AtomicReference<Version> eeVersion = new AtomicReference<>();
+            propertiesMatch.accept(it ->
+              {
+                if (it.getExpressionType() == IExpression.TYPE_LITERAL)
+                {
+                  Object value = it.evaluate(null);
+                  if (value instanceof String)
+                  {
+                    try
+                    {
+                      Version version = Version.create(value.toString());
+                      Version otherVersion = eeVersion.get();
+                      if (otherVersion == null || otherVersion.compareTo(version) < 0)
+                      {
+                        eeVersion.set(version);
+                      }
+                    }
+                    catch (IllegalArgumentException ex)
+                    {
+                    }
+                  }
+                }
+                return true;
+              });
+
+            Version version = eeVersion.get();
+            if (version instanceof OSGiVersion osgiVersion)
+            {
+              int major = osgiVersion.getMajor();
+              if (major <= 1)
+              {
+                return major + "<small>.</small>" + osgiVersion.getMinor();
+              }
+              return Integer.toString(major);
+            }
+          }
+        }
+      }
+      return null;
     }
 
     /**
