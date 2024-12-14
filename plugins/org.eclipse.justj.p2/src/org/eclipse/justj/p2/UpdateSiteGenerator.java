@@ -1719,7 +1719,7 @@ public class UpdateSiteGenerator
       if (breeVersion != null)
       {
         // The style sheets in the templates have special handling for <sup> tags.
-        return "<sup>\u2009<small>\u2265</small>" + breeVersion + "</sup>";
+        return "<sup>\u202F<small>\u2265</small>" + breeVersion + "</sup>";
       }
     }
     return "";
