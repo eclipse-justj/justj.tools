@@ -36,9 +36,12 @@ SPDX-License-Identifier: EPL-2.0
 
       th {
         padding: 0.5ex 1ex;
+        position: sticky;
+        top: 0;
+        background-color: Snow; 
       }
 
-      tr:nth-child(even) {
+      tr:nth-child(odd) {
         background-color: OldLace;
       }
 
