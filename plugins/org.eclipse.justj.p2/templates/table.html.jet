@@ -38,6 +38,7 @@ SPDX-License-Identifier: EPL-2.0
         padding: 0.5ex 1ex;
         position: sticky;
         top: 0;
+        z-index: 1;
         background-color: Snow; 
       }
 
