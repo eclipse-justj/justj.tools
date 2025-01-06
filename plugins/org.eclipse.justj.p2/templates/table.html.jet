@@ -46,6 +46,23 @@ SPDX-License-Identifier: EPL-2.0
         background-color: OldLace;
       }
 
+      th:after, th:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 100%;
+      }
+
+      th:before {
+        top: -1px;
+        border-top: 1px solid black;
+      }
+
+      th:after {
+        bottom: -1px;
+        border-bottom: 1px solid black;
+      }
+
       .long-segment {
         font-size: 85%;
       }
