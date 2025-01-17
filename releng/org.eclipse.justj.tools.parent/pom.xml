@@ -53,7 +53,7 @@ SPDX-License-Identifier: EPL-2.0
     </repository>
     <repository>
       <id>eclipse-platform-repository</id>
-      <url>https://download.eclipse.org/eclipse/updates/4.28/R-4.28-202306050440</url>
+      <url>https://download.eclipse.org/eclipse/updates/4.34/R-4.34-202411201800</url>
       <layout>p2</layout>
     </repository>
   </repositories>

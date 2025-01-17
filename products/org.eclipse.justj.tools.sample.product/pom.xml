@@ -220,7 +220,7 @@ SPDX-License-Identifier: EPL-2.0
          <artifactId>target-platform-configuration</artifactId>
          <version>${tycho-version}</version>
          <configuration>
-            <executionEnvironmentDefault>org.eclipse.justj.openjdk.hotspot.jre.full-17</executionEnvironmentDefault>
+            <executionEnvironmentDefault>org.eclipse.justj.openjdk.hotspot.jre.full-21</executionEnvironmentDefault>
          </configuration>
       </plugin>
       <plugin>
