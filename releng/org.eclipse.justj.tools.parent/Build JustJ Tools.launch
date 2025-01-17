@@ -10,6 +10,6 @@
     </listAttribute>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${maven.build.command}"/>
-    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Dpromote=true&#13;&#10;-Dorg.eclipse.justj.p2.manager.args=&#13;&#10;-Dgit.commit=unknown&#13;&#10;-Dbuild.id=local-build&#13;&#10;clean&#13;&#10;verify"/>
+    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Dpromote=true&#13;&#10;-Dorg.eclipse.justj.p2.manager.args=&#13;&#10;-Dgit.commit=unknown&#13;&#10;-Dbuild.id=local-build&#13;&#10;-Duser.home=${system_property:user.home}&#13;&#10;clean&#13;&#10;verify"/>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${project_loc:/org.eclipse.justj.tools.parent}/../.."/>
 </launchConfiguration>

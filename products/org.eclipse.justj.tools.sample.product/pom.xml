@@ -28,7 +28,7 @@ SPDX-License-Identifier: EPL-2.0
   <packaging>eclipse-repository</packaging>
 
   <properties>
-    <org.eclipse.justj.jre.repository>https://download.eclipse.org/justj/jres/17/updates/nightly/latest</org.eclipse.justj.jre.repository>
+    <org.eclipse.justj.jre.repository>https://download.eclipse.org/justj/jres/21/updates/nightly/latest</org.eclipse.justj.jre.repository>
   </properties>
 
   <repositories>
