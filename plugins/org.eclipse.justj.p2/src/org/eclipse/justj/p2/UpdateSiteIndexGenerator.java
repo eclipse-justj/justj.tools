@@ -944,7 +944,7 @@ public class UpdateSiteIndexGenerator
 
   public String getFolderID(String folder)
   {
-    return "_" + new File(folder).getName().replace('.', '_');
+    return "_" + new File(folder.replaceAll("<sup>.*</sup>$", "")).getName().replace('.', '_').replace(' ', '_');
   }
 
   /**
