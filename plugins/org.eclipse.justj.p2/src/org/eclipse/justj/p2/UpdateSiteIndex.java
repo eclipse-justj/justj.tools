@@ -129,27 +129,27 @@ public class UpdateSiteIndex
   protected final String TEXT_100 = "\" target=\"model\">";
   protected final String TEXT_101 = "<img style=\"height: 2ex; white-space: nowrap; display: inline-block;\" alt=\"justj\" src=\"https://eclipse.dev/justj/justj_title.svg\"/>";
   protected final String TEXT_102 = "</a>." + NL + "           </p>";
-  protected final String TEXT_103 = " Features</h3>" + NL + "           <p>" + NL + "             This update site provides access to the following features." + NL + "             Each section is expandable via";
-  protected final String TEXT_104 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all_features\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all_features');";
-  protected final String TEXT_105 = "\">&#x25B7;</button>&nbsp;icon</span>";
-  protected final String TEXT_106 = NL + "             to provide detailed information about the requirements of each feature." + NL + "           </p>" + NL + "           <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
-  protected final String TEXT_107 = NL + "             <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
-  protected final String TEXT_108 = "');\">&#x25B7;</button>" + NL + "              <span style=\"font-size:100%;\">";
-  protected final String TEXT_109 = "<b>";
-  protected final String TEXT_110 = "</b>";
-  protected final String TEXT_111 = "</span>" + NL + "              <div id=\"";
-  protected final String TEXT_112 = "\" style=\"display:none; margin-left: 2em; white-space: nowrap;\">";
-  protected final String TEXT_113 = NL + "                ";
-  protected final String TEXT_114 = "<br/>";
-  protected final String TEXT_115 = NL + "              </div>" + NL + "             </li>";
-  protected final String TEXT_116 = " Products</h3>" + NL + "           <p>" + NL + "             This update site provides access to the packaged products listed below." + NL + "           </p>" + NL + "           <ul style=\"list-style-type: none; padding-left: 1em;\">";
-  protected final String TEXT_117 = NL + "           <li>" + NL + "             <a href=\"";
-  protected final String TEXT_118 = "</a>" + NL + "             <a class=\"btn btn-warning\" style=\"border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;\" href=\"";
-  protected final String TEXT_119 = ".sha512\" target=\"_blank\" title=\"Download ";
-  protected final String TEXT_120 = ".sha512\">sha512</a>" + NL + "           </li>";
-  protected final String TEXT_121 = " Downloads</h3>" + NL + "           <p>" + NL + "             This update site provides access to the download artifacts listed below." + NL + "           </p>" + NL + "           <ul style=\"list-style-type: none; padding-left: 1em;\">";
-  protected final String TEXT_122 = NL + "           <li style=\"font-size: 90%;\">" + NL + "             <a href=\"";
-  protected final String TEXT_123 = "\" target=\"_blank\" title=\"Download ";
+  protected final String TEXT_103 = " Downloads</h3>" + NL + "           <p>" + NL + "             This update site provides access to the download artifacts listed below." + NL + "           </p>" + NL + "           <ul style=\"list-style-type: none; padding-left: 1em;\">";
+  protected final String TEXT_104 = NL + "           <li style=\"font-size: 90%;\">" + NL + "             <a href=\"";
+  protected final String TEXT_105 = "</a>" + NL + "             <a class=\"btn btn-warning\" style=\"border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;\" href=\"";
+  protected final String TEXT_106 = "\" target=\"_blank\" title=\"Download ";
+  protected final String TEXT_107 = ".sha512\">sha512</a>" + NL + "           </li>";
+  protected final String TEXT_108 = " Features</h3>" + NL + "           <p>" + NL + "             This update site provides access to the following features." + NL + "             Each section is expandable via";
+  protected final String TEXT_109 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all_features\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all_features');";
+  protected final String TEXT_110 = "\">&#x25B7;</button>&nbsp;icon</span>";
+  protected final String TEXT_111 = NL + "             to provide detailed information about the requirements of each feature." + NL + "           </p>" + NL + "           <ul style=\"margin-left: -1em; list-style-type: none; padding: 0; margin: 0;\">";
+  protected final String TEXT_112 = NL + "             <li style=\"font-size: 90%;\">" + NL + "              <button id=\"";
+  protected final String TEXT_113 = "');\">&#x25B7;</button>" + NL + "              <span style=\"font-size:100%;\">";
+  protected final String TEXT_114 = "<b>";
+  protected final String TEXT_115 = "</b>";
+  protected final String TEXT_116 = "</span>" + NL + "              <div id=\"";
+  protected final String TEXT_117 = "\" style=\"display:none; margin-left: 2em; white-space: nowrap;\">";
+  protected final String TEXT_118 = NL + "                ";
+  protected final String TEXT_119 = "<br/>";
+  protected final String TEXT_120 = NL + "              </div>" + NL + "             </li>";
+  protected final String TEXT_121 = " Products</h3>" + NL + "           <p>" + NL + "             This update site provides access to the packaged products listed below." + NL + "           </p>" + NL + "           <ul style=\"list-style-type: none; padding-left: 1em;\">";
+  protected final String TEXT_122 = NL + "           <li>" + NL + "             <a href=\"";
+  protected final String TEXT_123 = ".sha512\" target=\"_blank\" title=\"Download ";
   protected final String TEXT_124 = " Bundles</h3>" + NL + "           <p>" + NL + "             This update site provides access to the bundles listed below." + NL + "             Each section is expandable via";
   protected final String TEXT_125 = NL + "             <span style=\"white-space: nowrap;\">the&nbsp;<button id=\"all\" title=\"Expand All\" class=\"orange\" style=\"background-color: white; border: none; padding: 0px 0px;\" onclick=\"toggle('all');";
   protected final String TEXT_126 = NL + "             to provide detailed information about the exports and imports of each bundle." + NL + "           </p>" + NL + "           <ul>";
@@ -505,45 +505,65 @@ public class UpdateSiteIndex
     }
     stringBuffer.append(TEXT_102);
     }
+    {
+      List<String> downloads = parent.getDownloads();
+      if (!downloads.isEmpty()) {
+    stringBuffer.append(TEXT_87);
+    stringBuffer.append(parent.getProjectLabel());
+    stringBuffer.append(TEXT_103);
+    for (String download : downloads) {
+    stringBuffer.append(TEXT_104);
+    stringBuffer.append(parent.getArtifactDownloadURI(download));
+    stringBuffer.append(TEXT_14);
+    stringBuffer.append(URI.decode(download));
+    stringBuffer.append(TEXT_105);
+    stringBuffer.append(parent.getArtifactSHA512URI(download));
+    stringBuffer.append(TEXT_106);
+    stringBuffer.append(download);
+    stringBuffer.append(TEXT_107);
+    }
+    stringBuffer.append(TEXT_90);
+    }
+    }
     Map<String, List<String>> features = parent.getFeatures();
     if (!features.isEmpty()) {
     stringBuffer.append(TEXT_87);
     stringBuffer.append(parent.getProjectLabel());
-    stringBuffer.append(TEXT_103);
+    stringBuffer.append(TEXT_108);
     {
         StringBuilder onClick = new StringBuilder();
         for (String feature : features.keySet()) {
           onClick.append("expand('").append(parent.getFolderID(feature) + "_feature").append("', 'all_features');");
         }
-    stringBuffer.append(TEXT_104);
-    stringBuffer.append(onClick);
-    stringBuffer.append(TEXT_105);
-    }
-    stringBuffer.append(TEXT_106);
-    for (Map.Entry<String, List<String>> entry : features.entrySet()) {
-        String feature = entry.getKey();
-        String id = parent.getFolderID(feature) + "_feature";
-    stringBuffer.append(TEXT_107);
-    stringBuffer.append(id);
-    stringBuffer.append(TEXT_33);
-    stringBuffer.append(id);
-    stringBuffer.append(TEXT_108);
-    if (parent.isPrimary(feature)) {
     stringBuffer.append(TEXT_109);
-    }
-    stringBuffer.append(feature.replace(" ", "&nbsp;"));
-    if (parent.isPrimary(feature)) {
+    stringBuffer.append(onClick);
     stringBuffer.append(TEXT_110);
     }
     stringBuffer.append(TEXT_111);
-    stringBuffer.append(id);
+    for (Map.Entry<String, List<String>> entry : features.entrySet()) {
+        String feature = entry.getKey();
+        String id = parent.getFolderID(feature) + "_feature";
     stringBuffer.append(TEXT_112);
-    for (String line : entry.getValue()) {
+    stringBuffer.append(id);
+    stringBuffer.append(TEXT_33);
+    stringBuffer.append(id);
     stringBuffer.append(TEXT_113);
-    stringBuffer.append(line);
+    if (parent.isPrimary(feature)) {
     stringBuffer.append(TEXT_114);
     }
+    stringBuffer.append(feature.replace(" ", "&nbsp;"));
+    if (parent.isPrimary(feature)) {
     stringBuffer.append(TEXT_115);
+    }
+    stringBuffer.append(TEXT_116);
+    stringBuffer.append(id);
+    stringBuffer.append(TEXT_117);
+    for (String line : entry.getValue()) {
+    stringBuffer.append(TEXT_118);
+    stringBuffer.append(line);
+    stringBuffer.append(TEXT_119);
+    }
+    stringBuffer.append(TEXT_120);
     }
     stringBuffer.append(TEXT_90);
     }
@@ -552,37 +572,17 @@ public class UpdateSiteIndex
       if (!products.isEmpty()) {
     stringBuffer.append(TEXT_87);
     stringBuffer.append(parent.getProjectLabel());
-    stringBuffer.append(TEXT_116);
+    stringBuffer.append(TEXT_121);
     for (String product : products) {
-    stringBuffer.append(TEXT_117);
+    stringBuffer.append(TEXT_122);
     stringBuffer.append(parent.getProductDownloadURI(product));
     stringBuffer.append(TEXT_14);
     stringBuffer.append(URI.decode(product));
-    stringBuffer.append(TEXT_118);
+    stringBuffer.append(TEXT_105);
     stringBuffer.append(product);
-    stringBuffer.append(TEXT_119);
-    stringBuffer.append(product);
-    stringBuffer.append(TEXT_120);
-    }
-    stringBuffer.append(TEXT_90);
-    }
-    }
-    {
-      List<String> downloads = parent.getDownloads();
-      if (!downloads.isEmpty()) {
-    stringBuffer.append(TEXT_87);
-    stringBuffer.append(parent.getProjectLabel());
-    stringBuffer.append(TEXT_121);
-    for (String download : downloads) {
-    stringBuffer.append(TEXT_122);
-    stringBuffer.append(parent.getArtifactDownloadURI(download));
-    stringBuffer.append(TEXT_14);
-    stringBuffer.append(URI.decode(download));
-    stringBuffer.append(TEXT_118);
-    stringBuffer.append(parent.getArtifactSHA512URI(download));
     stringBuffer.append(TEXT_123);
-    stringBuffer.append(download);
-    stringBuffer.append(TEXT_120);
+    stringBuffer.append(product);
+    stringBuffer.append(TEXT_107);
     }
     stringBuffer.append(TEXT_90);
     }
@@ -600,7 +600,7 @@ public class UpdateSiteIndex
         }
     stringBuffer.append(TEXT_125);
     stringBuffer.append(onClick);
-    stringBuffer.append(TEXT_105);
+    stringBuffer.append(TEXT_110);
     }
     stringBuffer.append(TEXT_126);
     if (hasMavenLinks) {
@@ -617,7 +617,7 @@ public class UpdateSiteIndex
     stringBuffer.append(id);
     stringBuffer.append(TEXT_33);
     stringBuffer.append(id);
-    stringBuffer.append(TEXT_108);
+    stringBuffer.append(TEXT_113);
     stringBuffer.append(bundle.replace(" ", "&nbsp;"));
     if (!bundleSize.isEmpty()) {
     stringBuffer.append(TEXT_130);
@@ -628,9 +628,9 @@ public class UpdateSiteIndex
     stringBuffer.append(xmlTag);
     stringBuffer.append(TEXT_19);
     }
-    stringBuffer.append(TEXT_111);
+    stringBuffer.append(TEXT_116);
     stringBuffer.append(id);
-    stringBuffer.append(TEXT_112);
+    stringBuffer.append(TEXT_117);
     if (!properties.isEmpty()) {
           int mainID = ++toggleCounter;
     stringBuffer.append(TEXT_133);
@@ -675,9 +675,9 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_149);
     }
     for (String line : entry.getValue()) {
-    stringBuffer.append(TEXT_113);
+    stringBuffer.append(TEXT_118);
     stringBuffer.append(line);
-    stringBuffer.append(TEXT_114);
+    stringBuffer.append(TEXT_119);
     }
     stringBuffer.append(TEXT_150);
     }
@@ -697,15 +697,15 @@ public class UpdateSiteIndex
     stringBuffer.append(archiveName);
     stringBuffer.append(TEXT_153);
     stringBuffer.append(parent.getArchiveDownloadURL());
-    stringBuffer.append(TEXT_123);
+    stringBuffer.append(TEXT_106);
     stringBuffer.append(archiveName);
     stringBuffer.append(TEXT_154);
     stringBuffer.append(sha256);
-    stringBuffer.append(TEXT_123);
+    stringBuffer.append(TEXT_106);
     stringBuffer.append(sha256Name);
     stringBuffer.append(TEXT_155);
     stringBuffer.append(sha512);
-    stringBuffer.append(TEXT_123);
+    stringBuffer.append(TEXT_106);
     stringBuffer.append(sha512Name);
     stringBuffer.append(TEXT_156);
     {

@@ -372,6 +372,24 @@ sup {
              <a href="<%=resourceURL%>" target="model"><%if (resourceURL.startsWith("justj.")) {%><img style="height: 2ex; white-space: nowrap; display: inline-block;" alt="justj" src="https://eclipse.dev/justj/justj_title.svg"/><%=resourceURL.substring(5)%><%} else {%><%=resourceURL%><%}%></a>.
            </p>
   <%}%>
+  <%-[Downloads]-%>
+  <%{
+      List<String> downloads = parent.getDownloads();
+      if (!downloads.isEmpty()) {%>
+           <h3><%=parent.getProjectLabel()%> Downloads</h3>
+           <p>
+             This update site provides access to the download artifacts listed below.
+           </p>
+           <ul style="list-style-type: none; padding-left: 1em;">
+      <%for (String download : downloads) {%>
+           <li style="font-size: 90%;">
+             <a href="<%=parent.getArtifactDownloadURI(download)%>"><%=URI.decode(download)%></a>
+             <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;" href="<%=parent.getArtifactSHA512URI(download)%>" target="_blank" title="Download <%=download%>.sha512">sha512</a>
+           </li>
+      <%}%>
+           </ul>
+    <%}
+    }%>
   <%-[Features]-%>
   <%Map<String, List<String>> features = parent.getFeatures();
     if (!features.isEmpty()) {%>
@@ -417,24 +435,6 @@ sup {
            <li>
              <a href="<%=parent.getProductDownloadURI(product)%>"><%=URI.decode(product)%></a>
              <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;" href="<%=product%>.sha512" target="_blank" title="Download <%=product%>.sha512">sha512</a>
-           </li>
-      <%}%>
-           </ul>
-    <%}
-    }%>
-  <%-[Downloads]-%>
-  <%{
-      List<String> downloads = parent.getDownloads();
-      if (!downloads.isEmpty()) {%>
-           <h3><%=parent.getProjectLabel()%> Downloads</h3>
-           <p>
-             This update site provides access to the download artifacts listed below.
-           </p>
-           <ul style="list-style-type: none; padding-left: 1em;">
-      <%for (String download : downloads) {%>
-           <li style="font-size: 90%;">
-             <a href="<%=parent.getArtifactDownloadURI(download)%>"><%=URI.decode(download)%></a>
-             <a class="btn btn-warning" style="border-color: DarkGreen; background-color: OliveDrab; font-size: 60%; margin-left: 0.5em; margin-top: -0.2em; padding: 0.2em;" href="<%=parent.getArtifactSHA512URI(download)%>" target="_blank" title="Download <%=download%>.sha512">sha512</a>
            </li>
       <%}%>
            </ul>
