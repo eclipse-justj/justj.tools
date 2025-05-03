@@ -106,7 +106,7 @@ public class POMXML
   protected static final String _80 = "<id>promote</id>";
   protected static final String _81 = "<include>about.mappings</include>";
   protected static final String _82 = "<includes>";
-  protected static final String _83 = "<jarsigner-version>1.5.0</jarsigner-version>";
+  protected static final String _83 = "<jarsigner-version>1.5.2</jarsigner-version>";
   protected static final String _84 = "<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>";
   protected static final String _85 = "<jgit.ignore>pom.xml</jgit.ignore>";
   protected static final String _86 = "<layout>p2</layout>";
@@ -142,7 +142,7 @@ public class POMXML
   protected static final String _116 = "<sourceReferences>";
   protected static final String _117 = "<target>";
   protected static final String _118 = "<timestampProvider>jgit</timestampProvider>";
-  protected static final String _119 = "<tycho-version>4.0.10</tycho-version>";
+  protected static final String _119 = "<tycho-version>4.0.12</tycho-version>";
   protected static final String _120 = "<tycho.scmUrl>scm:git:https://github.com/eclipse-justj/justj.git</tycho.scmUrl>";
   protected static final String _121 = "<type>p2-installable-unit</type>";
   protected static final String _122 = "<url>https://download.eclipse.org/cbi/updates/license/</url>";
