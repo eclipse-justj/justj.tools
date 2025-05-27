@@ -2460,7 +2460,7 @@ public class UpdateSiteGenerator
 
     public String toURL()
     {
-      return "https://repo1.maven.org/maven2/" + groupId.replace('.', '/') + "/" + artifactId + "/" + version;
+      return "https://repo.maven.apache.org/maven2/" + groupId.replace('.', '/') + "/" + artifactId + "/" + version;
     }
 
     public String toCoordinate()
