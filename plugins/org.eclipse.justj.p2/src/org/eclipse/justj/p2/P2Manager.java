@@ -1180,7 +1180,7 @@ public class P2Manager
    */
   public static String toShellPath(String path)
   {
-    return path.toString().replace('\\', '/');
+    return path.replace('\\', '/');
   }
 
   /**
