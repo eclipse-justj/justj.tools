@@ -2,7 +2,7 @@
 def pipelineVersion = '1'
 
 pipeline {
-  agent { label 'migration' }
+  agent any
 
    options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
