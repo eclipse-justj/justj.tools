@@ -20,7 +20,8 @@ Export-Package: org.eclipse.justj.codegen.model,
  org.eclipse.justj.codegen.templates.releng.parent.features,
  org.eclipse.justj.codegen.templates.releng.parent.plugins,
  org.eclipse.justj.codegen.templates.releng.site
-Import-Package: org.apache.commons.compress.archivers.tar,
+Import-Package: org.apache.commons.lang3,
+ org.apache.commons.compress.archivers.tar,
  org.apache.commons.compress.compressors.gzip
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
