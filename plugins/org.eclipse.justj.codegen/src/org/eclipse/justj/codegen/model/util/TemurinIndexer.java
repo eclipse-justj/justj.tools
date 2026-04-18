@@ -20,7 +20,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,22 +89,24 @@ public class TemurinIndexer
         : URI.createURI("https://api.adoptium.net/v3/assets/latest/" + repo + "/hotspot?image_type=jdk&vendor=eclipse");
       String content = getContent(releasesURI);
 
-      String version = null;
+      Map<Version, List<String>> perVersionDownloadURLs = new TreeMap<>(Comparator.reverseOrder());
       List<String> jdkDownloadURLs = new ArrayList<>();
       for (Matcher assetsMatcher = ASSETS_PATTERN.matcher(content); assetsMatcher.find();)
       {
         String url = assetsMatcher.group(1).replace("%2B", "+");
-        if (version == null)
-        {
-          Matcher versionMatcher = (beta ? BETA_VERSION_PATTERN : VERSION_PATTERN).matcher(url);
-          versionMatcher.find();
-          version = versionMatcher.group(1);
-        }
+        Matcher versionMatcher = (beta ? BETA_VERSION_PATTERN : VERSION_PATTERN).matcher(url);
+        versionMatcher.find();
+        Version version = Version.of(versionMatcher.group(1));
+        perVersionDownloadURLs.computeIfAbsent(version, it -> new ArrayList<>()).add(url);
 
         jdkDownloadURLs.add(url);
       }
 
       out.println();
+
+      // var entry = perVersionDownloadURLs.entrySet().stream().max((e1, e2) -> Integer.compare(e1.getValue().size(), e2.getValue().size())).get();
+      var entry = perVersionDownloadURLs.entrySet().iterator().next();
+      Version version = entry.getKey();
 
       out.println("def java" + repo + "Adoptium = [");
       out.println("  label: 'Java " + repo + " (Adoptium)" + (beta ? " Early Access Beta" : "") + "',");
@@ -109,85 +114,16 @@ public class TemurinIndexer
       out.println("  PUBLISH_LOCATION_PREFIX: \"${defaultPrefix}\",");
       out.println("  JUSTJ_MANIFEST_URL: \"${justjURL}/${defaultPrefix}/" + repo + "/downloads/latest/justj.manifest\",");
 
-      out.println("  JDK_URLS_WINDOWS: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "x64_windows");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
+      printEntry(out, "JDK_URLS_WINDOWS", "x64_windows", perVersionDownloadURLs);
+      printEntry(out, "JDK_URLS_WINDOWS_AARCH64", "aarch64_windows", perVersionDownloadURLs);
 
-      out.println("  JDK_URLS_WINDOWS_AARCH64: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "aarch64_windows");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
+      printEntry(out, "JDK_URLS_MACOS", "x64_mac", perVersionDownloadURLs);
+      printEntry(out, "JDK_URLS_MACOS_AARCH64", "aarch64_mac", perVersionDownloadURLs);
 
-      out.println("  JDK_URLS_MACOS: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "x64_mac");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
-
-      out.println("  JDK_URLS_MACOS_AARCH64: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "aarch64_mac");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
-
-      out.println("  JDK_URLS_LINUX: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "x64_linux");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
-
-      out.println("  JDK_URLS_LINUX_AARCH64: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "aarch64_linux");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
-
-      out.println("  JDK_URLS_LINUX_PPC64LE: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "ppc64le_linux");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
-
-      out.println("  JDK_URLS_LINUX_RISCV64: '''");
-      {
-        String jdkURL = getURL(jdkDownloadURLs, "riscv64_linux");
-        if (jdkURL != null)
-        {
-          out.println("    " + jdkURL);
-        }
-      }
-      out.println("    ''',");
+      printEntry(out, "JDK_URLS_LINUX", "x64_linux", perVersionDownloadURLs);
+      printEntry(out, "JDK_URLS_LINUX_AARCH64", "aarch64_linux", perVersionDownloadURLs);
+      printEntry(out, "JDK_URLS_LINUX_PPC64LE", "ppc64le_linux", perVersionDownloadURLs);
+      printEntry(out, "JDK_URLS_LINUX_RISCV64", "riscv64_linux", perVersionDownloadURLs);
 
       out.println("  BUILD_TYPE: 'nightly',");
       out.println("  PROMOTE: 'true'");
@@ -213,13 +149,36 @@ public class TemurinIndexer
     }
   }
 
-  private static String getURL(List<String> downloadURLs, String type)
+  private static void printEntry(PrintStream out, String name, String type, Map<Version, List<String>> perVersionDownloadURLs)
   {
-    for (String downloadURL : downloadURLs)
+    String jdkURL = getURL(perVersionDownloadURLs, type);
+    if (jdkURL != null && !perVersionDownloadURLs.values().iterator().next().contains(jdkURL))
     {
-      if (downloadURL.contains(type))
+      out.println("  " + name + ": '''");
+      out.println("    ''', // " + jdkURL);
+    }
+    else
+    {
+
+      out.println("  " + name + ": '''");
+      if (jdkURL != null)
       {
-        return downloadURL;
+        out.println("    " + jdkURL);
+      }
+      out.println("    ''',");
+    }
+  }
+
+  private static String getURL(Map<Version, List<String>> perVersionDownloadURLs, String type)
+  {
+    for (List<String> downloadURLs : perVersionDownloadURLs.values())
+    {
+      for (String downloadURL : downloadURLs)
+      {
+        if (downloadURL.contains(type))
+        {
+          return downloadURL;
+        }
       }
     }
 
@@ -260,6 +219,54 @@ public class TemurinIndexer
         Files.writeString(path, content);
       }
       return content;
+    }
+  }
+
+  private static record Version(int major, int minor, int micro, int offset, String suffix) implements Comparable<Version>
+  {
+    private static final Pattern PARTS = Pattern.compile("(?<major>\\d+)(([.](?<minor>\\d+)([.](?<micro>\\d+))?)?)[+](?<offset>\\d+)(?<suffix>.*)");
+
+    public static Version of(String version)
+    {
+      Matcher matcher = PARTS.matcher(version);
+      if (!matcher.matches())
+      {
+        throw new IllegalArgumentException(version);
+      }
+
+      int major = Integer.parseInt(matcher.group("major"));
+      int minor = matcher.group("minor") == null ? 0 : Integer.parseInt(matcher.group("minor"));
+      int micro = matcher.group("micro") == null ? 0 : Integer.parseInt(matcher.group("micro"));
+      int offset = Integer.parseInt(matcher.group("offset"));
+      String suffix = matcher.group("suffix");
+      return new Version(major, minor, micro, offset, suffix);
+    }
+
+    @Override
+    public int compareTo(Version version)
+    {
+      int compare = Integer.compare(major, version.major);
+      if (compare == 0)
+      {
+        compare = Integer.compare(minor, version.minor);
+        if (compare == 0)
+        {
+          compare = Integer.compare(micro, version.micro);
+          if (compare == 0)
+          {
+            {
+              compare = Integer.compare(offset, version.offset);
+            }
+          }
+        }
+      }
+      return compare;
+    }
+
+    @Override
+    public final String toString()
+    {
+      return major + (minor == 0 && micro == 0 ? "" : "." + (minor + (micro == 0 ? "" : "." + micro))) + "+" + offset + suffix;
     }
   }
 }
