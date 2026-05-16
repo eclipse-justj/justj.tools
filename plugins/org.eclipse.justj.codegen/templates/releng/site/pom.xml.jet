@@ -43,6 +43,8 @@ SPDX-License-Identifier: EPL-2.0
           <profileProperties>
             <<%=name%>.assembletime>true</<%=name%>.assembletime>
           </profileProperties>
+          <skipArchive>true</skipArchive>
+          <xzCompress>false</xzCompress>
         </configuration>
       </plugin>
       <plugin>
