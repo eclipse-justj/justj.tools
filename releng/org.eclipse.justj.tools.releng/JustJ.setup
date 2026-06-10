@@ -130,6 +130,8 @@
         <repositoryList>
           <repository
               url="https://download.eclipse.org/justj/jres/21/updates/release/latest"/>
+          <repository
+              url="https://download.eclipse.org/justj/jres/25/updates/release/latest"/>
         </repositoryList>
       </targlet>
     </setupTask>
@@ -163,6 +165,9 @@
         xsi:type="workbench:FileAssociationsTask">
       <mapping
           filePattern="*.sh"
+          defaultEditorID="org.eclipse.ui.genericeditor.GenericEditor"/>
+      <mapping
+          filePattern="*.inf"
           defaultEditorID="org.eclipse.ui.genericeditor.GenericEditor"/>
     </setupTask>
     <stream
