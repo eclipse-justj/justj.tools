@@ -104,9 +104,28 @@ public class TemurinIndexer
 
       out.println();
 
-      // var entry = perVersionDownloadURLs.entrySet().stream().max((e1, e2) -> Integer.compare(e1.getValue().size(), e2.getValue().size())).get();
       var entry = perVersionDownloadURLs.entrySet().iterator().next();
       Version version = entry.getKey();
+
+      var windowsAarch64Type = "aarch64_windows";
+      String jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
+      if (jdkURL == null)
+      {
+        // https://www.microsoft.com/openjdk
+        // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
+        // https://learn.microsoft.com/en-us/java/openjdk/download
+        //
+        String downloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/download"));
+
+        Pattern microsoftJDKURLPattern = Pattern.compile("href=\"(https://[^\"]+microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip)\"");
+        Matcher matcher = microsoftJDKURLPattern.matcher(downloadContent);
+        if (matcher.find())
+        {
+          jdkURL = matcher.group(1);
+          perVersionDownloadURLs.get(version).add(jdkURL);
+          windowsAarch64Type = "-windows-aarch64";
+        }
+      }
 
       out.println("def java" + repo + "Adoptium = [");
       out.println("  label: 'Java " + repo + " (Adoptium)" + (beta ? " Early Access Beta" : "") + "',");
@@ -115,7 +134,7 @@ public class TemurinIndexer
       out.println("  JUSTJ_MANIFEST_URL: \"${justjURL}/${defaultPrefix}/" + repo + "/downloads/latest/justj.manifest\",");
 
       printEntry(out, "JDK_URLS_WINDOWS", "x64_windows", perVersionDownloadURLs);
-      printEntry(out, "JDK_URLS_WINDOWS_AARCH64", "aarch64_windows", perVersionDownloadURLs);
+      printEntry(out, "JDK_URLS_WINDOWS_AARCH64", windowsAarch64Type, perVersionDownloadURLs);
 
       printEntry(out, "JDK_URLS_MACOS", "x64_mac", perVersionDownloadURLs);
       printEntry(out, "JDK_URLS_MACOS_AARCH64", "aarch64_mac", perVersionDownloadURLs);
