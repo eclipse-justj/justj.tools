@@ -116,9 +116,10 @@ public class TemurinIndexer
         // https://learn.microsoft.com/en-us/java/openjdk/download
         //
         String downloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/download"));
+        String olderDownloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/older-releases"));
 
         Pattern microsoftJDKURLPattern = Pattern.compile("href=\"(https://[^\"]+microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip)\"");
-        Matcher matcher = microsoftJDKURLPattern.matcher(downloadContent);
+        Matcher matcher = microsoftJDKURLPattern.matcher(downloadContent + olderDownloadContent);
         if (matcher.find())
         {
           jdkURL = matcher.group(1);
