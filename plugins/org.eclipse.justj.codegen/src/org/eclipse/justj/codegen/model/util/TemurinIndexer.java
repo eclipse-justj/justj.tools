@@ -13,7 +13,6 @@ package org.eclipse.justj.codegen.model.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +51,7 @@ public class TemurinIndexer
 
   public static void main(String[] argsx) throws Exception
   {
-    List<String> arguments = new ArrayList<String>(List.of(argsx));
+    var arguments = new ArrayList<String>(List.of(argsx));
     if (arguments.size() > 1)
     {
       cache = Path.of(arguments.remove(0));
@@ -63,9 +63,7 @@ public class TemurinIndexer
 
   public static void generate(boolean beta, List<String> arguments) throws Exception
   {
-    PrintStream out = System.out;
-
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+    var byteArrayOutputStream = new ByteArrayOutputStream()
       {
         int start = 0;
 
@@ -78,25 +76,25 @@ public class TemurinIndexer
         }
       };
 
-    out = new PrintStream(byteArrayOutputStream, true, StandardCharsets.UTF_8);
+    var out = new PrintStream(byteArrayOutputStream, true, StandardCharsets.UTF_8);
 
     out.println(beta ? BEGIN_BETA_MARKER : BEGIN_MARKER);
 
-    for (String repo : beta ? new String []{ "27" } : new String []{ "11", "17", "21", "25", "26" })
+    for (var repo : beta ? new String []{ "27" } : new String []{ "11", "17", "21", "25", "26" })
     {
-      URI releasesURI = beta
+      var releasesURI = beta
         ? URI.createURI("https://api.adoptium.net/v3/assets/feature_releases/" + repo + "/ea?image_type=jdk&jvm_impl=hotspot&project=jdk&vendor=eclipse")
         : URI.createURI("https://api.adoptium.net/v3/assets/latest/" + repo + "/hotspot?image_type=jdk&vendor=eclipse");
-      String content = getContent(releasesURI);
+      var content = getContent(releasesURI);
 
-      Map<Version, List<String>> perVersionDownloadURLs = new TreeMap<>(Comparator.reverseOrder());
-      List<String> jdkDownloadURLs = new ArrayList<>();
-      for (Matcher assetsMatcher = ASSETS_PATTERN.matcher(content); assetsMatcher.find();)
+      var perVersionDownloadURLs = new TreeMap<Version, List<String>>(Comparator.reverseOrder());
+      var jdkDownloadURLs = new ArrayList<String>();
+      for (var assetsMatcher = ASSETS_PATTERN.matcher(content); assetsMatcher.find();)
       {
-        String url = assetsMatcher.group(1).replace("%2B", "+");
-        Matcher versionMatcher = (beta ? BETA_VERSION_PATTERN : VERSION_PATTERN).matcher(url);
+        var url = assetsMatcher.group(1).replace("%2B", "+");
+        var versionMatcher = (beta ? BETA_VERSION_PATTERN : VERSION_PATTERN).matcher(url);
         versionMatcher.find();
-        Version version = Version.of(versionMatcher.group(1));
+        var version = Version.of(versionMatcher.group(1));
         perVersionDownloadURLs.computeIfAbsent(version, it -> new ArrayList<>()).add(url);
 
         jdkDownloadURLs.add(url);
@@ -105,26 +103,36 @@ public class TemurinIndexer
       out.println();
 
       var entry = perVersionDownloadURLs.entrySet().iterator().next();
-      Version version = entry.getKey();
+      var version = entry.getKey();
 
       var windowsAarch64Type = "aarch64_windows";
-      String jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
+      var jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
       if (jdkURL == null)
       {
-        // https://www.microsoft.com/openjdk
-        // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
-        // https://learn.microsoft.com/en-us/java/openjdk/download
-        //
-        String downloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/download"));
-        String olderDownloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/older-releases"));
-
-        Pattern microsoftJDKURLPattern = Pattern.compile("href=\"(https://[^\"]+microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip)\"");
-        Matcher matcher = microsoftJDKURLPattern.matcher(downloadContent + olderDownloadContent);
-        if (matcher.find())
+        // Directly synthesize the URL because the udpate pages only appear to include LTS versions so currently no Java 26.
+        var microsoftJDKURL = "https://aka.ms/download-jdk/microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip";
+        if (exists(URI.createURI(microsoftJDKURL)))
         {
-          jdkURL = matcher.group(1);
-          perVersionDownloadURLs.get(version).add(jdkURL);
+          perVersionDownloadURLs.get(version).add(microsoftJDKURL);
           windowsAarch64Type = "-windows-aarch64";
+        }
+        else
+        {
+          // https://www.microsoft.com/openjdk
+          // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
+          // https://learn.microsoft.com/en-us/java/openjdk/download
+          //
+          var downloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/download"));
+          var olderDownloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/older-releases"));
+
+          var microsoftJDKURLPattern = Pattern.compile("href=\"(https://[^\"]+microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip)\"");
+          var matcher = microsoftJDKURLPattern.matcher(downloadContent + olderDownloadContent);
+          if (matcher.find())
+          {
+            jdkURL = matcher.group(1);
+            perVersionDownloadURLs.get(version).add(jdkURL);
+            windowsAarch64Type = "-windows-aarch64";
+          }
         }
       }
 
@@ -155,9 +163,9 @@ public class TemurinIndexer
 
     if (arguments.size() > 0)
     {
-      Path target = Paths.get(arguments.get(0));
-      String contents = Files.readString(target);
-      String newGeneratedContents = new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
+      var target = Paths.get(arguments.get(0));
+      var contents = Files.readString(target);
+      var newGeneratedContents = new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
       if (!contents.contains("\r\n") && newGeneratedContents.contains("\r\n"))
       {
         newGeneratedContents = newGeneratedContents.replace("\r\n", "\n");
@@ -171,7 +179,7 @@ public class TemurinIndexer
 
   private static void printEntry(PrintStream out, String name, String type, Map<Version, List<String>> perVersionDownloadURLs)
   {
-    String jdkURL = getURL(perVersionDownloadURLs, type);
+    var jdkURL = getURL(perVersionDownloadURLs, type);
     if (jdkURL != null && !perVersionDownloadURLs.values().iterator().next().contains(jdkURL))
     {
       out.println("  " + name + ": '''");
@@ -179,7 +187,6 @@ public class TemurinIndexer
     }
     else
     {
-
       out.println("  " + name + ": '''");
       if (jdkURL != null)
       {
@@ -191,9 +198,9 @@ public class TemurinIndexer
 
   private static String getURL(Map<Version, List<String>> perVersionDownloadURLs, String type)
   {
-    for (List<String> downloadURLs : perVersionDownloadURLs.values())
+    for (var downloadURLs : perVersionDownloadURLs.values())
     {
-      for (String downloadURL : downloadURLs)
+      for (var downloadURL : downloadURLs)
       {
         if (downloadURL.contains(type))
         {
@@ -212,9 +219,9 @@ public class TemurinIndexer
       return null;
     }
 
-    String decodedURI = URI.decode(uri.toString());
-    String[] uriSegments = decodedURI.split("[:/?#&;]+");
-    Path result = cache.resolve(String.join("/", uriSegments));
+    var decodedURI = URI.decode(uri.toString());
+    var uriSegments = decodedURI.split("[:/?#&;]+");
+    var result = cache.resolve(String.join("/", uriSegments));
     if (uri.hasTrailingPathSeparator())
     {
       return result.resolve("-folder-contents");
@@ -222,17 +229,35 @@ public class TemurinIndexer
     return result;
   }
 
+  private static boolean exists(URI uri) throws IOException
+  {
+    var path = getCachePath(uri.appendFileExtension("ëxists"));
+    if (path != null && Files.isRegularFile(path))
+    {
+      return "true".equals(Files.readString(path));
+    }
+
+    var exists = URIConverter.INSTANCE.exists(uri, Map.of());
+    if (path != null)
+    {
+      Files.createDirectories(path.getParent());
+      Files.writeString(path, Objects.toString(exists));
+    }
+
+    return exists;
+  }
+
   private static String getContent(URI uri) throws IOException
   {
-    Path path = getCachePath(uri);
+    var path = getCachePath(uri);
     if (path != null && Files.isRegularFile(path))
     {
       return Files.readString(path);
     }
 
-    try (InputStream in = URIConverter.INSTANCE.createInputStream(uri))
+    try (var in = URIConverter.INSTANCE.createInputStream(uri))
     {
-      String content = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+      var content = new String(in.readAllBytes(), StandardCharsets.UTF_8);
       if (path != null)
       {
         Files.createDirectories(path.getParent());
@@ -248,24 +273,24 @@ public class TemurinIndexer
 
     public static Version of(String version)
     {
-      Matcher matcher = PARTS.matcher(version);
+      var matcher = PARTS.matcher(version);
       if (!matcher.matches())
       {
         throw new IllegalArgumentException(version);
       }
 
-      int major = Integer.parseInt(matcher.group("major"));
-      int minor = matcher.group("minor") == null ? 0 : Integer.parseInt(matcher.group("minor"));
-      int micro = matcher.group("micro") == null ? 0 : Integer.parseInt(matcher.group("micro"));
-      int offset = Integer.parseInt(matcher.group("offset"));
-      String suffix = matcher.group("suffix");
+      var major = Integer.parseInt(matcher.group("major"));
+      var minor = matcher.group("minor") == null ? 0 : Integer.parseInt(matcher.group("minor"));
+      var micro = matcher.group("micro") == null ? 0 : Integer.parseInt(matcher.group("micro"));
+      var offset = Integer.parseInt(matcher.group("offset"));
+      var suffix = matcher.group("suffix");
       return new Version(major, minor, micro, offset, suffix);
     }
 
     @Override
     public int compareTo(Version version)
     {
-      int compare = Integer.compare(major, version.major);
+      var compare = Integer.compare(major, version.major);
       if (compare == 0)
       {
         compare = Integer.compare(minor, version.minor);
