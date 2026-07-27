@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,30 +108,20 @@ public class TemurinIndexer
       var jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
       if (jdkURL == null)
       {
-        // Directly synthesize the URL because the udpate pages only appear to include LTS versions so currently no Java 26.
-        var microsoftJDKURL = "https://aka.ms/download-jdk/microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip";
-        if (exists(URI.createURI(microsoftJDKURL)))
-        {
-          perVersionDownloadURLs.get(version).add(microsoftJDKURL);
-          windowsAarch64Type = "-windows-aarch64";
-        }
-        else
-        {
-          // https://www.microsoft.com/openjdk
-          // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
-          // https://learn.microsoft.com/en-us/java/openjdk/download
-          //
-          var downloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/download"));
-          var olderDownloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/older-releases"));
+        // https://www.microsoft.com/openjdk
+        // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
+        // https://learn.microsoft.com/en-us/java/openjdk/download
+        //
+        var downloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/download"));
+        var olderDownloadContent = getContent(URI.createURI("https://learn.microsoft.com/en-us/java/openjdk/older-releases"));
 
-          var microsoftJDKURLPattern = Pattern.compile("href=\"(https://[^\"]+microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip)\"");
-          var matcher = microsoftJDKURLPattern.matcher(downloadContent + olderDownloadContent);
-          if (matcher.find())
-          {
-            jdkURL = matcher.group(1);
-            perVersionDownloadURLs.get(version).add(jdkURL);
-            windowsAarch64Type = "-windows-aarch64";
-          }
+        var microsoftJDKURLPattern = Pattern.compile("href=\"(https://[^\"]+microsoft-jdk-" + version.toString().replaceAll("\\+.*", "") + "-windows-aarch64.zip)\"");
+        var matcher = microsoftJDKURLPattern.matcher(downloadContent + olderDownloadContent);
+        if (matcher.find())
+        {
+          jdkURL = matcher.group(1);
+          perVersionDownloadURLs.get(version).add(jdkURL);
+          windowsAarch64Type = "-windows-aarch64";
         }
       }
 
@@ -227,24 +216,6 @@ public class TemurinIndexer
       return result.resolve("-folder-contents");
     }
     return result;
-  }
-
-  private static boolean exists(URI uri) throws IOException
-  {
-    var path = getCachePath(uri.appendFileExtension("ëxists"));
-    if (path != null && Files.isRegularFile(path))
-    {
-      return "true".equals(Files.readString(path));
-    }
-
-    var exists = URIConverter.INSTANCE.exists(uri, Map.of());
-    if (path != null)
-    {
-      Files.createDirectories(path.getParent());
-      Files.writeString(path, Objects.toString(exists));
-    }
-
-    return exists;
   }
 
   private static String getContent(URI uri) throws IOException
