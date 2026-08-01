@@ -106,7 +106,7 @@ public class TemurinIndexer
 
       var windowsAarch64Type = "aarch64_windows";
       var jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
-      if (jdkURL == null)
+      if (jdkURL == null && version.compareTo(new Version(12, 0, 0, 0, "")) > 0)
       {
         // https://www.microsoft.com/openjdk
         // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
