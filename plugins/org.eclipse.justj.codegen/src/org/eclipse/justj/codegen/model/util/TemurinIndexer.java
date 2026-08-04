@@ -79,7 +79,7 @@ public class TemurinIndexer
 
     out.println(beta ? BEGIN_BETA_MARKER : BEGIN_MARKER);
 
-    for (var repo : beta ? new String []{ "27" } : new String []{ "11", "17", "21", "25", "26" })
+    for (var repo : beta ? new String []{ "27", "28" } : new String []{ "11", "17", "21", "25", "26" })
     {
       var releasesURI = beta
         ? URI.createURI("https://api.adoptium.net/v3/assets/feature_releases/" + repo + "/ea?image_type=jdk&jvm_impl=hotspot&project=jdk&vendor=eclipse")
