@@ -104,12 +104,12 @@ public class Indexer
     }
 
     // Build another map in the right order.
-    Map<String, String> breadcumbs = new LinkedHashMap<String, String>();
+    Map<String, String> breadcrumbs = new LinkedHashMap<String, String>();
     for (String label : labels)
     {
-      breadcumbs.put(label, links.get(label));
+      breadcrumbs.put(label, links.get(label));
     }
-    return breadcumbs;
+    return breadcrumbs;
   }
 
   public void generate(IProgressMonitor monitor) throws IOException

@@ -533,7 +533,7 @@ public class UpdateSiteIndexGenerator
     Path root = updateSiteGenerator.getUpdateSiteRoot();
     Path projectRoot = updateSiteGenerator.getProjectRoot();
 
-    Map<String, String> breadcumbs = new LinkedHashMap<String, String>(updateSiteGenerator.getBreadcrumbs());
+    Map<String, String> breadcrumbs = new LinkedHashMap<String, String>(updateSiteGenerator.getBreadcrumbs());
 
     // Compute the labels in the right order continuing only as far as the project root.
     List<String> labels = new ArrayList<String>();
@@ -546,7 +546,7 @@ public class UpdateSiteIndexGenerator
 
       String name = file.getFileName().toString();
       String titleName = updateSiteGenerator.getFolderLabel(name);
-      while (breadcumbs.containsKey(titleName) || labels.contains(titleName))
+      while (breadcrumbs.containsKey(titleName) || labels.contains(titleName))
       {
         // Make the label unique with zero-width whitespace.
         titleName += "&#8203;";
@@ -612,9 +612,9 @@ public class UpdateSiteIndexGenerator
     // Build another map in the right order.
     for (String label : labels)
     {
-      breadcumbs.put(label, links.get(label));
+      breadcrumbs.put(label, links.get(label));
     }
-    return breadcumbs;
+    return breadcrumbs;
   }
 
   /**
