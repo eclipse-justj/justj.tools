@@ -220,7 +220,7 @@ public class UpdateSiteIndex
     stringBuffer.append(TEXT_6);
     }
     stringBuffer.append(TEXT_7);
-    stringBuffer.append(title);
+    stringBuffer.append(parent.getTitleURL());
     stringBuffer.append(TEXT_8);
     stringBuffer.append(parent.getTitleImage());
     stringBuffer.append(TEXT_9);

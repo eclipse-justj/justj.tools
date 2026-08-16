@@ -136,7 +136,7 @@ sup {
         <div class="row" id="header-row">
           <div class="hidden-xs col-sm-8 col-md-6 col-lg-5" id="header-left">
             <div class="wrapper-logo-default">
-              <a href="<%=title%>">
+              <a href="<%=parent.getTitleURL()%>">
                 <img class="logo-eclipse-default img-responsive hidden-xs" style="height: 50px; white-space: nowrap; display: inline-block;" alt="Project Logo" src="<%=parent.getTitleImage()%>"/>
               </a>
             </div>
