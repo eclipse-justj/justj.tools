@@ -106,7 +106,7 @@ public class TemurinIndexer
 
       var windowsAarch64Type = "aarch64_windows";
       var jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
-      if (jdkURL == null && version.compareTo(new Version(12, 0, 0, 0, "")) > 0)
+      if (jdkURL == null && version.compareTo(new Version(12, 0, 0, 0, 0, "")) > 0)
       {
         // https://www.microsoft.com/openjdk
         // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
@@ -238,9 +238,9 @@ public class TemurinIndexer
     }
   }
 
-  private static record Version(int major, int minor, int micro, int offset, String suffix) implements Comparable<Version>
+  private static record Version(int major, int minor, int micro, int patch, int offset, String suffix) implements Comparable<Version>
   {
-    private static final Pattern PARTS = Pattern.compile("(?<major>\\d+)(([.](?<minor>\\d+)([.](?<micro>\\d+))?)?)[+](?<offset>\\d+)(?<suffix>.*)");
+    private static final Pattern PARTS = Pattern.compile("(?<major>\\d+)([.](?<minor>\\d+)([.](?<micro>\\d+)([.](?<patch>\\d+))?)?)?[+](?<offset>\\d+)(?<suffix>.*)");
 
     public static Version of(String version)
     {
@@ -253,9 +253,10 @@ public class TemurinIndexer
       var major = Integer.parseInt(matcher.group("major"));
       var minor = matcher.group("minor") == null ? 0 : Integer.parseInt(matcher.group("minor"));
       var micro = matcher.group("micro") == null ? 0 : Integer.parseInt(matcher.group("micro"));
+      var patch = matcher.group("patch") == null ? 0 : Integer.parseInt(matcher.group("patch"));
       var offset = Integer.parseInt(matcher.group("offset"));
       var suffix = matcher.group("suffix");
-      return new Version(major, minor, micro, offset, suffix);
+      return new Version(major, minor, micro, patch, offset, suffix);
     }
 
     @Override
@@ -270,6 +271,8 @@ public class TemurinIndexer
           compare = Integer.compare(micro, version.micro);
           if (compare == 0)
           {
+            compare = Integer.compare(patch, version.patch);
+            if (compare == 0)
             {
               compare = Integer.compare(offset, version.offset);
             }
@@ -282,7 +285,8 @@ public class TemurinIndexer
     @Override
     public final String toString()
     {
-      return major + (minor == 0 && micro == 0 ? "" : "." + (minor + (micro == 0 ? "" : "." + micro))) + "+" + offset + suffix;
+      return major + (minor == 0 && micro == 0 && patch == 0 ? "" : "." + (minor + (micro == 0 && patch == 0 ? "" : "." + micro + (patch == 0 ? "" : "." + patch)))) + "+" + offset
+        + suffix;
     }
   }
 }
