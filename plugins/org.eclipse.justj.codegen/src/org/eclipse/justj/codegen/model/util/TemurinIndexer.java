@@ -79,7 +79,7 @@ public class TemurinIndexer
 
     out.println(beta ? BEGIN_BETA_MARKER : BEGIN_MARKER);
 
-    for (var repo : beta ? new String []{ "28" } : new String []{ "11", "17", "21", "25", "26", "27" })
+    for (var repo : beta ? new String []{ "28" } : new String []{ "11", "17", "21", "25", "27" })
     {
       var releasesURI = beta
         ? URI.createURI("https://api.adoptium.net/v3/assets/feature_releases/" + repo + "/ea?image_type=jdk&jvm_impl=hotspot&project=jdk&vendor=eclipse")
@@ -106,7 +106,7 @@ public class TemurinIndexer
 
       var windowsAarch64Type = "aarch64_windows";
       var jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
-      if (jdkURL == null && version.compareTo(new Version(12, 0, 0, 0, 0, "")) > 0)
+      if (jdkURL == null && version.compareTo(new Version(12, 0, 0, 0, 0, 0, "")) > 0)
       {
         // https://www.microsoft.com/openjdk
         // https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/work_items/29542
@@ -238,9 +238,10 @@ public class TemurinIndexer
     }
   }
 
-  private static record Version(int major, int minor, int micro, int patch, int offset, String suffix) implements Comparable<Version>
+  private static record Version(int major, int minor, int micro, int patch, int extra, int offset, String suffix) implements Comparable<Version>
   {
-    private static final Pattern PARTS = Pattern.compile("(?<major>\\d+)([.](?<minor>\\d+)([.](?<micro>\\d+)([.](?<patch>\\d+))?)?)?[+](?<offset>\\d+)(?<suffix>.*)");
+    private static final Pattern PARTS = Pattern.compile(
+      "(?<major>\\d+)([.](?<minor>\\d+)([.](?<micro>\\d+)([.](?<patch>\\d+)([.](?<extra>\\d+))?)?)?)?[+](?<offset>\\d+)(?<suffix>.*)");
 
     public static Version of(String version)
     {
@@ -254,9 +255,10 @@ public class TemurinIndexer
       var minor = matcher.group("minor") == null ? 0 : Integer.parseInt(matcher.group("minor"));
       var micro = matcher.group("micro") == null ? 0 : Integer.parseInt(matcher.group("micro"));
       var patch = matcher.group("patch") == null ? 0 : Integer.parseInt(matcher.group("patch"));
+      var extra = matcher.group("extra") == null ? 0 : Integer.parseInt(matcher.group("extra"));
       var offset = Integer.parseInt(matcher.group("offset"));
       var suffix = matcher.group("suffix");
-      return new Version(major, minor, micro, patch, offset, suffix);
+      return new Version(major, minor, micro, patch, extra, offset, suffix);
     }
 
     @Override
@@ -274,7 +276,11 @@ public class TemurinIndexer
             compare = Integer.compare(patch, version.patch);
             if (compare == 0)
             {
-              compare = Integer.compare(offset, version.offset);
+              compare = Integer.compare(extra, version.extra);
+              if (compare == 0)
+              {
+                compare = Integer.compare(offset, version.offset);
+              }
             }
           }
         }
@@ -285,8 +291,12 @@ public class TemurinIndexer
     @Override
     public final String toString()
     {
-      return major + (minor == 0 && micro == 0 && patch == 0 ? "" : "." + (minor + (micro == 0 && patch == 0 ? "" : "." + micro + (patch == 0 ? "" : "." + patch)))) + "+" + offset
-        + suffix;
+      return major + //
+        (minor == 0 && micro == 0 && patch == 0 && extra == 0 ? "" : "." + //
+          (minor + (micro == 0 && patch == 0 && extra == 0 ? "" : "." + //
+            (micro + (patch == 0 && extra == 0 ? "" : "." + //
+              (patch + (extra == 0 ? "" : "." + extra)))))))
+        + "+" + offset + suffix;
     }
   }
 }
