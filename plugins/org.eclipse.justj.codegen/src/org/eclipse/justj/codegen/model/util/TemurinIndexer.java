@@ -123,6 +123,12 @@ public class TemurinIndexer
           perVersionDownloadURLs.get(version).add(jdkURL);
           windowsAarch64Type = "-windows-aarch64";
         }
+        else if (version.compareTo(new Version(25, 0, 5, 0, 0, 8, "")) == 0)
+        {
+          jdkURL = "https://aka.ms/download-jdk/microsoft-jdk-25.0.5.0.2-windows-aarch64.zip";
+          perVersionDownloadURLs.get(version).add(jdkURL);
+          windowsAarch64Type = "-windows-aarch64";
+        }
       }
 
       out.println("def java" + repo + "Adoptium = [");
