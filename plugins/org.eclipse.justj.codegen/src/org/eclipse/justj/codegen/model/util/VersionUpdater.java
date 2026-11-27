@@ -48,13 +48,13 @@ public class VersionUpdater
 
   public static void main(String[] args) throws Exception
   {
-    String releaseTrainVersion = "2022-09";
-    String eclipseUpdatesVersion = "4.26";
+    String releaseTrainVersion = "2026-12";
+    String eclipseUpdatesVersion = "4.42";
 
-    String jarsignerVersion = "1.3.2";
-    String tychoVersion = "2.7.5";
+    String jarsignerVersion = "1.5.8";
+    String tychoVersion = "5.0.4";
 
-    int jreVersion = 17;
+    int jreVersion = 25;
 
     for (String path : args)
     {

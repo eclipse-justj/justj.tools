@@ -106,6 +106,12 @@ public class TemurinIndexer
 
       var windowsAarch64Type = "aarch64_windows";
       var jdkURL = getURL(perVersionDownloadURLs, windowsAarch64Type);
+      if (version.compareTo(new Version(21, 0, 13, 1, 0, 2, "")) == 0)
+      {
+        jdkURL = "https://aka.ms/download-jdk/microsoft-jdk-21.0.13.1-windows-aarch64.zip";
+        perVersionDownloadURLs.get(version).add(jdkURL);
+        windowsAarch64Type = "-windows-aarch64";
+      }
       if (jdkURL == null && version.compareTo(new Version(12, 0, 0, 0, 0, 0, "")) > 0)
       {
         // https://www.microsoft.com/openjdk
@@ -126,6 +132,12 @@ public class TemurinIndexer
         else if (version.compareTo(new Version(25, 0, 5, 0, 0, 8, "")) == 0)
         {
           jdkURL = "https://aka.ms/download-jdk/microsoft-jdk-25.0.5.0.2-windows-aarch64.zip";
+          perVersionDownloadURLs.get(version).add(jdkURL);
+          windowsAarch64Type = "-windows-aarch64";
+        }
+        else if (version.compareTo(new Version(17, 0, 21, 0, 0, 9, "")) == 0)
+        {
+          jdkURL = "https://aka.ms/download-jdk/microsoft-jdk-17.0.21.0.2-windows-aarch64.zip";
           perVersionDownloadURLs.get(version).add(jdkURL);
           windowsAarch64Type = "-windows-aarch64";
         }
